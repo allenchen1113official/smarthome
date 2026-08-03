@@ -1,0 +1,86 @@
+/* Allen & Ann Smart Home — design tokens */
+:root {
+  /* Type */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", "Noto Sans TC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Light canvas — warm off-white */
+  --bg: oklch(98.5% 0.005 80);
+  --bg-elev: oklch(100% 0 0);
+  --bg-tint: oklch(96% 0.008 80);
+  --line: oklch(90% 0.006 80);
+  --line-soft: oklch(94% 0.005 80);
+  --ink: oklch(20% 0.01 80);
+  --ink-2: oklch(40% 0.012 80);
+  --ink-3: oklch(58% 0.012 80);
+  --ink-4: oklch(72% 0.01 80);
+
+  /* Category accents — same chroma & lightness, only hue varies */
+  --c-morning: oklch(74% 0.12 75);   /* amber  — 晨間與通勤 */
+  --c-evening: oklch(74% 0.12 290);  /* violet — 下班與休憩 */
+  --c-sleep:   oklch(74% 0.12 250);  /* indigo — 輪班睡眠 */
+  --c-home:    oklch(74% 0.12 165);  /* teal   — 家電維護 */
+  --c-secure:  oklch(74% 0.12 25);   /* coral  — 安全 AI */
+
+  /* Tint backgrounds (very pale) */
+  --c-morning-bg: oklch(96% 0.04 75);
+  --c-evening-bg: oklch(96% 0.04 290);
+  --c-sleep-bg:   oklch(96% 0.04 250);
+  --c-home-bg:    oklch(96% 0.04 165);
+  --c-secure-bg:  oklch(96% 0.04 25);
+
+  /* Connection-type colors (topology) */
+  --net-lan:    oklch(60% 0.14 250);
+  --net-wifi:   oklch(64% 0.14 165);
+  --net-zigbee: oklch(64% 0.14 75);
+  --net-logic:  oklch(60% 0.14 25);
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-1: 0 1px 2px oklch(20% 0.01 80 / 0.04), 0 0 0 1px oklch(20% 0.01 80 / 0.04);
+  --shadow-2: 0 1px 2px oklch(20% 0.01 80 / 0.06), 0 8px 24px -8px oklch(20% 0.01 80 / 0.08), 0 0 0 1px oklch(20% 0.01 80 / 0.05);
+  --shadow-3: 0 2px 4px oklch(20% 0.01 80 / 0.06), 0 24px 48px -16px oklch(20% 0.01 80 / 0.14), 0 0 0 1px oklch(20% 0.01 80 / 0.06);
+}
+
+[data-theme="dark"] {
+  --bg: oklch(18% 0.008 260);
+  --bg-elev: oklch(22% 0.01 260);
+  --bg-tint: oklch(25% 0.012 260);
+  --line: oklch(32% 0.014 260);
+  --line-soft: oklch(28% 0.012 260);
+  --ink: oklch(96% 0.005 80);
+  --ink-2: oklch(82% 0.008 80);
+  --ink-3: oklch(64% 0.01 80);
+  --ink-4: oklch(46% 0.012 80);
+
+  --c-morning-bg: oklch(28% 0.04 75);
+  --c-evening-bg: oklch(28% 0.04 290);
+  --c-sleep-bg:   oklch(28% 0.04 250);
+  --c-home-bg:    oklch(28% 0.04 165);
+  --c-secure-bg:  oklch(28% 0.04 25);
+
+  --shadow-1: 0 1px 2px black/.2, 0 0 0 1px oklch(100% 0 0 / 0.06);
+  --shadow-2: 0 1px 2px oklch(0% 0 0 / .35), 0 12px 28px -10px oklch(0% 0 0 / .55), 0 0 0 1px oklch(100% 0 0 / .07);
+  --shadow-3: 0 2px 4px oklch(0% 0 0 / .4), 0 32px 60px -20px oklch(0% 0 0 / .65), 0 0 0 1px oklch(100% 0 0 / .08);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+}
+body { transition: background 220ms ease, color 220ms ease; }
+
+a { color: inherit; }
+
+::selection { background: oklch(74% 0.12 250 / 0.3); }

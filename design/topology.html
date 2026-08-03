@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>網路拓樸 · Allen & Ann</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+  .page-head {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 32px 24px;
+  }
+  .page-head h1 {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 8px 0 6px;
+  }
+  .page-head .subtitle {
+    color: var(--ink-3);
+    font-size: 14px;
+  }
+  .page-head .crumb {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .topo-frame {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 32px 40px;
+  }
+  .topo-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-2);
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    cursor: pointer;
+    transition: all 160ms ease;
+    user-select: none;
+  }
+  .legend-chip[data-active="false"] { opacity: 0.4; }
+  .legend-chip .swatch {
+    width: 14px; height: 3px; border-radius: 2px;
+  }
+  .legend-chip[data-kind="lan"] .swatch { background: var(--net-lan); }
+  .legend-chip[data-kind="wifi"] .swatch { background: var(--net-wifi); border-top: 1px dashed var(--bg-elev); }
+  .legend-chip[data-kind="zigbee"] .swatch { background: var(--net-zigbee); border-top: 1px dotted var(--bg-elev); }
+  .legend-chip[data-kind="logic"] .swatch { background: var(--net-logic); }
+
+  .topo-canvas {
+    position: relative;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-xl);
+    padding: 36px;
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .topo-canvas::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(oklch(50% 0.01 80 / 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 12px 12px;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  [data-theme="dark"] .topo-canvas::before {
+    background-image: radial-gradient(oklch(80% 0.005 80 / 0.06) 1px, transparent 1px);
+  }
+
+  /* Layer rows */
+  .topo-grid {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 32px 24px;
+    position: relative;
+    z-index: 2;
+  }
+  .layer-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding-top: 14px;
+    border-right: 1px dashed var(--line);
+    padding-right: 12px;
+    text-align: right;
+  }
+  .layer-label small {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    text-transform: none;
+    margin-top: 3px;
+  }
+  .layer-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    min-height: 70px;
+  }
+
+  /* Node card */
+  .node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    min-width: 140px;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(.2,.8,.2,1);
+    z-index: 3;
+  }
+  .node:hover, .node.active {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--accent, var(--ink-3));
+  }
+  .node[data-tone="primary"] {
+    background: linear-gradient(180deg, var(--c-sleep-bg), var(--bg-elev));
+    border-color: var(--c-sleep);
+  }
+  .node[data-tone="hue"] { background: linear-gradient(180deg, var(--c-morning-bg), var(--bg-elev)); border-color: var(--c-morning); }
+  .node[data-tone="hvac"] { background: linear-gradient(180deg, var(--c-home-bg), var(--bg-elev)); border-color: var(--c-home); }
+  .node[data-tone="curtain"] { background: linear-gradient(180deg, var(--c-evening-bg), var(--bg-elev)); border-color: var(--c-evening); }
+  .node[data-tone="sensor"] { background: linear-gradient(180deg, var(--c-secure-bg), var(--bg-elev)); border-color: var(--c-secure); }
+  .node[data-tone="audio"] { background: linear-gradient(180deg, var(--c-sleep-bg), var(--bg-elev)); border-color: var(--c-sleep); }
+  .node[data-tone="external"] { background: var(--bg-tint); }
+  .node .icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .node .label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .node .meta {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-family: var(--font-mono);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .node .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 10px;
+    color: var(--ink-2);
+    padding: 2px 7px;
+    font-weight: 500;
+    box-shadow: var(--shadow-1);
+  }
+  .node.dim { opacity: 0.25; filter: grayscale(0.7); }
+
+  /* SVG overlay */
+  .topo-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .topo-svg path {
+    fill: none;
+    stroke-width: 1.6;
+    transition: opacity 220ms ease, stroke-width 220ms ease;
+  }
+  .topo-svg path.lan    { stroke: var(--net-lan); }
+  .topo-svg path.wifi   { stroke: var(--net-wifi); stroke-dasharray: 6 4; }
+  .topo-svg path.zigbee { stroke: var(--net-zigbee); stroke-dasharray: 1 4; stroke-linecap: round; }
+  .topo-svg path.logic  { stroke: var(--net-logic); stroke-dasharray: 8 3 1 3; opacity: 0.6; }
+  .topo-svg path.dim { opacity: 0.08; }
+  .topo-svg path.hot { stroke-width: 2.6; opacity: 1 !important; filter: drop-shadow(0 0 6px currentColor); }
+
+  /* Inspector panel */
+  .inspector {
+    position: fixed;
+    right: 24px;
+    top: 90px;
+    width: 320px;
+    max-height: calc(100vh - 120px);
+    background: color-mix(in oklab, var(--bg-elev) 95%, transparent);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 30;
+    transform: translateX(360px);
+    opacity: 0;
+    transition: transform 260ms cubic-bezier(.2,.8,.2,1), opacity 200ms ease;
+  }
+  .inspector.open { transform: translateX(0); opacity: 1; }
+  .inspector .ix-head {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  }
+  .inspector .ix-head .ix-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    background: var(--bg-tint);
+    border: 1px solid var(--line);
+  }
+  .inspector h3 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .inspector .ix-en { font-size: 11px; color: var(--ink-3); letter-spacing: 0.02em; }
+  .inspector .ix-row {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    padding: 8px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12.5px;
+  }
+  .inspector .ix-row:first-of-type { border-top: 0; }
+  .inspector .ix-row .k { color: var(--ink-3); }
+  .inspector .ix-row .v { color: var(--ink); font-family: var(--font-mono); font-size: 11.5px; }
+  .inspector .ix-list {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .inspector .ix-list li { margin: 3px 0; }
+  .inspector .close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 26px; height: 26px;
+    border: 1px solid var(--line-soft);
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--ink-3);
+    font-size: 14px;
+  }
+  .inspector .close:hover { background: var(--bg-tint); }
+
+  .ports-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+    margin-top: 10px;
+  }
+  .port {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 6px 8px;
+    background: var(--bg-tint);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    color: var(--ink-2);
+  }
+
+  /* Hue list */
+  .hue-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .hue-cell {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 6px 8px;
+    background: var(--c-morning-bg);
+    border: 1px solid var(--c-morning);
+    border-radius: 6px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .hue-cell .h-n { font-weight: 600; font-size: 12px; }
+  .hue-cell .h-w { display: block; opacity: 0.7; }
+
+  @media (max-width: 920px) {
+    .topo-grid { grid-template-columns: 1fr; }
+    .layer-label { text-align: left; border-right: 0; border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+    .inspector { width: 92vw; right: 4vw; top: auto; bottom: 16px; max-height: 60vh; }
+  }
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<header class="page-head">
+  <div class="crumb">/ 01 · NETWORK TOPOLOGY</div>
+  <h1>網路拓樸圖</h1>
+  <div class="subtitle">Allen &amp; Ann Smart Home — 從外部網路到設備子系統的完整連線關係。點擊任一節點可看設備細節。</div>
+</header>
+
+<section class="topo-frame">
+  <div class="topo-toolbar">
+    <span style="font-size:12px;color:var(--ink-3);margin-right:6px">連線類型：</span>
+    <span class="legend-chip" data-kind="lan" data-active="true"><span class="swatch"></span>LAN 有線</span>
+    <span class="legend-chip" data-kind="wifi" data-active="true"><span class="swatch"></span>WiFi 無線</span>
+    <span class="legend-chip" data-kind="zigbee" data-active="true"><span class="swatch"></span>Zigbee</span>
+    <span class="legend-chip" data-kind="logic" data-active="true"><span class="swatch"></span>邏輯關係</span>
+    <span style="flex:1"></span>
+    <span style="font-size:12px;color:var(--ink-4);font-family:var(--font-mono)">hover · click · 任意節點</span>
+  </div>
+
+  <div class="topo-canvas" id="topo">
+    <svg class="topo-svg" id="topoSvg"></svg>
+    <div class="topo-grid">
+      <div class="layer-label">外部網路<small>External</small></div>
+      <div class="layer-row" id="row-external">
+        <div class="node" data-tone="external" data-id="cht">
+          <div class="icon">☁️</div>
+          <div class="label">中華電信 CHT</div>
+          <div class="meta">100M / 40M · Fixed IP<br>122.117.5.107</div>
+        </div>
+        <div class="node" data-tone="external" data-id="duckdns">
+          <div class="icon">🦆</div>
+          <div class="label">DuckDNS</div>
+          <div class="meta">AllenandAnn<br>.duckdns.org</div>
+        </div>
+      </div>
+
+      <div class="layer-label">核心路由<small>Core</small></div>
+      <div class="layer-row" id="row-core">
+        <div class="node" data-tone="primary" data-id="router">
+          <div class="icon">📡</div>
+          <div class="label">tp-link BE3600</div>
+          <div class="meta">WiFi 7 · 2.4 / 5 / 6 GHz<br>:8123 · :443 (rev-proxy)</div>
+        </div>
+      </div>
+
+      <div class="layer-label">智慧家庭中樞<small>Smart Hub</small></div>
+      <div class="layer-row" id="row-hub">
+        <div class="node" data-tone="primary" data-id="ha">
+          <div class="icon">🏠</div>
+          <div class="label">Home Assistant Black</div>
+          <div class="meta">N100 · 8GB · 256GB SSD<br>HAOS + OpenClaw + Zigbee Stick</div>
+          <div class="badge">本地 AI</div>
+        </div>
+      </div>
+
+      <div class="layer-label">設備子系統<small>Subsystems</small></div>
+      <div class="layer-row" id="row-subs">
+        <div class="node" data-tone="hue" data-id="hue">
+          <div class="icon">💡</div>
+          <div class="label">Hue 照明</div>
+          <div class="meta">Bridge + 18 燈 + 1 Tap + 2 調光</div>
+        </div>
+        <div class="node" data-tone="hvac" data-id="hvac">
+          <div class="icon">❄️</div>
+          <div class="label">Panasonic 空調</div>
+          <div class="meta">客廳 UX63 · 主臥 UX28 · 次臥 UX22</div>
+        </div>
+        <div class="node" data-tone="curtain" data-id="curtain">
+          <div class="icon">🪟</div>
+          <div class="label">Aqara 電動窗簾</div>
+          <div class="meta">c3 × 2 · Zigbee</div>
+        </div>
+        <div class="node" data-tone="sensor" data-id="sensor">
+          <div class="icon">👁️</div>
+          <div class="label">Hue 人體感測</div>
+          <div class="meta">2 顆 · 走廊 + 客廳</div>
+        </div>
+        <div class="node" data-tone="audio" data-id="audio">
+          <div class="icon">🔊</div>
+          <div class="label">音訊與清潔</div>
+          <div class="meta">HomePod ×2 · Roborock Qrevo</div>
+        </div>
+      </div>
+
+      <div class="layer-label">使用者介面<small>UI / Access</small></div>
+      <div class="layer-row" id="row-ui">
+        <div class="node" data-tone="external" data-id="ui-app">
+          <div class="icon">📱</div>
+          <div class="label">手機 App</div>
+          <div class="meta">HA Companion</div>
+        </div>
+        <div class="node" data-tone="external" data-id="ui-tab">
+          <div class="icon">📟</div>
+          <div class="label">壁掛平板</div>
+          <div class="meta">Wall Mount Dashboard</div>
+        </div>
+        <div class="node" data-tone="external" data-id="ui-voice">
+          <div class="icon">🎙️</div>
+          <div class="label">語音控制</div>
+          <div class="meta">HomePod / Phone</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<aside class="inspector" id="inspector">
+  <button class="close" id="ixClose" aria-label="關閉">×</button>
+  <div id="ixBody"></div>
+</aside>
+
+<script>
+const NODE_DATA = {
+  cht: {
+    icon: "☁️", title: "中華電信光世代", en: "Chunghwa Telecom (CHT)",
+    rows: [["頻寬", "100M / 40M"], ["IP", "Fixed 122.117.5.107"], ["介面", "光纖 GPON"]],
+    list: ["固定 IP — 支援外部 SSL 反向代理", "用於 DDNS 解析與遠端 HA 存取"],
+  },
+  duckdns: {
+    icon: "🦆", title: "DuckDNS", en: "Dynamic DNS Service",
+    rows: [["域名", "AllenandAnn.duckdns.org"], ["更新", "每 5 分鐘"], ["費用", "Free"]],
+    list: ["雖有固定 IP，DuckDNS 作為命名層方便記憶", "搭配 Let's Encrypt 自動 SSL"],
+  },
+  router: {
+    icon: "📡", title: "tp-link BE3600", en: "WiFi 7 Router",
+    rows: [["型號", "BE3600"], ["WiFi", "WiFi 7 · 三頻"], ["LAN", "2.5G WAN + 4× Gigabit"]],
+    list: ["Port 8123 → HAOS Web UI", "Port 443 → Reverse Proxy (NGINX)", "VLAN 隔離 IoT 與主網段（建議啟用）"],
+    ports: ["8123/tcp HAOS", "443/tcp HTTPS", "1883/tcp MQTT", "5683/udp Matter"],
+  },
+  ha: {
+    icon: "🏠", title: "Home Assistant Black", en: "HA Black + N100",
+    rows: [["CPU", "Intel N100 · 4-core"], ["RAM", "8 GB DDR5"], ["儲存", "256 GB NVMe"], ["OS", "HAOS · Docker"], ["附加", "Zigbee Stick · MQTT Broker"]],
+    list: [
+      "HAOS — Home Assistant Operating System",
+      "OpenClaw 容器 — Faster-Whisper + Ollama (Llama 3 8B) + Hermes Agent + Piper",
+      "Mosquitto MQTT Broker",
+      "Zigbee2MQTT — 整合 Aqara 與其他 Zigbee 設備",
+      "整合：Hue Bridge API · Panasonic WiFi · Aqara · Roborock Miio",
+    ],
+  },
+  hue: {
+    icon: "💡", title: "Philips Hue 照明子系統", en: "Hue Lighting Subsystem",
+    rows: [["Bridge", "1 × Hue Bridge v2"], ["燈具", "18 × Hue 崁燈"], ["開關", "1 × Hue Tap"], ["調光", "2 × Hue Dimmer"]],
+    hue: [
+      ["玄關", 1], ["客餐廳", 10], ["臥室玄關", 1], ["主臥", 4], ["次臥", 2],
+    ],
+    list: [
+      "Play 串聯子系統：65吋電視 + Play 燈條 + Hue Play HDMI Sync Box",
+      "Sync Box 由 HA 觸發 input_boolean 模式切換",
+    ],
+  },
+  hvac: {
+    icon: "❄️", title: "Panasonic 變頻空調", en: "Panasonic Inverter HVAC",
+    rows: [["客廳", "CS-UX63BA2 · 1 對 1"], ["1 對 2 主機", "CU-2J45FHA2"], ["主臥", "CS-UX28BA2"], ["次臥", "CS-UX22BA2"]],
+    list: [
+      "透過 Panasonic Comfort Cloud 雲端 API 整合",
+      "改用 panasonic_cc 自定整合 — 100% 本地端控制",
+      "支援節電模式：>12hr + 窗開 → HA 推播",
+    ],
+  },
+  curtain: {
+    icon: "🪟", title: "Aqara 電動窗簾", en: "Aqara Curtain c3",
+    rows: [["型號", "Aqara c3"], ["數量", "2 組"], ["協議", "Zigbee 3.0"], ["軌道", "靜音 U 型軌"]],
+    list: [
+      "Allen 客廳 + Ann 主臥",
+      "深度睡眠場景：自動 100% 全閉",
+      "晨間喚醒：與 Hue 同步漸開 20%",
+    ],
+  },
+  sensor: {
+    icon: "👁️", title: "感測子系統", en: "Sensors",
+    rows: [["人體感測", "2 × Hue Motion"], ["佈設", "走廊 · 客廳沙發"], ["協議", "Zigbee"]],
+    list: [
+      "走廊：夜間動作 → Hue 微亮 5%",
+      "客廳：偵測到人 → Roborock 暫停清掃",
+      "凌晨門口動作 → Qrevo 截圖 + 推播 Allen 手機",
+    ],
+  },
+  audio: {
+    icon: "🔊", title: "音訊與清潔", en: "Audio & Cleaning",
+    rows: [["主聲", "HomePod (客廳)"], ["副聲", "HomePod mini (主臥)"], ["掃地機", "Roborock Qrevo Edge C"]],
+    list: [
+      "HomePod 透過 AirPlay + OpenClaw 雙路徑接收語音回饋",
+      "Qrevo 整合 Miio 協議 — 本地端控制",
+      "水箱提醒：清潔完成後 HA 推播 Allen 補水",
+    ],
+  },
+  "ui-app": {
+    icon: "📱", title: "HA Companion App", en: "Mobile Interface",
+    rows: [["平台", "iOS · Android"], ["連線", "本地 LAN + 外部 SSL"], ["通知", "推播 + 觸發"]],
+    list: ["Allen 與 Ann 各一個帳號", "情境快捷鍵在通知中心", "GPS 觸發返家預熱（2 km 半徑）"],
+  },
+  "ui-tab": {
+    icon: "📟", title: "壁掛平板儀表板", en: "Wall Tablet Dashboard",
+    rows: [["位置", "玄關 + 客廳"], ["UI", "HA Lovelace"], ["供電", "POE 走線"]],
+    list: ["快捷情境按鈕", "即時氣溫、空氣品質", "Roborock 清掃地圖"],
+  },
+  "ui-voice": {
+    icon: "🎙️", title: "語音控制", en: "Voice Interface",
+    rows: [["主入口", "HomePod (Siri Shortcuts)"], ["備援", "iPhone Shortcuts"], ["AI", "OpenClaw 本地 LLM"]],
+    list: [
+      "說「Allen 回家了」→ 觸發 OpenClaw 全屋情境（Hermes Agent 編排）",
+      "說「Ann 還在睡嗎？」→ 查詢窗簾狀態回報",
+      "100% 本地 — 不依賴 Apple 雲",
+    ],
+  },
+};
+
+// Connection edges (from-id, to-id, kind)
+const EDGES = [
+  ["cht", "router", "lan"],
+  ["duckdns", "cht", "logic"],
+  ["router", "ha", "lan"],
+  ["ha", "hue", "wifi"],
+  ["ha", "hvac", "wifi"],
+  ["ha", "curtain", "zigbee"],
+  ["ha", "sensor", "zigbee"],
+  ["ha", "audio", "wifi"],
+  ["router", "ui-app", "wifi"],
+  ["router", "ui-tab", "lan"],
+  ["router", "ui-voice", "wifi"],
+  ["ui-app", "ha", "logic"],
+  ["ui-tab", "ha", "logic"],
+  ["ui-voice", "ha", "logic"],
+];
+
+function renderInspector(id) {
+  const d = NODE_DATA[id];
+  if (!d) return;
+  const body = document.getElementById("ixBody");
+  const ports = d.ports ? `
+    <div style="font-size:11px;color:var(--ink-3);margin-top:14px;letter-spacing:0.04em;text-transform:uppercase;">Ports / Services</div>
+    <div class="ports-grid">${d.ports.map(p => `<div class="port">${p}</div>`).join("")}</div>` : "";
+  const hue = d.hue ? `
+    <div style="font-size:11px;color:var(--ink-3);margin-top:14px;letter-spacing:0.04em;text-transform:uppercase;">燈具分布 (18)</div>
+    <div class="hue-grid">${d.hue.map(([loc, n]) => `<div class="hue-cell"><span class="h-n">${n}</span><span class="h-w">${loc}</span></div>`).join("")}</div>` : "";
+  body.innerHTML = `
+    <div class="ix-head">
+      <div class="ix-icon">${d.icon}</div>
+      <div>
+        <h3>${d.title}</h3>
+        <div class="ix-en">${d.en}</div>
+      </div>
+    </div>
+    ${d.rows.map(([k, v]) => `<div class="ix-row"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("")}
+    ${ports}
+    ${hue}
+    <ul class="ix-list">${d.list.map(x => `<li>${x}</li>`).join("")}</ul>
+  `;
+}
+
+const inspector = document.getElementById("inspector");
+document.getElementById("ixClose").addEventListener("click", () => {
+  inspector.classList.remove("open");
+  document.querySelectorAll(".node").forEach(n => n.classList.remove("active", "dim"));
+  document.querySelectorAll("#topoSvg path").forEach(p => p.classList.remove("dim", "hot"));
+});
+
+document.querySelectorAll(".node").forEach(node => {
+  node.addEventListener("click", () => {
+    const id = node.dataset.id;
+    document.querySelectorAll(".node").forEach(n => n.classList.remove("active", "dim"));
+    node.classList.add("active");
+    // dim others
+    document.querySelectorAll(".node").forEach(n => {
+      if (n.dataset.id !== id && !isConnected(id, n.dataset.id)) n.classList.add("dim");
+    });
+    document.querySelectorAll("#topoSvg path").forEach(p => {
+      if (p.dataset.from === id || p.dataset.to === id) p.classList.add("hot");
+      else p.classList.add("dim");
+    });
+    renderInspector(id);
+    inspector.classList.add("open");
+  });
+  node.addEventListener("mouseenter", () => {
+    if (inspector.classList.contains("open")) return;
+    document.querySelectorAll("#topoSvg path").forEach(p => {
+      if (p.dataset.from === node.dataset.id || p.dataset.to === node.dataset.id) p.classList.add("hot");
+    });
+  });
+  node.addEventListener("mouseleave", () => {
+    document.querySelectorAll("#topoSvg path").forEach(p => p.classList.remove("hot"));
+  });
+});
+
+function isConnected(a, b) {
+  return EDGES.some(([f, t]) => (f === a && t === b) || (f === b && t === a));
+}
+
+// Draw SVG edges
+function drawEdges() {
+  const svg = document.getElementById("topoSvg");
+  const canvas = document.getElementById("topo");
+  const cRect = canvas.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${cRect.width} ${cRect.height}`);
+  svg.innerHTML = "";
+
+  const filtered = EDGES.filter(([_, __, k]) => activeKinds.has(k));
+
+  filtered.forEach(([from, to, kind]) => {
+    const a = document.querySelector(`.node[data-id="${from}"]`);
+    const b = document.querySelector(`.node[data-id="${to}"]`);
+    if (!a || !b) return;
+    const ar = a.getBoundingClientRect();
+    const br = b.getBoundingClientRect();
+    const ax = ar.left + ar.width / 2 - cRect.left;
+    const ay = ar.top + ar.height - cRect.top;
+    const bx = br.left + br.width / 2 - cRect.left;
+    const by = br.top - cRect.top;
+
+    // If b is above a (UI->HA logic), invert
+    let sx, sy, ex, ey;
+    if (br.top > ar.top) {
+      sx = ax; sy = ay; ex = bx; ey = by;
+    } else {
+      sx = ar.left + ar.width / 2 - cRect.left;
+      sy = ar.top - cRect.top;
+      ex = br.left + br.width / 2 - cRect.left;
+      ey = br.top + br.height - cRect.top;
+    }
+    const midY = (sy + ey) / 2;
+    const d = `M ${sx} ${sy} C ${sx} ${midY}, ${ex} ${midY}, ${ex} ${ey}`;
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.setAttribute("class", kind);
+    path.dataset.from = from;
+    path.dataset.to = to;
+    svg.appendChild(path);
+  });
+}
+
+const activeKinds = new Set(["lan", "wifi", "zigbee", "logic"]);
+document.querySelectorAll(".legend-chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const k = chip.dataset.kind;
+    if (activeKinds.has(k)) { activeKinds.delete(k); chip.dataset.active = "false"; }
+    else { activeKinds.add(k); chip.dataset.active = "true"; }
+    drawEdges();
+  });
+});
+
+window.addEventListener("load", () => setTimeout(drawEdges, 100));
+window.addEventListener("resize", drawEdges);
+// Redraw when fonts settle
+if (document.fonts) document.fonts.ready.then(drawEdges);
+</script>
+</body>
+</html>

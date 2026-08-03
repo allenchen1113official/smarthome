@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Allen & Ann 智慧家庭規劃 · 完整文件</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<style>
+  @page { size: A4 landscape; margin: 14mm 12mm; }
+  @media print {
+    html, body { background: white; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+  }
+  body {
+    font-family: var(--font-sans);
+    background: white;
+    color: var(--ink);
+    margin: 0;
+    padding: 0;
+  }
+  .page {
+    width: 270mm;
+    min-height: 184mm;
+    padding: 8mm 4mm;
+    margin: 0 auto;
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+  .page-num {
+    position: absolute;
+    bottom: 4mm; right: 6mm;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+  }
+  .page-head {
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .page-head h1 {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: -0.02em; margin: 0;
+  }
+  .page-head .crumb {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .page-head .sub { font-size: 11px; color: var(--ink-3); margin-left: auto; }
+
+  /* COVER */
+  .cover {
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 30mm 20mm;
+    background: linear-gradient(135deg, var(--c-morning-bg) 0%, var(--c-evening-bg) 50%, var(--c-sleep-bg) 100%);
+    min-height: 184mm;
+  }
+  .cover .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cover h1 {
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    margin: 0 0 14px;
+    max-width: 220mm;
+    text-wrap: balance;
+  }
+  .cover .accent {
+    background: linear-gradient(110deg, var(--c-morning), var(--c-evening) 45%, var(--c-sleep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cover .lede {
+    font-size: 14px; line-height: 1.55; color: var(--ink-2);
+    max-width: 200mm; text-wrap: pretty;
+  }
+  .cover .meta-row {
+    display: flex; gap: 24px;
+    margin-top: 24px; font-size: 11px; color: var(--ink-3);
+    font-family: var(--font-mono);
+  }
+  .cover .stats {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 220mm;
+  }
+  .cover .stats .stat {
+    background: white;
+    padding: 12px 14px;
+  }
+  .cover .stats .n { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .cover .stats .l { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+
+  /* TOC */
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .toc .card {
+    padding: 18px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+    background: var(--tint);
+  }
+  .toc .card .num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+  }
+  .toc .card h3 { font-size: 16px; margin: 6px 0 4px; font-weight: 600; }
+  .toc .card .en { font-size: 10px; color: var(--ink-3); margin-bottom: 8px; }
+  .toc .card p { font-size: 11px; line-height: 1.5; color: var(--ink-2); margin: 0; }
+
+  /* TOPOLOGY */
+  .topo-board {
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .topo-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px dashed var(--line-soft);
+    align-items: center;
+  }
+  .topo-row:first-child { border-top: 0; }
+  .topo-row .label {
+    font-size: 9px; color: var(--ink-3); text-align: right;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .topo-row .label small { display: block; font-size: 8px; color: var(--ink-4); }
+  .topo-row .nodes { display: flex; gap: 8px; flex-wrap: wrap; }
+  .topo-node {
+    padding: 8px 10px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    min-width: 110px;
+    box-shadow: 0 0 0 1px var(--line-soft);
+  }
+  .topo-node[data-tone="primary"] { background: var(--c-sleep-bg); border-color: var(--c-sleep); }
+  .topo-node[data-tone="hue"] { background: var(--c-morning-bg); border-color: var(--c-morning); }
+  .topo-node[data-tone="hvac"] { background: var(--c-home-bg); border-color: var(--c-home); }
+  .topo-node[data-tone="curtain"] { background: var(--c-evening-bg); border-color: var(--c-evening); }
+  .topo-node[data-tone="sensor"] { background: var(--c-secure-bg); border-color: var(--c-secure); }
+  .topo-node .nl { font-size: 11px; font-weight: 600; }
+  .topo-node .nm { font-size: 9px; color: var(--ink-3); font-family: var(--font-mono); margin-top: 1px; line-height: 1.3; }
+  .topo-node .ni { font-size: 14px; }
+
+  .legend {
+    display: flex; gap: 14px; font-size: 10px; color: var(--ink-3);
+    margin-top: 10px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend i { width: 14px; height: 2px; border-radius: 1px; display: inline-block; }
+
+  /* SCENES */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .cat-col { display: flex; flex-direction: column; gap: 6px; }
+  .cat-head {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    background: var(--tint);
+  }
+  .cat-head h3 { margin: 0; font-size: 11px; font-weight: 600; }
+  .cat-head .en { font-size: 8px; color: var(--ink-3); }
+  .scene {
+    padding: 7px 9px;
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    box-shadow: 0 0 0 1px var(--line-soft);
+    break-inside: avoid;
+  }
+  .scene .sn {
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    color: var(--accent);
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid var(--accent);
+    display: inline-block;
+  }
+  .scene .st { font-size: 10px; font-weight: 600; margin-top: 4px; line-height: 1.25; }
+  .scene .sd { font-size: 8.5px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
+
+  /* OPENCLAW */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1.2fr 1fr;
+    gap: 14px;
+    align-items: stretch;
+    margin-top: 12px;
+  }
+  .col-title {
+    font-size: 9px; font-weight: 500; color: var(--ink-3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-align: center; margin-bottom: 6px;
+  }
+  .col-title small { display: block; font-size: 7.5px; color: var(--ink-4); margin-top: 1px; text-transform: none; }
+  .col-frame {
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .col-frame.openclaw { border-color: var(--c-sleep); background: color-mix(in oklab, var(--c-sleep) 5%, transparent); }
+  .col-frame.ha { border-color: var(--c-evening); background: color-mix(in oklab, var(--c-evening) 5%, transparent); }
+  .col-frame .frame-title {
+    text-align: center; font-size: 10px; font-weight: 600;
+  }
+  .col-frame .frame-title small { display: block; font-size: 8px; color: var(--ink-3); font-weight: 400; }
+  .col { display: flex; flex-direction: column; gap: 8px; }
+  .module {
+    padding: 8px 10px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .module.openclaw-core { background: var(--c-sleep-bg); border-color: var(--c-sleep); }
+  .module.ha { background: var(--c-evening-bg); border-color: var(--c-evening); }
+  .module .m-row { display: flex; align-items: center; gap: 8px; }
+  .module .m-icon {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .module .m-name { font-size: 10px; font-weight: 600; }
+  .module .m-en { font-size: 8.5px; color: var(--ink-3); }
+  .module .m-spec { font-family: var(--font-mono); font-size: 8.5px; color: var(--ink-2); margin-top: 5px; padding: 4px 6px; background: rgba(255,255,255,0.6); border-radius: 4px; line-height: 1.4; }
+
+  .ledger {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .step {
+    padding: 7px 9px;
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+  }
+  .step .sn { font-family: var(--font-mono); font-size: 8px; color: var(--ink-3); letter-spacing: 0.05em; }
+  .step .st { font-size: 9.5px; font-weight: 600; margin-top: 2px; line-height: 1.3; }
+  .step .sd { font-size: 8px; color: var(--ink-3); font-family: var(--font-mono); margin-top: 3px; }
+
+  .advantages {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, var(--c-sleep-bg), var(--c-evening-bg) 60%, var(--c-secure-bg));
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .adv { display: flex; gap: 8px; align-items: flex-start; }
+  .adv .ico {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: white;
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .adv h4 { margin: 0; font-size: 10px; font-weight: 600; }
+  .adv p { margin: 1px 0 0; font-size: 9px; color: var(--ink-2); line-height: 1.4; }
+
+  .footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 9px;
+    color: var(--ink-4);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono);
+  }
+
+  /* Tech detail two-column */
+  .detail-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    gap: 14px; margin-top: 12px;
+  }
+  .detail-card {
+    padding: 12px;
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+  }
+  .detail-card h3 { margin: 0 0 6px; font-size: 11px; font-weight: 600; }
+  .detail-card .muted { color: var(--ink-3); font-size: 9px; margin-bottom: 8px; }
+  .detail-card pre {
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 8.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre-wrap;
+  }
+  .detail-card .row {
+    display: grid; grid-template-columns: 90px 1fr;
+    padding: 4px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 9.5px;
+  }
+  .detail-card .row:first-of-type { border-top: 0; }
+  .detail-card .row .k { color: var(--ink-3); }
+  .detail-card .row .v { font-family: var(--font-mono); font-size: 9px; }
+
+  /* Brand strip */
+  .brand-strip {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .brand-strip .dot {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    background:
+      radial-gradient(circle at 30% 30%, var(--c-morning) 0%, transparent 50%),
+      radial-gradient(circle at 70% 30%, var(--c-secure) 0%, transparent 50%),
+      radial-gradient(circle at 30% 75%, var(--c-home) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, var(--c-sleep) 0%, transparent 50%),
+      var(--bg-tint);
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div class="brand-strip"><div class="dot"></div>Allen &amp; Ann · Smart Home Plan</div>
+  <div class="eyebrow">SMART HOME PLAN · v1.0 · APR 2026</div>
+  <h1>為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
+  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本文件涵蓋三個面向：網路拓樸、30 個自動化場景、與 OpenClaw 語音流程。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">空調主機</div></div>
+    <div class="stat"><div class="n">30</div><div class="l">自動化場景</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">本地端執行</div></div>
+    <div class="stat"><div class="n">&lt;1s</div><div class="l">語音回應</div></div>
+  </div>
+
+  <div class="meta-row">
+    <span>CHT 100M/40M · Fixed IP 122.117.5.107</span>
+    <span>DuckDNS: AllenandAnn.duckdns.org</span>
+  </div>
+
+  <div class="toc">
+    <div class="card" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);">
+      <div class="num">/ 01</div>
+      <h3>網路拓樸圖</h3>
+      <div class="en">Network Topology</div>
+      <p>從外部網路到設備子系統的完整連線關係 — 五層拓樸，含 LAN / WiFi / Zigbee / 邏輯關係。</p>
+    </div>
+    <div class="card" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
+      <div class="num">/ 02</div>
+      <h3>30 個自動化場景</h3>
+      <div class="en">Automation Scenes</div>
+      <p>晨間、下班、睡眠、家電、安全 AI 五大類別 × 6 場景。包含觸發條件與涉及設備。</p>
+    </div>
+    <div class="card" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);">
+      <div class="num">/ 03</div>
+      <h3>OpenClaw 架構</h3>
+      <div class="en">Local AI Voice Assistant</div>
+      <p>STT + LLM + TTS 完整本地端流程，七步語音管家從接收到播報。</p>
+    </div>
+  </div>
+  <div class="page-num">01 / 04</div>
+</section>
+
+<!-- TOPOLOGY -->
+<section class="page">
+  <div class="page-head">
+    <div class="crumb">/ 01</div>
+    <h1>網路拓樸圖</h1>
+    <div class="sub">Allen &amp; Ann Smart Home Network Topology — 五層拓樸 · 點擊頁面互動版可看設備細節</div>
+  </div>
+
+  <div class="topo-board">
+    <div class="topo-row">
+      <div class="label">外部網路<small>External</small></div>
+      <div class="nodes">
+        <div class="topo-node"><div class="ni">☁️</div><div class="nl">中華電信 CHT</div><div class="nm">100M/40M · Fixed IP<br>122.117.5.107</div></div>
+        <div class="topo-node"><div class="ni">🦆</div><div class="nl">DuckDNS</div><div class="nm">AllenandAnn<br>.duckdns.org</div></div>
+      </div>
+    </div>
+    <div class="topo-row">
+      <div class="label">核心路由<small>Core Routing</small></div>
+      <div class="nodes">
+        <div class="topo-node" data-tone="primary"><div class="ni">📡</div><div class="nl">tp-link BE3600 · WiFi 7</div><div class="nm">2.4 / 5 / 6 GHz · :8123 HAOS · :443 HTTPS</div></div>
+      </div>
+    </div>
+    <div class="topo-row">
+      <div class="label">智慧家庭中樞<small>Smart Hub</small></div>
+      <div class="nodes">
+        <div class="topo-node" data-tone="primary"><div class="ni">🏠</div><div class="nl">Home Assistant Black</div><div class="nm">N100 · 8GB · 256GB SSD<br>HAOS + OpenClaw + Zigbee Stick</div></div>
+      </div>
+    </div>
+    <div class="topo-row">
+      <div class="label">設備子系統<small>Subsystems</small></div>
+      <div class="nodes">
+        <div class="topo-node" data-tone="hue"><div class="ni">💡</div><div class="nl">Hue 照明</div><div class="nm">Bridge + 18 燈 + 1 Tap + 2 調光</div></div>
+        <div class="topo-node" data-tone="hvac"><div class="ni">❄️</div><div class="nl">Panasonic 空調</div><div class="nm">客廳 CS-UX63BA2<br>主臥 CS-UX28BA2 · 次臥 CS-UX22BA2</div></div>
+        <div class="topo-node" data-tone="curtain"><div class="ni">🪟</div><div class="nl">Aqara 電動窗簾</div><div class="nm">c3 × 2 · Zigbee</div></div>
+        <div class="topo-node" data-tone="sensor"><div class="ni">👁️</div><div class="nl">Hue 人體感測</div><div class="nm">2 顆 · 走廊 + 客廳</div></div>
+        <div class="topo-node" data-tone="primary"><div class="ni">🔊</div><div class="nl">音訊與清潔</div><div class="nm">HomePod ×2 · Roborock Qrevo</div></div>
+      </div>
+    </div>
+    <div class="topo-row">
+      <div class="label">使用者介面<small>UI / Access</small></div>
+      <div class="nodes">
+        <div class="topo-node"><div class="ni">📱</div><div class="nl">手機 App</div><div class="nm">HA Companion</div></div>
+        <div class="topo-node"><div class="ni">📟</div><div class="nl">壁掛平板</div><div class="nm">Wall Mount</div></div>
+        <div class="topo-node"><div class="ni">🎙️</div><div class="nl">語音控制</div><div class="nm">HomePod / Phone</div></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--net-lan)"></i>LAN 有線</span>
+      <span><i style="background:var(--net-wifi)"></i>WiFi 無線</span>
+      <span><i style="background:var(--net-zigbee)"></i>Zigbee</span>
+      <span><i style="background:var(--net-logic)"></i>邏輯關係</span>
+    </div>
+  </div>
+
+  <div class="footer"><span>Allen &amp; Ann Smart Home · Topology</span><span>頁 02 / 04</span></div>
+</section>
+
+<!-- SCENES -->
+<section class="page" id="scenesPage">
+  <div class="page-head">
+    <div class="crumb">/ 02</div>
+    <h1>30 個 Home Assistant 自動化場景</h1>
+    <div class="sub">基於 HA Black (N100 Local AI) &amp; OpenClaw 控制核心 · 五大類 × 6 場景</div>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="footer"><span>Allen &amp; Ann Smart Home · Scenes</span><span>頁 03 / 04</span></div>
+</section>
+
+<!-- OPENCLAW -->
+<section class="page">
+  <div class="page-head">
+    <div class="crumb">/ 03</div>
+    <h1>OpenClaw 本地 AI 語音家庭管家</h1>
+    <div class="sub">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~870ms 端到端</div>
+  </div>
+
+  <div class="arch-grid">
+    <div class="col">
+      <div class="col-title">語音接收<small>Voice Acquisition</small></div>
+      <div class="module">
+        <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">HomePod (客廳)</div><div class="m-en">Living Room</div></div></div>
+        <div class="m-spec">AirPlay 2 → mic-bridge</div>
+      </div>
+      <div class="module">
+        <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">HomePod mini</div><div class="m-en">主臥備援</div></div></div>
+        <div class="m-spec">Backup mic path</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-title">OpenClaw 核心<small>Docker on N100</small></div>
+      <div class="col-frame openclaw">
+        <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
+        <div class="module openclaw-core">
+          <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT — 語音轉文字</div><div class="m-en">Faster-Whisper</div></div></div>
+          <div class="m-spec">small.zh · INT8 · ~150ms</div>
+        </div>
+        <div class="module openclaw-core">
+          <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
+          <div class="m-spec">CPU only · 8 GB · ~600ms</div>
+        </div>
+        <div class="module openclaw-core">
+          <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
+          <div class="m-spec">Function Routing · ~40ms</div>
+        </div>
+        <div class="module openclaw-core">
+          <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">TTS — 文字轉語音</div><div class="m-en">Piper · 極速</div></div></div>
+          <div class="m-spec">zh_CN-huayan · ~80ms</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-title">Home Assistant<small>HAOS</small></div>
+      <div class="col-frame ha">
+        <div class="frame-title">HA Integration Layer<small>Local LAN · API</small></div>
+        <div class="module ha">
+          <div class="m-row"><div class="m-icon">🏠</div><div><div class="m-name">Home Assistant</div><div class="m-en">LLAT · :8123</div></div></div>
+          <div class="m-spec">Hue · Panasonic · Aqara · Roborock</div>
+        </div>
+        <div class="module ha">
+          <div class="m-row"><div class="m-icon">⚙️</div><div><div class="m-name">執行設備</div><div class="m-en">22 Hue · 5 AC · 2 Curtain</div></div></div>
+          <div class="m-spec">場景啟動 · 狀態回報</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-title">語音回饋<small>Voice Feedback</small></div>
+      <div class="module">
+        <div class="m-row"><div class="m-icon">📣</div><div><div class="m-name">HomePod 播報</div><div class="m-en">AirPlay 2</div></div></div>
+        <div class="m-spec">主聲道 · 客廳</div>
+      </div>
+      <div class="module">
+        <div class="m-row"><div class="m-icon">📱</div><div><div class="m-name">手機 App 推播</div><div class="m-en">HA Companion</div></div></div>
+        <div class="m-spec">副通道 · 文字記錄</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ledger" id="ledgerBox"></div>
+
+  <div class="advantages">
+    <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 HA Black，資料不出家門</p></div></div>
+    <div class="adv"><div class="ico">⚡</div><div><h4>低延遲控制</h4><p>STT + LLM + Hermes + TTS &lt; 1 秒</p></div></div>
+    <div class="adv"><div class="ico">☁️</div><div><h4>無雲端依賴</h4><p>網路斷線時，家庭核心功能不受影響</p></div></div>
+    <div class="adv"><div class="ico">🇹🇼</div><div><h4>中文原生</h4><p>Whisper + Piper 中文聲線</p></div></div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h3>範例腳本：Allen 回家了</h3>
+      <div class="muted">語音 → Llama 3 推理 intent → HA 服務</div>
+<pre>transcript: "Allen 回家了"
+
+response:
+  intent: home_arrival
+  person: Allen
+  actions:
+    - hue.activate_scene: "Welcome"
+    - climate.set_temperature: 24
+    - cover.open_cover: living_curtain
+
+POST /api/services/scene/turn_on
+say: "Allen 回家了，冷氣已設為 24 度"</pre>
+    </div>
+    <div class="detail-card">
+      <h3>硬體規格與資源用量</h3>
+      <div class="muted">HA Black 滿載實測（推估）</div>
+      <div class="row"><div class="k">CPU</div><div class="v">Intel N100 · 4-core 6W</div></div>
+      <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.3G ≈ 6.3/8 GB</div></div>
+      <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 / 256 GB</div></div>
+      <div class="row"><div class="k">端到端延遲</div><div class="v" style="color:var(--c-secure);font-weight:600">~870ms</div></div>
+      <div class="row"><div class="k">月電費</div><div class="v">~NT$ 60（24/7 · 6W）</div></div>
+    </div>
+  </div>
+
+  <div class="footer"><span>Allen &amp; Ann Smart Home · OpenClaw</span><span>頁 04 / 04</span></div>
+</section>
+
+<script>
+// Render scenes
+const CATS = {
+  morning: { name: "晨間與通勤", en: "Morning & Commute", accent: "var(--c-morning)", tint: "var(--c-morning-bg)" },
+  evening: { name: "下班與休憩", en: "Evening & Leisure", accent: "var(--c-evening)", tint: "var(--c-evening-bg)" },
+  sleep:   { name: "輪班與深度睡眠", en: "Shift & Deep Sleep", accent: "var(--c-sleep)", tint: "var(--c-sleep-bg)" },
+  home:    { name: "家電與維護", en: "Appliance & Maintenance", accent: "var(--c-home)", tint: "var(--c-home-bg)" },
+  secure:  { name: "安全與 AI 管家", en: "Security & AI Butler", accent: "var(--c-secure)", tint: "var(--c-secure-bg)" },
+};
+
+const SCENES = [
+  {n:1,cat:"morning",t:"溫柔喚醒",d:"Hue 模擬日出 + 窗簾開 20%"},
+  {n:2,cat:"morning",t:"天氣預報",d:"HomePod 播今日天氣空品"},
+  {n:3,cat:"morning",t:"輪班模式",d:"Ann 早班，客廳調 5000K 提神"},
+  {n:4,cat:"morning",t:"全屋離家",d:"關所有燈/冷氣，啟 Qrevo 掃拖"},
+  {n:5,cat:"morning",t:"門鎖連動",d:"開門 + 暗 → 自動玄關燈"},
+  {n:6,cat:"morning",t:"晨間股市摘要",d:"HomePod 播自選收盤"},
+  {n:7,cat:"evening",t:"返家預熱",d:"離家 2km 開冷氣 24°C"},
+  {n:8,cat:"evening",t:"影音模式",d:"Sync Box + Play 燈條"},
+  {n:9,cat:"evening",t:"晚餐氛圍",d:"客餐廳 2700K 溫暖白光"},
+  {n:10,cat:"evening",t:"浴室自動化",d:"進入後通風連動"},
+  {n:11,cat:"evening",t:"深夜靜音",d:"23:00 後 HomePod 音量 20%"},
+  {n:12,cat:"evening",t:"洗完澡乾燥",d:"濕度差切換乾燥模式"},
+  {n:13,cat:"sleep",t:"女友補眠",d:"Hue Tap → 主臥窗簾全閉"},
+  {n:14,cat:"sleep",t:"睡眠防擾",d:"感應器發夜光 1% 亮度"},
+  {n:15,cat:"sleep",t:"臥室恆溫",d:"半夜 < 22°C 調升 1 度"},
+  {n:16,cat:"sleep",t:"快速入睡",d:"HomePod 白噪音 20 分鐘"},
+  {n:17,cat:"sleep",t:"早退晚回判斷",d:"進門時間切換語音組合"},
+  {n:18,cat:"sleep",t:"次臥工作室",d:"PIR + 智插 → 加強照明"},
+  {n:19,cat:"home",t:"掃地避讓",d:"沙發有人 → Roborock 暫停"},
+  {n:20,cat:"home",t:"節能監控",d:"AC > 12h + 窗開 → 推播"},
+  {n:21,cat:"home",t:"除濕自動化",d:"濕度 > 65% → 自動除濕"},
+  {n:22,cat:"home",t:"Qrevo 水箱提醒",d:"清掃完 → 語音補水提醒"},
+  {n:23,cat:"home",t:"HA 備份提醒",d:"每週備份 + DuckDNS 檢查"},
+  {n:24,cat:"home",t:"耗材更換提醒",d:"時間/次數提醒換濾網"},
+  {n:25,cat:"secure",t:"運動偵測告警",d:"凌晨門口 PIR → Qrevo 截圖"},
+  {n:26,cat:"secure",t:"網路警告",d:"PPPoE 斷線 → 燈閃紅警示"},
+  {n:27,cat:"secure",t:"設備離線偵測",d:"Bridge 離線 → 即時推播"},
+  {n:28,cat:"secure",t:"緊急 SOS",d:"長按 Dimmer → 傳送簡訊"},
+  {n:29,cat:"secure",t:"OpenClaw 全屋情境",d:"語音「Allen 回家了」全屋觸發"},
+  {n:30,cat:"secure",t:"OpenClaw 狀態查詢",d:"語音「Ann 還在睡嗎？」回應"},
+];
+
+const grid = document.getElementById("catGrid");
+Object.keys(CATS).forEach(cKey => {
+  const c = CATS[cKey];
+  const col = document.createElement("div");
+  col.className = "cat-col";
+  col.style.setProperty("--accent", c.accent);
+  col.style.setProperty("--tint", c.tint);
+  col.innerHTML = `<div class="cat-head"><h3>${c.name}</h3><div class="en">${c.en}</div></div>`;
+  SCENES.filter(s => s.cat === cKey).forEach(s => {
+    const el = document.createElement("div");
+    el.className = "scene";
+    el.style.setProperty("--accent", c.accent);
+    el.style.setProperty("--tint", c.tint);
+    el.innerHTML = `<span class="sn">${String(s.n).padStart(2,"0")}</span><div class="st">${s.t}</div><div class="sd">${s.d}</div>`;
+    col.appendChild(el);
+  });
+  grid.appendChild(col);
+});
+
+// Render OpenClaw ledger
+const STEPS = [
+  {n:1,t:"說：「Allen 回家了」",d:"語音輸入"},
+  {n:2,t:"傳送音訊",d:"AirPlay → STT"},
+  {n:3,t:"STT 轉錄",d:"Faster-Whisper"},
+  {n:4,t:"Ollama 推理",d:"Llama 3 8B"},
+  {n:5,t:"Hermes 編排",d:"Tool Calling"},
+  {n:6,t:"呼叫 HA 服務",d:"REST API"},
+  {n:7,t:"Piper 生成語音",d:"TTS"},
+  {n:8,t:"播報語音",d:"HomePod + 推播"},
+];
+const ledger = document.getElementById("ledgerBox");
+STEPS.forEach(s => {
+  const el = document.createElement("div");
+  el.className = "step";
+  el.innerHTML = `<div class="sn">STEP ${String(s.n).padStart(2,"0")}</div><div class="st">${s.t}</div><div class="sd">${s.d}</div>`;
+  ledger.appendChild(el);
+});
+
+// Auto-print
+window.addEventListener("load", () => {
+  Promise.all([
+    document.fonts ? document.fonts.ready : Promise.resolve(),
+    new Promise(r => setTimeout(r, 600))
+  ]).then(() => window.print());
+});
+</script>
+</body>
+</html>

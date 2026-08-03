@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>30 個自動化場景 · Allen & Ann</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+  .page-head {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 48px 32px 16px;
+  }
+  .page-head h1 {
+    font-size: 40px; font-weight: 600;
+    letter-spacing: -0.025em; margin: 8px 0 6px;
+  }
+  .page-head .subtitle { color: var(--ink-3); font-size: 14px; }
+  .page-head .crumb {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-4); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .filter-bar {
+    max-width: 1320px;
+    margin: 16px auto 0;
+    padding: 0 32px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .seg-ctrl {
+    display: inline-flex;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px;
+    box-shadow: var(--shadow-1);
+  }
+  .seg-ctrl button {
+    border: 0;
+    background: transparent;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 160ms ease;
+    letter-spacing: -0.005em;
+  }
+  .seg-ctrl button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .seg-ctrl button:hover:not([aria-pressed="true"]) { background: var(--bg-tint); }
+
+  .view-toggle { margin-left: auto; }
+
+  .scenes-frame { max-width: 1320px; margin: 28px auto 0; padding: 0 32px 60px; }
+
+  /* Category column view (default — matches reference) */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .cat {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .cat-head {
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--accent);
+    background: var(--tint);
+  }
+  .cat-head h3 {
+    margin: 0; font-size: 16px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .cat-head .en {
+    font-size: 11px; color: var(--ink-3); margin-top: 3px;
+  }
+  .cat-head .glyphs {
+    margin-top: 8px;
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--ink-2);
+  }
+
+  .scene-card {
+    position: relative;
+    padding: 16px 16px 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(.2,.8,.2,1);
+  }
+  .scene-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-2);
+    border-color: var(--accent);
+  }
+  .scene-card .top {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .scene-card .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--tint);
+    border: 1px solid var(--accent);
+    padding: 2px 6px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+  .scene-card .icons {
+    margin-left: auto;
+    font-size: 14px;
+    letter-spacing: 2px;
+    opacity: 0.85;
+  }
+  .scene-card h4 {
+    margin: 8px 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .scene-card p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .scene-card .new-tag {
+    position: absolute;
+    top: -7px; right: 10px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .scene-card.openclaw {
+    background: linear-gradient(140deg, var(--bg-elev) 60%, var(--tint));
+    border: 1px solid var(--accent);
+  }
+  .scene-card.openclaw::after {
+    content: "AI";
+    position: absolute;
+    top: 14px; right: 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* Timeline view */
+  .timeline {
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px 18px;
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-top: 1px dashed var(--line-soft);
+  }
+  .timeline-row:first-of-type { border-top: 0; }
+  .timeline-row .who {
+    font-size: 12px;
+    color: var(--ink-2);
+    font-weight: 500;
+    padding-top: 6px;
+  }
+  .timeline-row .who small {
+    display: block;
+    color: var(--ink-3);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .timeline-track {
+    position: relative;
+    height: 56px;
+    background: var(--bg-tint);
+    border-radius: var(--radius-sm);
+  }
+  .timeline-track .scene-blip {
+    position: absolute;
+    top: 8px; bottom: 8px;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 10.5px;
+    color: var(--ink);
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    border-left: 2px solid var(--c);
+    background: color-mix(in oklab, var(--c) 22%, var(--bg-elev));
+    display: flex; align-items: center;
+    transition: transform 160ms ease;
+  }
+  .timeline-track .scene-blip:hover { transform: translateY(-2px); z-index: 2; box-shadow: var(--shadow-2); }
+  .hour-axis {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    font-size: 10px;
+    color: var(--ink-4);
+    font-family: var(--font-mono);
+  }
+  .hour-axis span { text-align: center; }
+
+  /* Detail modal */
+  .modal-veil {
+    position: fixed; inset: 0;
+    background: oklch(20% 0.01 80 / 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+  .modal-veil.open { display: flex; opacity: 1; }
+  .modal {
+    width: min(560px, 92vw);
+    max-height: 84vh;
+    overflow-y: auto;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-3);
+    padding: 28px;
+    transform: scale(0.96);
+    transition: transform 240ms cubic-bezier(.2,.8,.2,1);
+  }
+  .modal-veil.open .modal { transform: scale(1); }
+  .modal h3 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .modal .m-en { color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+  .modal .m-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .modal .m-row .k { color: var(--ink-3); font-size: 12px; }
+  .modal pre {
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    overflow-x: auto;
+    margin-top: 14px;
+  }
+  .modal .yaml-key { color: var(--c-sleep); }
+  .modal .yaml-val { color: var(--c-secure); }
+  .modal .close {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--line-soft);
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink-3);
+    font-size: 16px;
+    float: right;
+  }
+  .modal .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .modal .pill-tag {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: var(--tint);
+    color: var(--ink-2);
+    border: 1px solid var(--accent);
+  }
+
+  @media (max-width: 1100px) {
+    .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .cat-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<header class="page-head">
+  <div class="crumb">/ 02 · AUTOMATION SCENES</div>
+  <h1>30 個 Home Assistant 自動化場景</h1>
+  <div class="subtitle">基於 HA Black (N100 Local AI) &amp; OpenClaw 控制核心 — 點擊任一場景查看觸發條件與 YAML 樣本。</div>
+</header>
+
+<div class="filter-bar">
+  <span style="font-size:12px;color:var(--ink-3);">分類：</span>
+  <div class="seg-ctrl" id="catSeg">
+    <button aria-pressed="true" data-cat="all">全部 30</button>
+    <button data-cat="morning">晨間</button>
+    <button data-cat="evening">下班</button>
+    <button data-cat="sleep">睡眠</button>
+    <button data-cat="home">家電</button>
+    <button data-cat="secure">安全 AI</button>
+  </div>
+  <div class="seg-ctrl view-toggle" id="viewSeg">
+    <button aria-pressed="true" data-view="grid">📋 網格</button>
+    <button data-view="timeline">⌚ 時序</button>
+  </div>
+</div>
+
+<section class="scenes-frame">
+  <div id="gridView" class="cat-grid"></div>
+  <div id="timelineView" class="timeline" style="display:none"></div>
+</section>
+
+<div class="modal-veil" id="modal">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+const CATS = {
+  morning: { name: "晨間與通勤", en: "Morning & Commute", glyphs: "☀️ ☕ 🚗", accent: "var(--c-morning)", tint: "var(--c-morning-bg)" },
+  evening: { name: "下班與休憩", en: "Evening & Leisure", glyphs: "🛋️ 🍽️ 📺", accent: "var(--c-evening)", tint: "var(--c-evening-bg)" },
+  sleep:   { name: "輪班與深度睡眠", en: "Shift & Deep Sleep", glyphs: "😴 🌙 📱 🔇", accent: "var(--c-sleep)", tint: "var(--c-sleep-bg)" },
+  home:    { name: "家電與維護", en: "Appliance & Maintenance", glyphs: "🤖 💧 ❄️ 🛠️", accent: "var(--c-home)", tint: "var(--c-home-bg)" },
+  secure:  { name: "安全與 AI 管家", en: "Security & AI Butler", glyphs: "🔒 📷 🤖 🚨", accent: "var(--c-secure)", tint: "var(--c-secure-bg)" },
+};
+
+const SCENES = [
+  // Morning 1-6
+  { n:1, cat:"morning", icons:"🌅 🪟", title:"溫柔喚醒", desc:"Hue 崁燈模擬日出 + 窗簾開啟 20%",
+    trigger:"06:30 (Allen) / 09:00 (Ann)", devices:["Hue × 4 主臥","Aqara 窗簾"],
+    yaml:`trigger:\n  - platform: time\n    at: "06:30:00"\ncondition:\n  - condition: state\n    entity_id: input_select.allen_shift\n    state: 'morning'\naction:\n  - service: hue.activate_scene\n    data: { name: 'Sunrise' }\n  - service: cover.set_position\n    target: { entity_id: cover.bedroom_curtain }\n    data: { position: 20 }`,
+    tags:["時序觸發","Hue 場景","窗簾"], hour: 6.5, who:"allen" },
+  { n:2, cat:"morning", icons:"🌤️ 🔊", title:"天氣預報", desc:"HomePod 播報今日天氣 & 空品",
+    trigger:"喚醒後 + 5 分鐘", devices:["HomePod","TTS Piper"], tags:["TTS","資訊播報"], hour: 6.8, who:"allen" },
+  { n:3, cat:"morning", icons:"💡", title:"輪班模式", desc:"女友早班時，客廳燈光調至 5000K 白光提神",
+    trigger:"input_select 切換至 morning", devices:["Hue 客廳 × 10"], tags:["色溫","輪班"], hour: 7, who:"ann" },
+  { n:4, cat:"morning", icons:"🏠 🤖", title:"全屋離家", desc:"離家後關閉所有燈光/冷氣，啟動 Qrevo 掃拖",
+    trigger:"Geofence 出家 500m", devices:["Hue × 22","HVAC × 5","Roborock"],
+    yaml:`trigger:\n  - platform: zone\n    entity_id: person.allen\n    zone: zone.home\n    event: leave\naction:\n  - service: light.turn_off\n    target: { area_id: all }\n  - service: climate.turn_off\n    target: { entity_id: all }\n  - service: vacuum.start\n    target: { entity_id: vacuum.qrevo }`,
+    tags:["地理圍欄","全屋"], hour: 7.5, who:"allen" },
+  { n:5, cat:"morning", icons:"🔒", title:"門鎖連動", desc:"偵測開門且光線暗，自動開玄關燈",
+    trigger:"Door 開啟 + 光感 < 30 lx", devices:["門感測","Hue 玄關"], tags:["安全","環境感應"], hour: 7.4, who:"both" },
+  { n:6, cat:"morning", icons:"📈 🔊", title:"晨間股市摘要", desc:"HomePod 播報自選收盤 (New for Allen)",
+    trigger:"06:35 平日", devices:["HomePod","Ollama LLM"], tags:["AI 摘要","NEW"], hour: 6.6, who:"allen", isNew: true },
+
+  // Evening 7-12
+  { n:7, cat:"evening", icons:"🛋️ ❄️", title:"返家預熱", desc:"離家 2km 時開啟客廳冷氣至 24°C",
+    trigger:"Geofence 進入 2km", devices:["Panasonic 客廳"],
+    yaml:`trigger:\n  - platform: proximity\n    entity_id: person.allen\n    distance: 2000\n    direction: closer\naction:\n  - service: climate.set_temperature\n    target: { entity_id: climate.living }\n    data: { temperature: 24 }`,
+    tags:["地理圍欄","HVAC"], hour: 17, who:"allen" },
+  { n:8, cat:"evening", icons:"📺", title:"影音模式", desc:"啟動 Sync Box + Play 燈條，調暗其他崁燈",
+    trigger:"Hue Tap 雙擊", devices:["Sync Box","Play Bar","Hue × 8"], tags:["影音","Sync Box"], hour: 20, who:"both" },
+  { n:9, cat:"evening", icons:"🍽️", title:"晚餐氛圍", desc:"客餐廳燈光調至 2700K 溫暖白光",
+    trigger:"19:00 平日 / 手動", devices:["Hue 客餐廳 × 10"], tags:["色溫","氛圍"], hour: 19, who:"both" },
+  { n:10, cat:"evening", icons:"🛁", title:"浴室自動化", desc:"進入後通風設備連動 (加裝感應器)",
+    trigger:"PIR 動作 + 濕度", devices:["浴室抽風","Hue"], tags:["環境","感應"], hour: 18, who:"both" },
+  { n:11, cat:"evening", icons:"🌙", title:"深夜靜音", desc:"23:00 後 HomePod 語音回饋音量 20%",
+    trigger:"23:00", devices:["HomePod"], tags:["音訊","時序"], hour: 23, who:"both" },
+  { n:12, cat:"evening", icons:"🚿", title:"洗完澡乾燥", desc:"偵測冷氣溫度差，切換至乾燥模式",
+    trigger:"濕度 > 75% × 10min", devices:["Panasonic 主臥 CS-UX28BA2"], tags:["濕度","HVAC"], hour: 22, who:"both" },
+
+  // Sleep 13-18
+  { n:13, cat:"sleep", icons:"💤", title:"女友補眠", desc:"按下 Hue Tap，主臥窗簾全閉，次臥靜音",
+    trigger:"Hue Tap 長按 1", devices:["Aqara 窗簾","HomePod mini (主臥)"],
+    yaml:`trigger:\n  - platform: event\n    event_type: hue_event\n    event_data: { unique_id: tap_button_1, type: long_press }\naction:\n  - service: cover.close_cover\n    target: { entity_id: cover.bedroom_curtain }\n  - service: media_player.volume_set\n    target: { entity_id: media_player.homepod_mini }\n    data: { volume_level: 0 }`,
+    tags:["Ann 專屬","Hue Tap"], hour: 9, who:"ann" },
+  { n:14, cat:"sleep", icons:"😴", title:"睡眠防擾", desc:"開啟睡眠模式，感應器發夜光 1% 亮度",
+    trigger:"Sleep mode ON", devices:["Hue Motion","走廊崁燈"], tags:["夜光","防擾"], hour: 0, who:"both" },
+  { n:15, cat:"sleep", icons:"🌡️", title:"臥室恆溫", desc:"監測室溫，半夜低於 22°C 調升冷氣 1 度",
+    trigger:"02:00–06:00 + 溫度", devices:["Panasonic 主臥 CS-UX28BA2","Aqara 溫度"], tags:["恆溫","HVAC"], hour: 3, who:"allen" },
+  { n:16, cat:"sleep", icons:"🔊", title:"快速入睡", desc:"HomePod 播放 20 分鐘白噪音後自動關閉",
+    trigger:"Siri Shortcut", devices:["HomePod"], tags:["音訊","定時"], hour: 23.5, who:"both" },
+  { n:17, cat:"sleep", icons:"💡", title:"早退晚回判斷", desc:"根據進門時間切換語音回饋組合",
+    trigger:"Door + Time 邏輯", devices:["門感測","TTS"], tags:["邏輯","TTS"], hour: 15, who:"ann" },
+  { n:18, cat:"sleep", icons:"💻", title:"次臥工作室", desc:"有人且電腦開啟時自動加強該區照明",
+    trigger:"PIR + Smart Plug 功率", devices:["Hue 次臥 × 2","Panasonic 次臥 CS-UX22BA2"], tags:["智慧插座","PIR"], hour: 14, who:"allen" },
+
+  // Home 19-24
+  { n:19, cat:"home", icons:"🤖", title:"掃地避讓", desc:"偵測客廳沙發有人，Roborock 暫停清掃該區",
+    trigger:"PIR + vacuum.state", devices:["Hue Motion","Roborock"], tags:["人禮讓"], hour: 11, who:"both" },
+  { n:20, cat:"home", icons:"❄️", title:"節能監控", desc:"冷氣運行 > 12h 且窗戶開，發送手機推播",
+    trigger:"State 邏輯", devices:["Panasonic","Door Sensor"], tags:["節能","通知"], hour: 14, who:"both" },
+  { n:21, cat:"home", icons:"💧", title:"除濕自動化", desc:"當濕度 > 65%，自動運行冷氣除濕",
+    trigger:"濕度感測", devices:["Panasonic","Aqara 濕度"], tags:["濕度","HVAC"], hour: 13, who:"both" },
+  { n:22, cat:"home", icons:"💧", title:"Qrevo 水箱提醒", desc:"Roborock Water Alert — 清潔完成後語音提醒補水 (New)",
+    trigger:"vacuum.completed", devices:["Roborock","HomePod"], tags:["NEW","維護"], hour: 12, who:"both", isNew: true },
+  { n:23, cat:"home", icons:"💾", title:"HA 備份提醒", desc:"每週自動備份，並確認 DuckDNS 連線穩定",
+    trigger:"週日 03:00", devices:["HAOS","DuckDNS"], tags:["備份","系統"], hour: 3, who:"both" },
+  { n:24, cat:"home", icons:"🛠️", title:"耗材更換提醒", desc:"依時間或次數提醒更換濾網 (New)",
+    trigger:"計數器", devices:["Panasonic","Roborock"], tags:["NEW","維護"], hour: 10, who:"both", isNew: true },
+
+  // Secure 25-30
+  { n:25, cat:"secure", icons:"🚨", title:"運動偵測告警", desc:"凌晨門口感測器動作，手機發送 Qrevo 截圖",
+    trigger:"PIR + 凌晨 00:00–05:00", devices:["Hue Motion","Roborock 攝影","推播"],
+    yaml:`trigger:\n  - platform: state\n    entity_id: binary_sensor.entrance_motion\n    to: 'on'\ncondition:\n  - condition: time\n    after: '00:00:00'\n    before: '05:00:00'\naction:\n  - service: camera.snapshot\n    target: { entity_id: camera.qrevo }\n  - service: notify.allen_iphone\n    data: { message: '⚠️ 凌晨門口偵測到動作' }`,
+    tags:["緊急","推播"], hour: 2, who:"both" },
+  { n:26, cat:"secure", icons:"📡", title:"網路警告", desc:"PPPoE 斷線，燈光閃爍紅光警示",
+    trigger:"binary_sensor.wan", devices:["tp-link","Hue × 4"], tags:["網路","警示"], hour: 14, who:"both" },
+  { n:27, cat:"secure", icons:"📱", title:"設備離線偵測", desc:"Hue Bridge 或 Zigbee 設備離線即時推播",
+    trigger:"unavailable", devices:["全設備"], tags:["監測","推播"], hour: 16, who:"both" },
+  { n:28, cat:"secure", icons:"🆘", title:"緊急 SOS", desc:"長按 Hue Dimmer 特殊按鍵，傳送簡訊",
+    trigger:"Dimmer 長按 5s", devices:["Hue Dimmer","SMS Gateway"], tags:["緊急","SOS"], hour: 18, who:"both" },
+  { n:29, cat:"secure", icons:"🤖", title:"OpenClaw 全屋情境切換", desc:"語音說「Allen 回家了」觸發客廳/主臥多情境 (AI Scene Control)",
+    trigger:"語音 + LLM 推理", devices:["OpenClaw","Hermes Agent","全部"],
+    yaml:`# OpenClaw STT → Llama 3 → Hermes Agent → HA\nintent: home_arrival\nperson: Allen\nactions:\n  - hue.activate_scene: 'Welcome'\n  - climate.set_temperature: 24\n  - cover.open_cover: living\n  - tts.piper: 'Allen 回家了，冷氣設為 24 度'`,
+    tags:["AI","Hermes","旗艦"], hour: 17.2, who:"allen", isOC: true },
+  { n:30, cat:"secure", icons:"🤖", title:"OpenClaw 家電狀態查詢", desc:"語音說「Ann 還在睡嗎？」基於窗簾狀態回應 (AI Status Query)",
+    trigger:"語音查詢", devices:["OpenClaw","Hermes Agent","Aqara","TTS"],
+    yaml:`# Allen 問："Ann 還在睡嗎？"\nflow:\n  - whisper.transcribe → '{question}'\n  - ollama.infer → intent: status_query\n  - hermes.fetch_state: { curtain_bedroom: closed, motion_bedroom: idle }\n  - piper.tts: 'Ann 主臥窗簾全閉，看起來還在補眠喔。'`,
+    tags:["AI","語音","狀態"], hour: 11, who:"both", isOC: true },
+];
+
+// Render category grid
+function renderGrid(filterCat) {
+  const grid = document.getElementById("gridView");
+  grid.innerHTML = "";
+  const cats = filterCat === "all" ? Object.keys(CATS) : [filterCat];
+  cats.forEach(cKey => {
+    const c = CATS[cKey];
+    const col = document.createElement("div");
+    col.className = "cat";
+    col.innerHTML = `
+      <div class="cat-head" style="--accent:${c.accent};--tint:${c.tint};">
+        <h3>${c.name}</h3>
+        <div class="en">${c.en}</div>
+        <div class="glyphs">${c.glyphs}</div>
+      </div>
+    `;
+    SCENES.filter(s => s.cat === cKey).forEach(s => {
+      const card = document.createElement("div");
+      card.className = "scene-card" + (s.isOC ? " openclaw" : "");
+      card.style.setProperty("--accent", c.accent);
+      card.style.setProperty("--tint", c.tint);
+      card.innerHTML = `
+        ${s.isNew ? '<span class="new-tag">New</span>' : ""}
+        <div class="top">
+          <span class="num">${String(s.n).padStart(2, "0")}</span>
+          <span class="icons">${s.icons}</span>
+        </div>
+        <h4>${s.title}</h4>
+        <p>${s.desc}</p>
+      `;
+      card.addEventListener("click", () => openModal(s));
+      col.appendChild(card);
+    });
+    grid.appendChild(col);
+  });
+  // Adjust columns on filter
+  if (filterCat === "all") grid.style.gridTemplateColumns = "repeat(5, 1fr)";
+  else grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(220px, 1fr))";
+}
+
+// Render timeline view
+function renderTimeline(filterCat) {
+  const tl = document.getElementById("timelineView");
+  const filtered = SCENES.filter(s => filterCat === "all" || s.cat === filterCat);
+  const allen = filtered.filter(s => s.who === "allen" || s.who === "both");
+  const ann = filtered.filter(s => s.who === "ann" || s.who === "both");
+  const both = filtered.filter(s => s.who === "both");
+
+  function row(label, sub, scenes) {
+    const blips = scenes.map(s => {
+      const c = CATS[s.cat].accent;
+      const left = (s.hour / 24) * 100;
+      const w = Math.max(8, s.title.length * 1.4);
+      return `<div class="scene-blip" style="--c:${c};left:${left}%;width:${w}%;" data-n="${s.n}" title="${s.title}">${String(s.n).padStart(2,"0")} ${s.title}</div>`;
+    }).join("");
+    return `<div class="timeline-row"><div class="who">${label}<small>${sub}</small></div><div><div class="timeline-track">${blips}</div></div></div>`;
+  }
+  tl.innerHTML = `
+    ${row("Allen", "早班 · 通勤", allen)}
+    ${row("Ann", "大夜班 · 護理", ann)}
+    ${row("共用", "兩人皆觸發", both)}
+    <div class="timeline-row">
+      <div class="who"></div>
+      <div><div class="hour-axis">
+        ${Array.from({length:24}, (_,i) => `<span>${i}</span>`).join("")}
+      </div></div>
+    </div>
+  `;
+  tl.querySelectorAll(".scene-blip").forEach(b => {
+    b.addEventListener("click", () => {
+      const s = SCENES.find(x => x.n === parseInt(b.dataset.n));
+      if (s) openModal(s);
+    });
+  });
+}
+
+// Modal
+function openModal(s) {
+  const c = CATS[s.cat];
+  const yaml = s.yaml ? `<pre>${s.yaml.replace(/^([\w-]+):/gm, '<span class="yaml-key">$1</span>:').replace(/: ([\w./'"-]+)/g, ': <span class="yaml-val">$1</span>')}</pre>` : "";
+  document.getElementById("modalBody").innerHTML = `
+    <button class="close" onclick="document.getElementById('modal').classList.remove('open')">×</button>
+    <div style="font-family:var(--font-mono);font-size:11px;color:${c.accent};letter-spacing:0.06em;text-transform:uppercase;">${c.name} · #${String(s.n).padStart(2,"0")}</div>
+    <h3>${s.icons} ${s.title}${s.isNew ? ' <span style="font-size:11px;color:var(--ink-3);font-weight:400;">[New]</span>' : ''}</h3>
+    <div class="m-en">${s.desc}</div>
+    <div class="pill-row" style="--accent:${c.accent};--tint:${c.tint};">
+      ${s.tags.map(t => `<span class="pill-tag">${t}</span>`).join("")}
+    </div>
+    <div style="margin-top:18px">
+      <div class="m-row"><div class="k">觸發條件</div><div>${s.trigger}</div></div>
+      <div class="m-row"><div class="k">涉及設備</div><div>${s.devices.join("、")}</div></div>
+      <div class="m-row"><div class="k">適用對象</div><div>${{allen:"Allen", ann:"Ann", both:"Allen + Ann"}[s.who]}</div></div>
+      <div class="m-row"><div class="k">時段</div><div>約 ${String(Math.floor(s.hour)).padStart(2,"0")}:${String(Math.round((s.hour%1)*60)).padStart(2,"0")}</div></div>
+    </div>
+    ${yaml}
+  `;
+  document.getElementById("modal").classList.add("open");
+}
+document.getElementById("modal").addEventListener("click", (e) => {
+  if (e.target.id === "modal") e.target.classList.remove("open");
+});
+
+// Wire seg controls
+let curCat = "all";
+document.querySelectorAll("#catSeg button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#catSeg button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    curCat = b.dataset.cat;
+    renderGrid(curCat);
+    renderTimeline(curCat);
+  });
+});
+
+document.querySelectorAll("#viewSeg button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("#viewSeg button").forEach(x => x.setAttribute("aria-pressed", "false"));
+    b.setAttribute("aria-pressed", "true");
+    const v = b.dataset.view;
+    document.getElementById("gridView").style.display = v === "grid" ? "grid" : "none";
+    document.getElementById("timelineView").style.display = v === "timeline" ? "block" : "none";
+  });
+});
+
+renderGrid("all");
+renderTimeline("all");
+</script>
+</body>
+</html>

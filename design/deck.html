@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Allen & Ann 智慧家庭 · Deck</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<style>
+  html, body { background: #1a1a1a; }
+  body { margin: 0; font-family: var(--font-sans); }
+
+  .deck {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+  }
+  body.export-mode { padding: 0 !important; margin: 0 !important; background: white !important; }
+  body.export-mode .deck { padding: 0 !important; gap: 0 !important; }
+  body.export-mode .slide { display: none !important; }
+  body.export-mode .slide.export-active {
+    display: block !important;
+    transform: none !important;
+    margin: 0 !important;
+    position: fixed !important;
+    top: 0 !important; left: 0 !important;
+    z-index: 999 !important;
+  }
+
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    background: var(--bg);
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    transform-origin: top left;
+  }
+
+  /* Auto-scale to fit viewport */
+  @media screen {
+    .deck { transform-origin: top left; }
+  }
+
+  .slide-pad { padding: 80px 100px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+
+  .slide .crumb {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .slide h1 {
+    font-size: 84px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.04;
+    margin: 0 0 24px;
+  }
+  .slide h2 {
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  .slide .lede {
+    font-size: 32px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 1500px;
+  }
+  .slide .footer-bar {
+    position: absolute;
+    bottom: 36px;
+    left: 100px;
+    right: 100px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--ink-4);
+  }
+  .slide .footer-bar .dot {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    background:
+      radial-gradient(circle at 30% 30%, var(--c-morning) 0%, transparent 50%),
+      radial-gradient(circle at 70% 30%, var(--c-secure) 0%, transparent 50%),
+      radial-gradient(circle at 30% 75%, var(--c-home) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, var(--c-sleep) 0%, transparent 50%),
+      var(--bg-tint);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  /* SLIDE 1 — COVER */
+  .s-cover {
+    background: linear-gradient(135deg, var(--c-morning-bg) 0%, var(--c-evening-bg) 50%, var(--c-sleep-bg) 100%);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 140px;
+  }
+  .s-cover .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    letter-spacing: 0.18em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .s-cover h1 {
+    font-size: 124px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 0 0 28px;
+  }
+  .s-cover .accent {
+    background: linear-gradient(110deg, var(--c-morning), var(--c-evening) 45%, var(--c-sleep));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .s-cover .lede {
+    font-size: 30px; line-height: 1.5; color: var(--ink-2);
+    max-width: 1400px;
+  }
+  .s-cover .stats {
+    margin-top: 60px;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    width: 1500px;
+  }
+  .s-cover .stats .stat {
+    background: white;
+    padding: 28px 32px;
+  }
+  .s-cover .stats .n { font-size: 56px; font-weight: 600; letter-spacing: -0.025em; }
+  .s-cover .stats .l { font-size: 18px; color: var(--ink-3); margin-top: 4px; }
+
+  /* AGENDA */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .agenda-card {
+    padding: 48px 40px;
+    border-radius: 24px;
+    border: 2px solid var(--accent);
+    background: var(--tint);
+    display: flex; flex-direction: column;
+  }
+  .agenda-card .num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+  .agenda-card h3 { font-size: 48px; font-weight: 600; margin: 24px 0 8px; letter-spacing: -0.02em; }
+  .agenda-card .en { font-size: 22px; color: var(--ink-3); margin-bottom: 28px; }
+  .agenda-card p { font-size: 22px; line-height: 1.55; color: var(--ink-2); margin: 0; }
+
+  /* TOPOLOGY SLIDE */
+  .topo-list { display: flex; flex-direction: column; gap: 18px; margin-top: 24px; flex: 1; }
+  .topo-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .topo-row .lyr-label {
+    font-size: 22px;
+    color: var(--ink-3);
+    text-align: right;
+    font-weight: 500;
+  }
+  .topo-row .lyr-label small { display: block; font-size: 16px; color: var(--ink-4); margin-top: 2px; }
+  .topo-row .nodes { display: flex; gap: 14px; flex-wrap: wrap; }
+  .topo-node {
+    padding: 14px 20px;
+    background: white;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    min-width: 220px;
+  }
+  .topo-node[data-tone="primary"] { background: var(--c-sleep-bg); border-color: var(--c-sleep); }
+  .topo-node[data-tone="hue"] { background: var(--c-morning-bg); border-color: var(--c-morning); }
+  .topo-node[data-tone="hvac"] { background: var(--c-home-bg); border-color: var(--c-home); }
+  .topo-node[data-tone="curtain"] { background: var(--c-evening-bg); border-color: var(--c-evening); }
+  .topo-node[data-tone="sensor"] { background: var(--c-secure-bg); border-color: var(--c-secure); }
+  .topo-node .nl { font-size: 22px; font-weight: 600; }
+  .topo-node .nm { font-size: 16px; color: var(--ink-3); font-family: var(--font-mono); margin-top: 4px; line-height: 1.4; }
+
+  /* SCENES SLIDES */
+  .scenes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+    flex: 1;
+  }
+  .scene {
+    padding: 24px 26px;
+    background: white;
+    border: 2px solid var(--accent);
+    border-radius: 18px;
+    background: var(--tint);
+  }
+  .scene .sn {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .scene .st { font-size: 30px; font-weight: 600; margin: 8px 0 8px; line-height: 1.2; letter-spacing: -0.01em; }
+  .scene .sd { font-size: 20px; color: var(--ink-2); line-height: 1.5; margin: 0; }
+
+  .cat-banner {
+    display: flex; align-items: center; gap: 24px;
+    padding: 20px 28px;
+    background: var(--tint);
+    border: 2px solid var(--accent);
+    border-radius: 18px;
+    margin-bottom: 24px;
+  }
+  .cat-banner .ico {
+    width: 80px; height: 80px;
+    border-radius: 18px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  .cat-banner .nm { font-size: 40px; font-weight: 600; letter-spacing: -0.015em; }
+  .cat-banner .en { font-size: 22px; color: var(--ink-3); margin-top: 2px; }
+
+  /* OPENCLAW SLIDE */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1.3fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+    flex: 1;
+  }
+  .col-title {
+    font-size: 20px; font-weight: 600; color: var(--ink-3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-align: center; margin-bottom: 14px;
+  }
+  .col-title small { display: block; font-size: 16px; color: var(--ink-4); margin-top: 4px; text-transform: none; font-weight: 400; letter-spacing: 0.02em; }
+  .col-frame {
+    border: 3px dashed var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+    min-height: 600px;
+  }
+  .col-frame.openclaw { border-color: var(--c-sleep); background: color-mix(in oklab, var(--c-sleep) 6%, transparent); }
+  .col-frame.ha { border-color: var(--c-evening); background: color-mix(in oklab, var(--c-evening) 6%, transparent); }
+  .col-frame .frame-title { text-align: center; font-size: 22px; font-weight: 600; }
+  .col-frame .frame-title small { display: block; font-size: 16px; color: var(--ink-3); font-weight: 400; margin-top: 2px; }
+  .col { display: flex; flex-direction: column; gap: 14px; }
+  .module {
+    padding: 18px 20px;
+    background: white;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+  }
+  .module.openclaw-core { background: var(--c-sleep-bg); border-color: var(--c-sleep); }
+  .module.ha-mod { background: var(--c-evening-bg); border-color: var(--c-evening); }
+  .module .m-row { display: flex; align-items: center; gap: 14px; }
+  .module .m-icon {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+  }
+  .module .m-name { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .module .m-en { font-size: 16px; color: var(--ink-3); margin-top: 2px; }
+  .module .m-spec {
+    font-family: var(--font-mono); font-size: 16px;
+    color: var(--ink-2); margin-top: 12px;
+    padding: 8px 12px; background: rgba(255,255,255,0.6);
+    border-radius: 8px; line-height: 1.4;
+  }
+
+  /* OPENCLAW STEPS SLIDE */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: 32px;
+  }
+  .step-box {
+    padding: 24px 22px;
+    background: white;
+    border: 2px solid var(--line);
+    border-radius: 16px;
+  }
+  .step-box .sn {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: var(--c-secure);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .step-box .st {
+    font-size: 24px; font-weight: 600;
+    margin: 10px 0 8px; line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .step-box .sd {
+    font-size: 16px; color: var(--ink-3);
+    line-height: 1.4; font-family: var(--font-mono);
+  }
+
+  .advantages {
+    margin-top: auto;
+    padding: 28px 36px;
+    background: linear-gradient(135deg, var(--c-sleep-bg), var(--c-evening-bg) 60%, var(--c-secure-bg));
+    border: 2px solid var(--line);
+    border-radius: 18px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .adv { display: flex; gap: 18px; align-items: flex-start; }
+  .adv .ico {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: white;
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .adv h4 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  .adv p { margin: 6px 0 0; font-size: 18px; color: var(--ink-2); line-height: 1.4; }
+
+  /* CLOSING */
+  .s-end {
+    background: linear-gradient(135deg, var(--c-secure-bg), var(--c-sleep-bg));
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 100px 140px;
+  }
+  .s-end h1 { font-size: 124px; }
+  .s-end p { font-size: 32px; line-height: 1.5; color: var(--ink-2); max-width: 1400px; }
+  .s-end .signature {
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 2px solid var(--line);
+    display: flex; gap: 48px;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--ink-3);
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ============ S1 COVER ============ -->
+<section class="slide s-cover" data-screen-label="01 Cover">
+  <div class="eyebrow">SMART HOME PLAN · v1.0 · APR 2026</div>
+  <h1>為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
+  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C — 打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。</p>
+  <div class="stats">
+    <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">空調主機</div></div>
+    <div class="stat"><div class="n">30</div><div class="l">自動化場景</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">本地端執行</div></div>
+    <div class="stat"><div class="n">&lt;1s</div><div class="l">語音回應</div></div>
+  </div>
+</section>
+
+<!-- ============ S2 AGENDA ============ -->
+<section class="slide" data-screen-label="02 Agenda">
+  <div class="slide-pad">
+    <div class="crumb">議程 · AGENDA</div>
+    <h1>三個面向</h1>
+    <p class="lede">本次規劃涵蓋網路架構、自動化情境設計，以及核心的本地 AI 語音管家流程。</p>
+    <div class="agenda-grid">
+      <div class="agenda-card" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);">
+        <div class="num">/ 01</div>
+        <h3>網路拓樸</h3>
+        <div class="en">Network Topology</div>
+        <p>從中華電信 100M/40M 固定 IP，到 tp-link BE3600 (WiFi 7)、HA Black 中樞，再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統。</p>
+      </div>
+      <div class="agenda-card" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
+        <div class="num">/ 02</div>
+        <h3>30 個自動化場景</h3>
+        <div class="en">Automation Scenes</div>
+        <p>晨間 · 下班 · 睡眠 · 家電 · 安全五大類別 × 6 場景。涵蓋 Allen 早班與 Ann 大夜班的真實作息差異。</p>
+      </div>
+      <div class="agenda-card" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);">
+        <div class="num">/ 03</div>
+        <h3>OpenClaw 架構</h3>
+        <div class="en">Local AI Voice Assistant</div>
+        <p>Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper，全部跑在 HA Black N100 的 Docker 中。端到端延遲 ~870ms。</p>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Smart Home</span><span>02 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S3 TOPOLOGY ============ -->
+<section class="slide" data-screen-label="03 Topology">
+  <div class="slide-pad">
+    <div class="crumb">/ 01 · NETWORK TOPOLOGY</div>
+    <h1>網路拓樸圖</h1>
+    <p class="lede">從外部網路 → 核心路由 → 智慧家庭中樞 → 設備子系統 → 使用者介面，五層架構。</p>
+    <div class="topo-list">
+      <div class="topo-row">
+        <div class="lyr-label">外部網路<small>External</small></div>
+        <div class="nodes">
+          <div class="topo-node"><div class="nl">☁️ 中華電信 CHT</div><div class="nm">100M / 40M · Fixed IP 122.117.5.107</div></div>
+          <div class="topo-node"><div class="nl">🦆 DuckDNS</div><div class="nm">AllenandAnn.duckdns.org</div></div>
+        </div>
+      </div>
+      <div class="topo-row">
+        <div class="lyr-label">核心路由<small>Core Routing</small></div>
+        <div class="nodes">
+          <div class="topo-node" data-tone="primary"><div class="nl">📡 tp-link BE3600 · WiFi 7</div><div class="nm">2.4 / 5 / 6 GHz · :8123 HAOS · :443 HTTPS</div></div>
+        </div>
+      </div>
+      <div class="topo-row">
+        <div class="lyr-label">中樞<small>Smart Hub</small></div>
+        <div class="nodes">
+          <div class="topo-node" data-tone="primary"><div class="nl">🏠 Home Assistant Black</div><div class="nm">N100 · 8GB · 256GB SSD · HAOS + OpenClaw + Zigbee Stick</div></div>
+        </div>
+      </div>
+      <div class="topo-row">
+        <div class="lyr-label">設備子系統<small>Subsystems</small></div>
+        <div class="nodes">
+          <div class="topo-node" data-tone="hue"><div class="nl">💡 Hue 照明</div><div class="nm">Bridge + 18 燈 + 1 Tap + 2 調光</div></div>
+          <div class="topo-node" data-tone="hvac"><div class="nl">❄️ Panasonic 空調</div><div class="nm">客廳 CS-UX63BA2 · 主臥 CS-UX28BA2 · 次臥 CS-UX22BA2</div></div>
+          <div class="topo-node" data-tone="curtain"><div class="nl">🪟 Aqara 電動窗簾</div><div class="nm">c3 × 2 · Zigbee</div></div>
+          <div class="topo-node" data-tone="sensor"><div class="nl">👁️ Hue 人體感測</div><div class="nm">2 顆 · 走廊 + 客廳</div></div>
+          <div class="topo-node" data-tone="primary"><div class="nl">🔊 音訊與清潔</div><div class="nm">HomePod ×2 · Roborock Qrevo</div></div>
+        </div>
+      </div>
+      <div class="topo-row">
+        <div class="lyr-label">使用者介面<small>UI / Access</small></div>
+        <div class="nodes">
+          <div class="topo-node"><div class="nl">📱 手機 App</div><div class="nm">HA Companion</div></div>
+          <div class="topo-node"><div class="nl">📟 壁掛平板</div><div class="nm">Wall Mount Dashboard</div></div>
+          <div class="topo-node"><div class="nl">🎙️ 語音控制</div><div class="nm">HomePod / Phone</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Topology</span><span>03 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S4 SCENES MORNING ============ -->
+<section class="slide" data-screen-label="04 Morning">
+  <div class="slide-pad">
+    <div class="crumb">/ 02 · AUTOMATION SCENES · 1 / 5</div>
+    <div class="cat-banner" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);">
+      <div class="ico">☀️</div>
+      <div><div class="nm">晨間與通勤</div><div class="en">Morning &amp; Commute · 場景 01–06</div></div>
+    </div>
+    <div class="scenes-grid">
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 01</div><div class="st">🌅 溫柔喚醒</div><p class="sd">Hue 崁燈模擬日出，主臥窗簾自動開啟 20%。</p></div>
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 02</div><div class="st">🌤️ 天氣預報</div><p class="sd">HomePod 播報今日天氣 + 空氣品質。</p></div>
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 03</div><div class="st">💡 輪班模式</div><p class="sd">Ann 早班時，客廳燈光調至 5000K 白光提神。</p></div>
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 04</div><div class="st">🏠 全屋離家</div><p class="sd">關閉所有燈/冷氣，啟動 Roborock Qrevo 掃拖。</p></div>
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 05</div><div class="st">🔒 門鎖連動</div><p class="sd">偵測開門且光線暗，自動開啟玄關燈。</p></div>
+      <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 06 · NEW</div><div class="st">📈 晨間股市摘要</div><p class="sd">HomePod 播報自選收盤，Allen 邊吃早餐邊聽。</p></div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>04 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S5 SCENES EVENING ============ -->
+<section class="slide" data-screen-label="05 Evening">
+  <div class="slide-pad">
+    <div class="crumb">/ 02 · AUTOMATION SCENES · 2 / 5</div>
+    <div class="cat-banner" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
+      <div class="ico">🛋️</div>
+      <div><div class="nm">下班與休憩</div><div class="en">Evening &amp; Leisure · 場景 07–12</div></div>
+    </div>
+    <div class="scenes-grid">
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 07</div><div class="st">🛋️ 返家預熱</div><p class="sd">離家 2 km 自動開啟客廳冷氣至 24°C。</p></div>
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 08</div><div class="st">📺 影音模式</div><p class="sd">啟動 Hue Sync Box + Play 燈條，調暗其他崁燈。</p></div>
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 09</div><div class="st">🍽️ 晚餐氛圍</div><p class="sd">客餐廳燈光調至 2700K 溫暖白光。</p></div>
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 10</div><div class="st">🛁 浴室自動化</div><p class="sd">進入後通風設備自動連動（加裝感應器）。</p></div>
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 11</div><div class="st">🌙 深夜靜音</div><p class="sd">23:00 後 HomePod 語音回饋音量自動降至 20%。</p></div>
+      <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 12</div><div class="st">🚿 洗完澡乾燥</div><p class="sd">偵測冷氣溫度差，自動切換至乾燥模式。</p></div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>05 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S6 SCENES SLEEP ============ -->
+<section class="slide" data-screen-label="06 Sleep">
+  <div class="slide-pad">
+    <div class="crumb">/ 02 · AUTOMATION SCENES · 3 / 5</div>
+    <div class="cat-banner" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);">
+      <div class="ico">😴</div>
+      <div><div class="nm">輪班與深度睡眠</div><div class="en">Shift &amp; Deep Sleep · 場景 13–18</div></div>
+    </div>
+    <div class="scenes-grid">
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 13</div><div class="st">💤 女友補眠</div><p class="sd">按下 Hue Tap，主臥窗簾全閉，次臥靜音。</p></div>
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 14</div><div class="st">😴 睡眠防擾</div><p class="sd">開啟睡眠模式，感應器發夜光 1% 亮度。</p></div>
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 15</div><div class="st">🌡️ 臥室恆溫</div><p class="sd">監測室溫，半夜低於 22°C 調升冷氣 1 度。</p></div>
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 16</div><div class="st">🔊 快速入睡</div><p class="sd">HomePod 播放 20 分鐘白噪音後自動關閉。</p></div>
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 17</div><div class="st">💡 早退晚回判斷</div><p class="sd">根據進門時間切換語音回饋組合。</p></div>
+      <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 18</div><div class="st">💻 次臥工作室</div><p class="sd">有人且電腦開啟時，自動加強該區照明。</p></div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>06 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S7 SCENES HOME + SECURE ============ -->
+<section class="slide" data-screen-label="07 Home Secure">
+  <div class="slide-pad">
+    <div class="crumb">/ 02 · AUTOMATION SCENES · 4–5 / 5</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;">
+      <div>
+        <div class="cat-banner" style="--accent: var(--c-home); --tint: var(--c-home-bg);margin-bottom:18px;">
+          <div class="ico">🤖</div>
+          <div><div class="nm" style="font-size:32px">家電與維護</div><div class="en">Appliance · 場景 19–24</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">19</div><div class="st" style="font-size:22px">🤖 掃地避讓</div><p class="sd" style="font-size:16px">客廳沙發有人，Roborock 暫停。</p></div>
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">20</div><div class="st" style="font-size:22px">❄️ 節能監控</div><p class="sd" style="font-size:16px">AC > 12h + 窗開 → 推播。</p></div>
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">21</div><div class="st" style="font-size:22px">💧 除濕自動化</div><p class="sd" style="font-size:16px">濕度 > 65% → 自動除濕。</p></div>
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">22 NEW</div><div class="st" style="font-size:22px">💧 水箱提醒</div><p class="sd" style="font-size:16px">Qrevo 完成清掃 → 補水提醒。</p></div>
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">23</div><div class="st" style="font-size:22px">💾 備份提醒</div><p class="sd" style="font-size:16px">每週備份 + DuckDNS 確認。</p></div>
+          <div class="scene" style="--accent: var(--c-home); --tint: var(--c-home-bg);"><div class="sn">24 NEW</div><div class="st" style="font-size:22px">🛠️ 耗材更換</div><p class="sd" style="font-size:16px">時間/次數提醒換濾網。</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="cat-banner" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);margin-bottom:18px;">
+          <div class="ico">🔒</div>
+          <div><div class="nm" style="font-size:32px">安全與 AI 管家</div><div class="en">Security &amp; AI · 場景 25–30</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">25</div><div class="st" style="font-size:22px">🚨 凌晨告警</div><p class="sd" style="font-size:16px">門口動作 → Qrevo 截圖推播。</p></div>
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">26</div><div class="st" style="font-size:22px">📡 網路警告</div><p class="sd" style="font-size:16px">PPPoE 斷 → 燈閃紅光。</p></div>
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">27</div><div class="st" style="font-size:22px">📱 設備離線</div><p class="sd" style="font-size:16px">Bridge / Zigbee 離線即時推播。</p></div>
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">28</div><div class="st" style="font-size:22px">🆘 緊急 SOS</div><p class="sd" style="font-size:16px">長按 Dimmer → 傳送簡訊。</p></div>
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">29 AI</div><div class="st" style="font-size:22px">🤖 全屋情境切換</div><p class="sd" style="font-size:16px">「Allen 回家了」觸發場景。</p></div>
+          <div class="scene" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);"><div class="sn">30 AI</div><div class="st" style="font-size:22px">🤖 狀態查詢</div><p class="sd" style="font-size:16px">「Ann 還在睡嗎？」狀態回應。</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>07 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S8 OPENCLAW ARCH ============ -->
+<section class="slide" data-screen-label="08 OpenClaw">
+  <div class="slide-pad">
+    <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
+    <h1>OpenClaw 本地 AI 語音管家</h1>
+    <p class="lede">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~870ms 端到端延遲</p>
+
+    <div class="arch-grid">
+      <div class="col">
+        <div class="col-title">語音接收<small>Voice Acquisition</small></div>
+        <div class="col-frame">
+          <div class="module">
+            <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">HomePod (客廳)</div><div class="m-en">Living Room</div></div></div>
+            <div class="m-spec">AirPlay 2 → mic-bridge</div>
+          </div>
+          <div class="module">
+            <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">HomePod mini</div><div class="m-en">主臥備援</div></div></div>
+            <div class="m-spec">Backup mic path</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-title">OpenClaw 核心<small>Docker on N100</small></div>
+        <div class="col-frame openclaw">
+          <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
+          <div class="module openclaw-core">
+            <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT 語音轉文字</div><div class="m-en">Faster-Whisper</div></div></div>
+            <div class="m-spec">small.zh · INT8 · ~150ms</div>
+          </div>
+          <div class="module openclaw-core">
+            <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
+            <div class="m-spec">CPU only · 8 GB · ~600ms</div>
+          </div>
+          <div class="module openclaw-core">
+            <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
+            <div class="m-spec">Function Routing · ~40ms</div>
+          </div>
+          <div class="module openclaw-core">
+            <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">TTS 文字轉語音</div><div class="m-en">Piper · 極速</div></div></div>
+            <div class="m-spec">zh_CN-huayan · ~80ms</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-title">Home Assistant<small>HAOS Integration</small></div>
+        <div class="col-frame ha">
+          <div class="frame-title">HA Integration Layer<small>Local LAN · API</small></div>
+          <div class="module ha-mod">
+            <div class="m-row"><div class="m-icon">🏠</div><div><div class="m-name">Home Assistant</div><div class="m-en">LLAT · :8123</div></div></div>
+            <div class="m-spec">Hue · Panasonic<br>Aqara · Roborock</div>
+          </div>
+          <div class="module ha-mod">
+            <div class="m-row"><div class="m-icon">⚙️</div><div><div class="m-name">執行設備</div><div class="m-en">22 Hue · 5 AC · 2 Curtain</div></div></div>
+            <div class="m-spec">場景啟動 · 狀態回報</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-title">語音回饋<small>Voice Feedback</small></div>
+        <div class="col-frame">
+          <div class="module">
+            <div class="m-row"><div class="m-icon">📣</div><div><div class="m-name">HomePod 播報</div><div class="m-en">AirPlay 2</div></div></div>
+            <div class="m-spec">主聲道 · 客廳</div>
+          </div>
+          <div class="module">
+            <div class="m-row"><div class="m-icon">📱</div><div><div class="m-name">手機 App 推播</div><div class="m-en">HA Companion</div></div></div>
+            <div class="m-spec">副通道 · 文字記錄</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · OpenClaw</span><span>08 / 09</span></div>
+  </div>
+</section>
+
+<!-- ============ S9 OPENCLAW STEPS ============ -->
+<section class="slide" data-screen-label="09 Voice Flow">
+  <div class="slide-pad">
+    <div class="crumb">/ 03 · VOICE FLOW · 「ALLEN 回家了」</div>
+    <h1>八步語音流程</h1>
+    <p class="lede">從 Allen 說出「Allen 回家了」開始，經 Hermes Agent 編排任務，到 HomePod 播報「冷氣設為 24 度」結束 — 全程在 HA Black 本地完成，無雲端依賴。</p>
+
+    <div class="steps-grid">
+      <div class="step-box"><div class="sn">STEP 01</div><div class="st">說：「Allen 回家了」</div><div class="sd">語音輸入 · 客廳 HomePod</div></div>
+      <div class="step-box"><div class="sn">STEP 02</div><div class="st">傳送音訊</div><div class="sd">AirPlay → STT</div></div>
+      <div class="step-box"><div class="sn">STEP 03</div><div class="st">STT 轉錄</div><div class="sd">Faster-Whisper · 152ms</div></div>
+      <div class="step-box"><div class="sn">STEP 04</div><div class="st">Ollama 推理</div><div class="sd">Llama 3 8B · 600ms</div></div>
+      <div class="step-box"><div class="sn">STEP 05</div><div class="st">Hermes 任務編排</div><div class="sd">Tool Calling · 40ms</div></div>
+      <div class="step-box"><div class="sn">STEP 06</div><div class="st">呼叫 HA 服務</div><div class="sd">REST API · Local LAN</div></div>
+      <div class="step-box"><div class="sn">STEP 07</div><div class="st">Piper 生成語音</div><div class="sd">TTS · 78ms</div></div>
+      <div class="step-box"><div class="sn">STEP 08</div><div class="st">播報語音</div><div class="sd">HomePod + App 推播</div></div>
+    </div>
+
+    <div class="advantages">
+      <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 HA Black，資料不出家門</p></div></div>
+      <div class="adv"><div class="ico">⚡</div><div><h4>低延遲</h4><p>STT + LLM + Hermes + TTS 完整流程 &lt; 1 秒</p></div></div>
+      <div class="adv"><div class="ico">☁️</div><div><h4>無雲端依賴</h4><p>網路斷線時，核心功能不受影響</p></div></div>
+      <div class="adv"><div class="ico">🇹🇼</div><div><h4>中文原生</h4><p>Whisper + Piper 中文聲線</p></div></div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Voice Flow</span><span>09 / 09</span></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+  // Auto-scale deck to viewport width for preview (skip when ?noscale=1 for export)
+  function fitDeck() {
+    if (new URLSearchParams(location.search).get("noscale") === "1") return;
+    const slides = document.querySelectorAll(".slide");
+    const w = window.innerWidth - 64;
+    const scale = Math.min(1, w / 1920);
+    slides.forEach(s => {
+      s.style.transform = `scale(${scale})`;
+      s.style.marginBottom = `${(scale - 1) * 1080 + 24}px`;
+      s.style.marginRight = `${(scale - 1) * 1920}px`;
+    });
+  }
+  window.addEventListener("load", fitDeck);
+  window.addEventListener("resize", fitDeck);
+
+  // Show one slide at a time for PPTX export — physically detaches others
+  window.__exportStash = null;
+  window.showSlideForExport = function(idx) {
+    if (!window.__exportStash) {
+      window.__exportStash = Array.from(document.querySelectorAll(".slide")).map(s => ({
+        node: s,
+        parent: s.parentNode,
+        next: s.nextSibling
+      }));
+      document.body.classList.add("export-mode");
+      window.__exportStash.forEach(e => {
+        e.node.style.transform = "none"; e.node.style.margin = "0";
+        e.node.classList.add("export-active");
+      });
+    }
+    // Detach all
+    window.__exportStash.forEach(e => { if (e.node.parentNode) e.node.parentNode.removeChild(e.node); });
+    // Reattach only target
+    const target = window.__exportStash[idx];
+    if (target) target.parent.insertBefore(target.node, target.next);
+  };
+</script>
+</body>
+</html>

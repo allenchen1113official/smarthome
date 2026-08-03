@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Allen & Ann 智慧家庭 · 總覽</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+  .hero {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 80px 32px 40px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--bg-tint);
+    border: 1px solid var(--line-soft);
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .eyebrow .glyph {
+    width: 14px; height: 14px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--c-morning), var(--c-secure));
+  }
+  h1.title {
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    margin: 24px 0 18px;
+    text-wrap: balance;
+  }
+  h1.title .accent {
+    background: linear-gradient(110deg, var(--c-morning), var(--c-evening) 45%, var(--c-sleep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lede {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 720px;
+    text-wrap: pretty;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    margin: 56px 0 0;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .stat {
+    background: var(--bg-elev);
+    padding: 22px 24px;
+  }
+  .stat .n {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    font-feature-settings: "tnum";
+  }
+  .stat .l {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.02em;
+  }
+
+  .pillars {
+    max-width: 1180px;
+    margin: 24px auto 0;
+    padding: 24px 32px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .pillar {
+    position: relative;
+    padding: 28px 26px 24px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms ease, border-color 220ms ease;
+    isolation: isolate;
+  }
+  .pillar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--tint, var(--bg-tint)) 0%, transparent 60%);
+    opacity: 0.6;
+    z-index: -1;
+  }
+  .pillar:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-3);
+    border-color: var(--accent, var(--line));
+  }
+  .pillar .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+  }
+  .pillar h2 {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 12px 0 6px;
+  }
+  .pillar .en {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  .pillar p.desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 22px;
+  }
+  .pillar .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent, var(--ink-2));
+  }
+  .pillar .preview {
+    height: 120px;
+    margin: 0 -8px 20px;
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .timeline-strip {
+    max-width: 1180px;
+    margin: 20px auto 0;
+    padding: 0 32px;
+  }
+  .timeline-strip .label {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+  .ribbon {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+  }
+  .ribbon .who {
+    font-size: 12px;
+    color: var(--ink-3);
+    text-align: right;
+    font-feature-settings: "tnum";
+  }
+  .ribbon .track {
+    position: relative;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-tint);
+    overflow: hidden;
+  }
+  .ribbon .track .seg {
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: oklch(20% 0.01 80);
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+  }
+  .ribbon .hours {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    font-size: 9px;
+    color: var(--ink-4);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+  .ribbon .hours span { text-align: center; }
+
+  /* mini topology preview SVG */
+  .mini-topo { width: 100%; height: 100%; }
+  .mini-scene-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 10px; width: 100%; height: 100%; }
+  .mini-scene-grid div {
+    border-radius: 4px;
+    background: var(--bg-tint);
+  }
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<section class="hero">
+  <span class="eyebrow"><span class="glyph"></span>Smart Home Plan · v1.0 · Apr 2026</span>
+  <h1 class="title">為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
+  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本規劃涵蓋三個面向 — 網路拓樸、30 個自動化場景、以及 OpenClaw 語音流程。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
+    <div class="stat"><div class="n">5</div><div class="l">空調主機</div></div>
+    <div class="stat"><div class="n">30</div><div class="l">自動化場景</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">本地端執行</div></div>
+    <div class="stat"><div class="n">&lt;1s</div><div class="l">語音回應延遲</div></div>
+  </div>
+</section>
+
+<section class="pillars">
+  <a class="pillar" href="topology.html" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);">
+    <div class="num">/ 01</div>
+    <h2>網路拓樸圖</h2>
+    <div class="en">Network Topology</div>
+    <div class="preview">
+      <svg viewBox="0 0 280 110" class="mini-topo" fill="none" stroke-width="1.4">
+        <!-- internet -->
+        <circle cx="40" cy="20" r="8" fill="var(--bg-tint)" stroke="var(--line)"/>
+        <text x="40" y="40" font-size="7" fill="var(--ink-3)" text-anchor="middle">CHT</text>
+        <!-- router -->
+        <rect x="120" y="12" width="40" height="16" rx="4" fill="var(--bg-tint)" stroke="var(--line)"/>
+        <text x="140" y="22" font-size="6" fill="var(--ink-2)" text-anchor="middle">tp-link</text>
+        <!-- ha -->
+        <rect x="120" y="48" width="40" height="16" rx="4" fill="var(--c-sleep-bg)" stroke="var(--c-sleep)"/>
+        <text x="140" y="58" font-size="6" fill="var(--ink)" text-anchor="middle">HA Black</text>
+        <!-- subsystems -->
+        <circle cx="40" cy="90" r="7" fill="var(--c-morning-bg)" stroke="var(--c-morning)"/>
+        <circle cx="100" cy="90" r="7" fill="var(--c-home-bg)" stroke="var(--c-home)"/>
+        <circle cx="160" cy="90" r="7" fill="var(--c-evening-bg)" stroke="var(--c-evening)"/>
+        <circle cx="220" cy="90" r="7" fill="var(--c-secure-bg)" stroke="var(--c-secure)"/>
+        <!-- lines -->
+        <path d="M48 20 L120 20" stroke="var(--ink-4)"/>
+        <path d="M140 28 L140 48" stroke="var(--ink-4)"/>
+        <path d="M140 64 L40 83" stroke="var(--ink-4)" opacity=".6"/>
+        <path d="M140 64 L100 83" stroke="var(--ink-4)" opacity=".6"/>
+        <path d="M140 64 L160 83" stroke="var(--ink-4)" opacity=".6"/>
+        <path d="M140 64 L220 83" stroke="var(--ink-4)" opacity=".6"/>
+      </svg>
+    </div>
+    <p class="desc">從中華電信 100M/40M 固定 IP，到 tp-link BE3600（WiFi 7）、HA Black 中樞，再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統 — 完整可互動節點圖。</p>
+    <span class="cta">查看拓樸 →</span>
+  </a>
+
+  <a class="pillar" href="scenes.html" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
+    <div class="num">/ 02</div>
+    <h2>30 個自動化場景</h2>
+    <div class="en">Automation Scenes</div>
+    <div class="preview">
+      <div class="mini-scene-grid">
+        <div style="background: var(--c-morning-bg)"></div><div style="background: var(--c-morning-bg)"></div><div style="background: var(--c-morning-bg)"></div><div style="background: var(--c-morning-bg)"></div><div style="background: var(--c-morning-bg)"></div><div style="background: var(--c-morning-bg)"></div>
+        <div style="background: var(--c-evening-bg)"></div><div style="background: var(--c-evening-bg)"></div><div style="background: var(--c-evening-bg)"></div><div style="background: var(--c-evening-bg)"></div><div style="background: var(--c-evening-bg)"></div><div style="background: var(--c-evening-bg)"></div>
+        <div style="background: var(--c-sleep-bg)"></div><div style="background: var(--c-sleep-bg)"></div><div style="background: var(--c-sleep-bg)"></div><div style="background: var(--c-sleep-bg)"></div><div style="background: var(--c-sleep-bg)"></div><div style="background: var(--c-sleep-bg)"></div>
+        <div style="background: var(--c-home-bg)"></div><div style="background: var(--c-home-bg)"></div><div style="background: var(--c-home-bg)"></div><div style="background: var(--c-home-bg)"></div><div style="background: var(--c-home-bg)"></div><div style="background: var(--c-home-bg)"></div>
+        <div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div>
+      </div>
+    </div>
+    <p class="desc">五大類別 × 6 場景。從晨間溫柔喚醒、Ann 輪班補眠、深夜靜音，到緊急 SOS 與 OpenClaw 全屋情境切換 — 每張卡可展開觸發條件與 YAML 細節。</p>
+    <span class="cta">瀏覽場景 →</span>
+  </a>
+
+  <a class="pillar" href="openclaw.html" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);">
+    <div class="num">/ 03</div>
+    <h2>OpenClaw 架構</h2>
+    <div class="en">Local AI Voice Assistant</div>
+    <div class="preview" style="position:relative;">
+      <svg viewBox="0 0 280 110" fill="none" stroke-width="1.4" style="width:100%;height:100%;">
+        <!-- mic -->
+        <circle cx="22" cy="55" r="10" fill="var(--bg-tint)" stroke="var(--line)"/>
+        <text x="22" y="58" font-size="8" fill="var(--ink-2)" text-anchor="middle">🎤</text>
+        <!-- stt -->
+        <rect x="48" y="20" width="46" height="20" rx="6" fill="var(--c-sleep-bg)" stroke="var(--c-sleep)"/>
+        <text x="71" y="33" font-size="7" fill="var(--ink)" text-anchor="middle">STT</text>
+        <!-- llm -->
+        <rect x="48" y="46" width="46" height="20" rx="6" fill="var(--c-evening-bg)" stroke="var(--c-evening)"/>
+        <text x="71" y="59" font-size="7" fill="var(--ink)" text-anchor="middle">Ollama</text>
+        <!-- tts -->
+        <rect x="48" y="72" width="46" height="20" rx="6" fill="var(--c-home-bg)" stroke="var(--c-home)"/>
+        <text x="71" y="85" font-size="7" fill="var(--ink)" text-anchor="middle">TTS</text>
+        <!-- hermes -->
+        <rect x="106" y="44" width="52" height="24" rx="6" fill="var(--c-secure-bg)" stroke="var(--c-secure)"/>
+        <text x="132" y="59" font-size="7" fill="var(--ink)" text-anchor="middle">Hermes</text>
+        <!-- ha -->
+        <rect x="172" y="40" width="48" height="30" rx="6" fill="var(--c-morning-bg)" stroke="var(--c-morning)"/>
+        <text x="196" y="55" font-size="7" fill="var(--ink)" text-anchor="middle">Home</text>
+        <text x="196" y="64" font-size="7" fill="var(--ink)" text-anchor="middle">Assistant</text>
+        <!-- speaker -->
+        <circle cx="254" cy="55" r="10" fill="var(--bg-tint)" stroke="var(--line)"/>
+        <text x="254" y="58" font-size="8" text-anchor="middle">🔊</text>
+        <!-- arrows -->
+        <path d="M32 52 L48 34" stroke="var(--ink-4)"/>
+        <path d="M94 56 L106 56" stroke="var(--ink-4)"/>
+        <path d="M158 56 L172 56" stroke="var(--ink-4)"/>
+        <path d="M220 55 L244 55" stroke="var(--ink-4)"/>
+      </svg>
+    </div>
+    <p class="desc">Faster-Whisper（STT）+ Ollama Llama 3 8B（推理）+ Hermes Agent（任務編排）+ Piper（TTS），全部跑在 HA Black N100 的 Docker 中。可播放八步語音流程動畫 — 從「Allen 回家了」到冷氣自動設定 24°C。</p>
+    <span class="cta">啟動流程 →</span>
+  </a>
+</section>
+
+<section class="timeline-strip">
+  <div class="label">⌚ 一日場景時序 — Allen 早班 + Ann 大夜班</div>
+  <div class="ribbon">
+    <div class="who">Allen<br><span style="font-size:10px;opacity:.7">早班</span></div>
+    <div>
+      <div class="track" id="t-allen"></div>
+    </div>
+    <div class="who">Ann<br><span style="font-size:10px;opacity:.7">大夜</span></div>
+    <div>
+      <div class="track" id="t-ann"></div>
+      <div class="hours">
+        <span>0</span><span></span><span>2</span><span></span><span>4</span><span></span><span>6</span><span></span><span>8</span><span></span><span>10</span><span></span><span>12</span><span></span><span>14</span><span></span><span>16</span><span></span><span>18</span><span></span><span>20</span><span></span><span>22</span><span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Render the day-timeline ribbon
+  const allenSegs = [
+    [0, 5.5, "深度睡眠 · 臥室恆溫 22°C", "var(--c-sleep)"],
+    [5.5, 6.5, "溫柔喚醒 · 日出模擬", "var(--c-morning)"],
+    [6.5, 7.5, "天氣 + 早晨股市摘要", "var(--c-morning)"],
+    [7.5, 17, "全屋離家 · Qrevo 掃拖", "var(--c-home)"],
+    [17, 17.2, "返家預熱 (2km)", "var(--c-evening)"],
+    [17.2, 22, "晚餐氛圍 · 2700K", "var(--c-evening)"],
+    [22, 24, "深夜靜音 · 燈光 20%", "var(--c-evening)"],
+  ];
+  const annSegs = [
+    [0, 8, "夜班外出 · 全屋警戒", "var(--c-secure)"],
+    [8, 9, "返家預熱", "var(--c-evening)"],
+    [9, 17, "女友補眠 · 窗簾全閉", "var(--c-sleep)"],
+    [17, 19, "起床 · 浴室自動化", "var(--c-evening)"],
+    [19, 22, "晚餐氛圍", "var(--c-evening)"],
+    [22, 24, "出門前 · 溫柔提醒", "var(--c-secure)"],
+  ];
+  function renderTrack(id, segs) {
+    const t = document.getElementById(id);
+    const pending = [];
+    segs.forEach(([s, e, label, color]) => {
+      const seg = document.createElement("div");
+      seg.className = "seg";
+      seg.style.left = (s / 24 * 100) + "%";
+      seg.style.width = ((e - s) / 24 * 100) + "%";
+      seg.style.background = "color-mix(in oklab, " + color + " 35%, var(--bg-elev))";
+      seg.style.borderLeft = "2px solid " + color;
+      seg.title = label;
+      t.appendChild(seg);
+      pending.push([seg, label]);
+    });
+    // Only label segments physically wide enough for the full string
+    requestAnimationFrame(() => {
+      const probe = document.createElement("span");
+      probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;font:500 11px " + getComputedStyle(t).fontFamily;
+      document.body.appendChild(probe);
+      pending.forEach(([seg, label]) => {
+        probe.textContent = label;
+        seg.textContent = (probe.offsetWidth + 18 <= seg.offsetWidth) ? label : "";
+      });
+      probe.remove();
+    });
+  }
+  renderTrack("t-allen", allenSegs);
+  renderTrack("t-ann", annSegs);
+  window.addEventListener("resize", () => {
+    document.getElementById("t-allen").innerHTML = "";
+    document.getElementById("t-ann").innerHTML = "";
+    renderTrack("t-allen", allenSegs);
+    renderTrack("t-ann", annSegs);
+  });
+</script>
+</body>
+</html>

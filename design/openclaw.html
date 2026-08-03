@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenClaw 本地 AI 語音管家 · Allen & Ann</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+  .page-head {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 48px 32px 16px;
+  }
+  .page-head h1 { font-size: 40px; font-weight: 600; letter-spacing: -0.025em; margin: 8px 0 6px; }
+  .page-head .subtitle { color: var(--ink-3); font-size: 14px; max-width: 720px; line-height: 1.55; }
+  .page-head .crumb {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-4); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .stage-frame {
+    max-width: 1320px;
+    margin: 24px auto 0;
+    padding: 0 32px;
+  }
+
+  .control-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .play-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    border: 0;
+    cursor: pointer;
+    transition: transform 160ms ease, opacity 160ms ease;
+  }
+  .play-btn:hover { transform: scale(1.02); }
+  .play-btn:disabled { opacity: 0.5; cursor: default; }
+  .play-btn .ico { font-size: 12px; }
+  .step-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    background: var(--bg-tint);
+    border: 1px solid var(--line-soft);
+    padding: 6px 11px;
+    border-radius: 999px;
+  }
+  .step-pill .live { color: var(--c-secure); font-weight: 600; }
+  .scrub-track {
+    flex: 1; min-width: 200px;
+    height: 6px;
+    background: var(--bg-tint);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .scrub-track .fill {
+    position: absolute; left:0; top:0; bottom:0;
+    background: linear-gradient(90deg, var(--c-sleep), var(--c-evening), var(--c-secure));
+    width: 0%;
+    transition: width 80ms linear;
+  }
+
+  /* Architecture stage */
+  .stage {
+    position: relative;
+    padding: 44px 36px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(oklch(50% 0.01 80 / 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+    pointer-events: none;
+  }
+  [data-theme="dark"] .stage::before {
+    background-image: radial-gradient(oklch(80% 0.005 80 / 0.06) 1px, transparent 1px);
+  }
+
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1.2fr 1fr;
+    gap: 28px;
+    align-items: stretch;
+    position: relative;
+    z-index: 2;
+  }
+  .col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .col-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .col-title small {
+    display: block;
+    font-size: 9.5px;
+    color: var(--ink-4);
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .module {
+    position: relative;
+    padding: 16px 18px;
+    background: var(--bg-elev);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    transition: all 280ms cubic-bezier(.2,.8,.2,1);
+  }
+  .module .m-row { display: flex; align-items: center; gap: 10px; }
+  .module .m-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-tint);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .module .m-name {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .module .m-en { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+  .module .m-spec {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding: 6px 8px;
+    background: var(--bg-tint);
+    border-radius: 6px;
+  }
+  .module.active {
+    border-color: var(--c-secure);
+    box-shadow: 0 0 0 4px oklch(74% 0.12 25 / 0.18), var(--shadow-3);
+    transform: translateY(-2px);
+  }
+  .module.active .m-icon {
+    background: var(--c-secure);
+    color: white;
+    box-shadow: 0 0 24px var(--c-secure);
+  }
+  .module.dim { opacity: 0.45; filter: grayscale(0.4); }
+
+  .module.openclaw-core {
+    background: linear-gradient(180deg, var(--c-sleep-bg), var(--bg-elev));
+    border-color: var(--c-sleep);
+  }
+  .module.ha {
+    background: linear-gradient(180deg, var(--c-evening-bg), var(--bg-elev));
+    border-color: var(--c-evening);
+  }
+
+  .col-frame {
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .col-frame.openclaw {
+    border-color: var(--c-sleep);
+    background: color-mix(in oklab, var(--c-sleep) 5%, transparent);
+  }
+  .col-frame.ha {
+    border-color: var(--c-evening);
+    background: color-mix(in oklab, var(--c-evening) 5%, transparent);
+  }
+  .col-frame .frame-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+  }
+  .col-frame .frame-title small {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* Speech bubbles & flow markers */
+  .bubble {
+    position: absolute;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 6px 12px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    box-shadow: var(--shadow-2);
+    z-index: 10;
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+    transition: all 260ms cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+    max-width: 280px;
+    white-space: normal;
+  }
+  .bubble.show { opacity: 1; transform: translateY(0) scale(1); }
+  .bubble::before {
+    content: "";
+    position: absolute;
+    width: 0; height: 0;
+  }
+  .bubble.b-left::before {
+    left: -6px; top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: var(--ink);
+    border-left: 0;
+  }
+  .bubble.b-right::before {
+    right: -6px; top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-left-color: var(--ink);
+    border-right: 0;
+  }
+  .bubble.b-bottom::before {
+    top: -6px; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-bottom-color: var(--ink);
+    border-top: 0;
+  }
+  .bubble.b-top::before {
+    bottom: -6px; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--ink);
+    border-bottom: 0;
+  }
+
+  /* Connecting flow lines (SVG) */
+  .flow-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .flow-svg path {
+    fill: none;
+    stroke: var(--ink-4);
+    stroke-width: 1.6;
+    stroke-dasharray: 6 4;
+    opacity: 0.35;
+  }
+  .flow-svg path.hot {
+    stroke: var(--c-secure);
+    stroke-width: 2.4;
+    stroke-dasharray: 8 0;
+    opacity: 1;
+    filter: drop-shadow(0 0 6px var(--c-secure));
+    animation: flow-pulse 1.4s linear infinite;
+  }
+  @keyframes flow-pulse {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -16; }
+  }
+
+  /* Step ledger */
+  .ledger {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+  }
+  .step {
+    padding: 12px 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 200ms ease;
+    position: relative;
+  }
+  .step .step-n {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+  }
+  .step .step-t {
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+  .step .step-d {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.45;
+    font-family: var(--font-mono);
+  }
+  .step:hover { border-color: var(--c-secure); }
+  .step.active {
+    border-color: var(--c-secure);
+    background: color-mix(in oklab, var(--c-secure) 8%, var(--bg-elev));
+    box-shadow: 0 0 0 3px oklch(74% 0.12 25 / 0.15);
+  }
+  .step.done {
+    border-color: var(--c-home);
+    background: color-mix(in oklab, var(--c-home) 6%, var(--bg-elev));
+  }
+  .step.done::after {
+    content: "✓";
+    position: absolute;
+    top: 8px; right: 10px;
+    color: var(--c-home);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Bottom advantages */
+  .advantages {
+    margin-top: 28px;
+    padding: 18px 22px;
+    background: linear-gradient(135deg, var(--c-sleep-bg), var(--c-evening-bg) 60%, var(--c-secure-bg));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 18px;
+  }
+  .adv {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .adv .a-ico {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .adv h4 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .adv p { margin: 2px 0 0; font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+
+  .tech-detail {
+    max-width: 1320px;
+    margin: 40px auto 60px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 28px;
+  }
+  .detail-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    padding: 24px 26px;
+    box-shadow: var(--shadow-1);
+  }
+  .detail-card h3 { margin: 0 0 12px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .detail-card .muted { color: var(--ink-3); font-size: 12px; margin-bottom: 14px; }
+  .detail-card pre {
+    background: var(--bg);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    overflow-x: auto;
+    margin: 0;
+  }
+  .detail-card .row {
+    display: grid; grid-template-columns: 110px 1fr;
+    padding: 8px 0;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12.5px;
+  }
+  .detail-card .row:first-of-type { border-top: 0; }
+  .detail-card .row .k { color: var(--ink-3); font-size: 12px; }
+  .detail-card .row .v { font-family: var(--font-mono); font-size: 11.5px; }
+
+  @media (max-width: 1000px) {
+    .arch-grid { grid-template-columns: 1fr; }
+    .ledger { grid-template-columns: repeat(2, 1fr); }
+    .advantages { grid-template-columns: 1fr 1fr; }
+    .tech-detail { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<header class="page-head">
+  <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
+  <h1>OpenClaw 本地 AI 語音家庭管家</h1>
+  <div class="subtitle">Faster-Whisper（語音轉文字） + Ollama Llama 3 8B（推理） + Hermes Agent（任務編排）+ Piper（文字轉語音），完整跑在 HA Black N100 的 Docker 中。100% 本地端，無雲端依賴。按下「啟動流程」可看完整七步語音流程動畫。</div>
+</header>
+
+<section class="stage-frame">
+  <div class="control-row">
+    <button class="play-btn" id="playBtn"><span class="ico">▶</span><span id="playLabel">啟動流程</span></button>
+    <span class="step-pill">Step <span class="live" id="stepN">0</span> / 7</span>
+    <div class="scrub-track" id="scrub"><div class="fill" id="scrubFill"></div></div>
+    <span class="step-pill" id="elapsed">00.0s</span>
+  </div>
+
+  <div class="stage" id="stage">
+    <svg class="flow-svg" id="flowSvg"></svg>
+
+    <!-- bubbles get appended here -->
+
+    <div class="arch-grid">
+      <!-- Voice Acquisition -->
+      <div class="col">
+        <div class="col-title">語音接收<small>Voice Acquisition</small></div>
+        <div class="module" id="m-mic1" data-id="mic1">
+          <div class="m-row">
+            <div class="m-icon">🔊</div>
+            <div>
+              <div class="m-name">HomePod (客廳)</div>
+              <div class="m-en">Living Room</div>
+            </div>
+          </div>
+          <div class="m-spec">AirPlay 2 → OpenClaw mic-bridge</div>
+        </div>
+        <div class="module" id="m-mic2" data-id="mic2">
+          <div class="m-row">
+            <div class="m-icon">🔉</div>
+            <div>
+              <div class="m-name">HomePod mini (主臥)</div>
+              <div class="m-en">Master Bedroom</div>
+            </div>
+          </div>
+          <div class="m-spec">備援麥克風路徑</div>
+        </div>
+      </div>
+
+      <!-- OpenClaw Core (frame containing 3 modules) -->
+      <div class="col">
+        <div class="col-title">OpenClaw 核心<small>Docker on HA Black N100</small></div>
+        <div class="col-frame openclaw">
+          <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
+          <div class="module openclaw-core" id="m-stt" data-id="stt">
+            <div class="m-row">
+              <div class="m-icon">📝</div>
+              <div>
+                <div class="m-name">STT — 語音轉文字</div>
+                <div class="m-en">Faster-Whisper · 本地輕量</div>
+              </div>
+            </div>
+            <div class="m-spec">Model: small.zh · INT8 · ~150ms</div>
+          </div>
+          <div class="module openclaw-core" id="m-llm" data-id="llm">
+            <div class="m-row">
+              <div class="m-icon">🦙</div>
+              <div>
+                <div class="m-name">推理引擎</div>
+                <div class="m-en">Ollama · Llama 3 (8B)</div>
+              </div>
+            </div>
+            <div class="m-spec">CPU only · 8 GB RAM · ~600ms</div>
+          </div>
+          <div class="module openclaw-core" id="m-hermes" data-id="hermes">
+            <div class="m-row">
+              <div class="m-icon">⚡</div>
+              <div>
+                <div class="m-name">Hermes Agent</div>
+                <div class="m-en">任務編排 · Tool Calling</div>
+              </div>
+            </div>
+            <div class="m-spec">Function Routing · State Sync · ~40ms</div>
+          </div>
+          <div class="module openclaw-core" id="m-tts" data-id="tts">
+            <div class="m-row">
+              <div class="m-icon">🔉</div>
+              <div>
+                <div class="m-name">TTS — 文字轉語音</div>
+                <div class="m-en">Piper · 極速生成</div>
+              </div>
+            </div>
+            <div class="m-spec">Voice: zh_CN-huayan · ~80ms</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Home Assistant -->
+      <div class="col">
+        <div class="col-title">Home Assistant<small>HAOS Integration</small></div>
+        <div class="col-frame ha">
+          <div class="frame-title">HA Integration Layer<small>Local LAN · API</small></div>
+          <div class="module ha" id="m-ha" data-id="ha">
+            <div class="m-row">
+              <div class="m-icon">🏠</div>
+              <div>
+                <div class="m-name">Home Assistant</div>
+                <div class="m-en">Long-lived Token · :8123</div>
+              </div>
+            </div>
+            <div class="m-spec">Hue API · Panasonic WiFi<br>Aqara Zigbee · Roborock Miio</div>
+          </div>
+          <div class="module ha" id="m-devices" data-id="devices">
+            <div class="m-row">
+              <div class="m-icon">⚙️</div>
+              <div>
+                <div class="m-name">執行設備</div>
+                <div class="m-en">22 Hue · 5 AC · 2 Curtain</div>
+              </div>
+            </div>
+            <div class="m-spec">場景啟動 · 狀態回報</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voice Feedback -->
+      <div class="col">
+        <div class="col-title">語音回饋<small>Voice Feedback</small></div>
+        <div class="module" id="m-out1" data-id="out1">
+          <div class="m-row">
+            <div class="m-icon">📣</div>
+            <div>
+              <div class="m-name">HomePod 播報</div>
+              <div class="m-en">AirPlay 2</div>
+            </div>
+          </div>
+          <div class="m-spec">主聲道 · 客廳</div>
+        </div>
+        <div class="module" id="m-out2" data-id="out2">
+          <div class="m-row">
+            <div class="m-icon">📱</div>
+            <div>
+              <div class="m-name">手機 App 推播</div>
+              <div class="m-en">HA Companion</div>
+            </div>
+          </div>
+          <div class="m-spec">副通道 · 文字記錄</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step ledger -->
+  <div class="ledger" id="ledger"></div>
+
+  <!-- Advantages -->
+  <div class="advantages">
+    <div class="adv">
+      <div class="a-ico">🔒</div>
+      <div><h4>100% 本地端</h4><p>所有模型都跑在 HA Black，資料不出家門</p></div>
+    </div>
+    <div class="adv">
+      <div class="a-ico">⚡</div>
+      <div><h4>低延遲控制</h4><p>STT + LLM + TTS 完整流程 &lt; 1 秒</p></div>
+    </div>
+    <div class="adv">
+      <div class="a-ico">☁️</div>
+      <div><h4>無雲端依賴</h4><p>網路斷線時，家庭核心功能不受影響</p></div>
+    </div>
+    <div class="adv">
+      <div class="a-ico">🇹🇼</div>
+      <div><h4>中文原生</h4><p>Whisper 中文模型 + Piper 中文聲線</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="tech-detail">
+  <div class="detail-card">
+    <h3>範例腳本：Allen 回家了</h3>
+    <div class="muted">OpenClaw 接收語音 → Llama 3 推理 intent → Hermes Agent 編排 → 觸發 HA 服務</div>
+<pre><span style="color:var(--c-sleep)"># 1) STT 結果</span>
+transcript: "Allen 回家了"
+
+<span style="color:var(--c-sleep)"># 2) Llama 3 推理 (Ollama)</span>
+prompt: |
+  使用者: {transcript}
+  情境: { time: 17:23, weather: 28°C }
+  輸出 JSON: { intent, person, actions[] }
+
+response:
+  intent: home_arrival
+  person: Allen
+  actions:
+    - hue.activate_scene: "Welcome"
+    - climate.set_temperature: 24
+    - cover.open_cover: living_curtain
+
+<span style="color:var(--c-sleep)"># 3) Hermes Agent 任務編排</span>
+hermes:
+  parse: response.actions
+  validate: { device_online: true, hours: 17 }
+  dispatch:
+    - service: scene.turn_on
+    - service: climate.set_temperature
+    - reply.tts: "Allen 回家了，冷氣已設為 24 度"
+
+<span style="color:var(--c-sleep)"># 4) HA REST 呼叫</span>
+POST /api/services/scene/turn_on
+Authorization: Bearer {LLAT}
+
+<span style="color:var(--c-sleep)"># 5) Piper TTS</span>
+say: "Allen 回家了，冷氣已設為 24 度"</pre>
+  </div>
+  <div class="detail-card">
+    <h3>硬體規格與資源用量</h3>
+    <div class="muted">HA Black 跑滿載時的實測數據（推估）</div>
+    <div class="row"><div class="k">CPU</div><div class="v">Intel N100 · 4-core 6W</div></div>
+    <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.3G ≈ 6.3 GB / 8 GB</div></div>
+    <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 GB / 256 GB</div></div>
+    <div class="row"><div class="k">STT 延遲</div><div class="v">faster-whisper-small · ~150ms</div></div>
+    <div class="row"><div class="k">LLM 延遲</div><div class="v">Llama 3 8B Q4 · ~600ms</div></div>
+    <div class="row"><div class="k">Hermes 編排</div><div class="v">Tool routing · ~40ms</div></div>
+    <div class="row"><div class="k">TTS 延遲</div><div class="v">Piper · ~80ms</div></div>
+    <div class="row"><div class="k">端到端</div><div class="v" style="color:var(--c-secure);font-weight:600">~870ms（語音→燈亮）</div></div>
+    <div class="row"><div class="k">月電費</div><div class="v">~NT$ 60（24/7 運行 · 6W）</div></div>
+  </div>
+</section>
+
+<script>
+const STEPS = [
+  { n:1, t:"說：「Allen 回家了」", d:"語音輸入", active:["mic1"], from:null, to:null,
+    bubble:{ html:"🗣️ <b>Allen：</b>「Allen 回家了」", anchor:"mic1", side:"right", x:0, y:-46 } },
+  { n:2, t:"傳送音訊", d:"AirPlay → STT", active:["mic1","stt"], from:"mic1", to:"stt",
+    bubble:{ html:"🔊 PCM audio stream<br>16kHz · 16-bit · 客廳 HomePod", anchor:"stt", side:"left", x:0, y:-46 } },
+  { n:3, t:"STT 轉錄", d:"Faster-Whisper", active:["stt"], from:null, to:null,
+    bubble:{ html:"📝 transcript: <b>\"Allen 回家了\"</b><br><span style='opacity:.7'>耗時 152ms</span>", anchor:"stt", side:"top", x:0, y:60 } },
+  { n:4, t:"Ollama 推理", d:"Llama 3 8B", active:["llm"], from:"stt", to:"llm",
+    bubble:{ html:"🦙 intent: <b>home_arrival</b><br>actions: [Welcome scene, AC 24°C, 開窗簾]", anchor:"llm", side:"top", x:0, y:60 } },
+  { n:5, t:"Hermes 任務編排", d:"Tool Calling · 路由", active:["hermes"], from:"llm", to:"hermes",
+    bubble:{ html:"⚡ Hermes Agent 解析 intent<br>分派 → HA service + TTS reply", anchor:"hermes", side:"top", x:0, y:60 } },
+  { n:6, t:"呼叫 HA 服務", d:"REST API · Local LAN", active:["hermes","ha","devices"], from:"hermes", to:"ha",
+    bubble:{ html:"🏠 POST /api/services/scene/turn_on<br>Bearer Token · 22 燈 + 1 AC + 1 Curtain", anchor:"ha", side:"top", x:0, y:60 } },
+  { n:7, t:"Piper 生成語音", d:"TTS · 中文聲線", active:["tts"], from:"hermes", to:"tts",
+    bubble:{ html:"🔉 \"Allen 回家了，冷氣設為 24°C\"<br><span style='opacity:.7'>Piper 生成 78ms</span>", anchor:"tts", side:"top", x:0, y:60 } },
+  { n:8, t:"播報語音", d:"HomePod + 手機推播", active:["tts","out1","out2"], from:"tts", to:"out1",
+    bubble:{ html:"📣 HomePod 播報 · App 推送通知", anchor:"out1", side:"left", x:0, y:-46 } },
+];
+
+// Render ledger
+const ledger = document.getElementById("ledger");
+STEPS.forEach((s, i) => {
+  const el = document.createElement("div");
+  el.className = "step";
+  el.dataset.idx = i;
+  el.innerHTML = `<div class="step-n">STEP ${String(s.n).padStart(2,"0")}</div><div class="step-t">${s.t}</div><div class="step-d">${s.d}</div>`;
+  el.addEventListener("click", () => goToStep(i));
+  ledger.appendChild(el);
+});
+
+const ALL_MODULES = ["mic1","mic2","stt","llm","hermes","tts","ha","devices","out1","out2"];
+
+function clearActive() {
+  ALL_MODULES.forEach(id => {
+    const el = document.getElementById("m-" + id);
+    if (el) el.classList.remove("active", "dim");
+  });
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("active", "done"));
+  document.querySelectorAll(".bubble").forEach(b => b.remove());
+  document.querySelectorAll("#flowSvg path").forEach(p => p.classList.remove("hot"));
+}
+
+function showBubble(b, anchorId) {
+  const stage = document.getElementById("stage");
+  const anchor = document.getElementById("m-" + anchorId);
+  if (!anchor || !b) return;
+  const stageRect = stage.getBoundingClientRect();
+  const aRect = anchor.getBoundingClientRect();
+  const bub = document.createElement("div");
+  bub.className = `bubble b-${b.side}`;
+  bub.innerHTML = b.html;
+  stage.appendChild(bub);
+  // Position
+  const bubRect = bub.getBoundingClientRect();
+  let left, top;
+  if (b.side === "left") {
+    left = aRect.right - stageRect.left + 12;
+    top = aRect.top - stageRect.top + aRect.height/2 - bubRect.height/2;
+  } else if (b.side === "right") {
+    left = aRect.left - stageRect.left - bubRect.width - 12;
+    top = aRect.top - stageRect.top + aRect.height/2 - bubRect.height/2;
+  } else if (b.side === "top") {
+    // bubble below anchor (arrow pointing UP from bubble to anchor)
+    left = aRect.left - stageRect.left + aRect.width/2 - bubRect.width/2;
+    top = aRect.bottom - stageRect.top + 14;
+  } else { // bottom — bubble above anchor
+    left = aRect.left - stageRect.left + aRect.width/2 - bubRect.width/2;
+    top = aRect.top - stageRect.top - bubRect.height - 14;
+  }
+  // Clamp inside stage
+  left = Math.max(8, Math.min(left, stageRect.width - bubRect.width - 8));
+  top = Math.max(8, Math.min(top, stageRect.height - bubRect.height - 8));
+  bub.style.left = left + "px";
+  bub.style.top = top + "px";
+  requestAnimationFrame(() => bub.classList.add("show"));
+}
+
+let currentStep = -1;
+let playing = false;
+let timer = null;
+let stepStart = 0;
+let totalElapsed = 0;
+const STEP_MS = [1200, 700, 1100, 1400, 1100, 900, 1200];
+
+function applyStep(i) {
+  clearActive();
+  if (i < 0) return;
+  const s = STEPS[i];
+  // Mark prior steps as done
+  for (let k = 0; k < i; k++) {
+    document.querySelector(`.step[data-idx="${k}"]`).classList.add("done");
+  }
+  document.querySelector(`.step[data-idx="${i}"]`).classList.add("active");
+  ALL_MODULES.forEach(id => {
+    const el = document.getElementById("m-" + id);
+    if (!el) return;
+    if (s.active.includes(id)) el.classList.add("active");
+    else el.classList.add("dim");
+  });
+  // Highlight flow path
+  if (s.from && s.to) {
+    const path = document.querySelector(`#flowSvg path[data-from="${s.from}"][data-to="${s.to}"]`);
+    if (path) path.classList.add("hot");
+  }
+  if (s.bubble) showBubble(s.bubble, s.bubble.anchor);
+  document.getElementById("stepN").textContent = s.n;
+  const cumul = STEP_MS.slice(0, i + 1).reduce((a, b) => a + b, 0);
+  const total = STEP_MS.reduce((a, b) => a + b, 0);
+  document.getElementById("scrubFill").style.width = (cumul / total * 100) + "%";
+  document.getElementById("elapsed").textContent = (cumul / 1000).toFixed(1) + "s";
+}
+
+function goToStep(i) {
+  pause();
+  currentStep = i;
+  applyStep(i);
+}
+
+function play() {
+  if (playing) return;
+  playing = true;
+  document.getElementById("playLabel").textContent = "暫停";
+  document.querySelector("#playBtn .ico").textContent = "❚❚";
+  if (currentStep >= STEPS.length - 1) currentStep = -1;
+  function next() {
+    currentStep++;
+    if (currentStep >= STEPS.length) {
+      pause();
+      // Mark all done
+      document.querySelectorAll(".step").forEach(s => s.classList.add("done"));
+      document.querySelector(`.step[data-idx="${STEPS.length - 1}"]`).classList.remove("done");
+      document.querySelector(`.step[data-idx="${STEPS.length - 1}"]`).classList.add("active");
+      return;
+    }
+    applyStep(currentStep);
+    timer = setTimeout(next, STEP_MS[currentStep]);
+  }
+  next();
+}
+
+function pause() {
+  playing = false;
+  if (timer) { clearTimeout(timer); timer = null; }
+  document.getElementById("playLabel").textContent = currentStep >= STEPS.length - 1 ? "重播" : "繼續";
+  document.querySelector("#playBtn .ico").textContent = "▶";
+}
+
+document.getElementById("playBtn").addEventListener("click", () => {
+  if (playing) pause();
+  else play();
+});
+document.getElementById("scrub").addEventListener("click", (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const total = STEP_MS.reduce((a, b) => a + b, 0);
+  const target = pct * total;
+  let cum = 0;
+  for (let i = 0; i < STEPS.length; i++) {
+    cum += STEP_MS[i];
+    if (cum >= target) { goToStep(i); break; }
+  }
+});
+
+// Draw flow lines between modules
+const FLOW_EDGES = [
+  ["mic1","stt"],
+  ["mic2","stt"],
+  ["stt","llm"],
+  ["llm","hermes"],
+  ["hermes","tts"],
+  ["hermes","ha"],
+  ["ha","devices"],
+  ["tts","out1"],
+  ["tts","out2"],
+  ["ha","hermes"], // status query reverse
+];
+
+function drawFlow() {
+  const stage = document.getElementById("stage");
+  const svg = document.getElementById("flowSvg");
+  const sRect = stage.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${sRect.width} ${sRect.height}`);
+  svg.innerHTML = "";
+  FLOW_EDGES.forEach(([from, to]) => {
+    const a = document.getElementById("m-" + from);
+    const b = document.getElementById("m-" + to);
+    if (!a || !b) return;
+    const ar = a.getBoundingClientRect();
+    const br = b.getBoundingClientRect();
+    const sx = ar.right - sRect.left;
+    const sy = ar.top + ar.height/2 - sRect.top;
+    const ex = br.left - sRect.left;
+    const ey = br.top + br.height/2 - sRect.top;
+    const midX = (sx + ex) / 2;
+    const d = `M ${sx} ${sy} C ${midX} ${sy}, ${midX} ${ey}, ${ex} ${ey}`;
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.dataset.from = from;
+    path.dataset.to = to;
+    svg.appendChild(path);
+  });
+}
+
+window.addEventListener("load", () => setTimeout(drawFlow, 100));
+window.addEventListener("resize", () => {
+  drawFlow();
+  // Reposition any open bubble
+  if (currentStep >= 0) applyStep(currentStep);
+});
+if (document.fonts) document.fonts.ready.then(drawFlow);
+
+// Auto-show step 0 on load (paused)
+window.addEventListener("load", () => setTimeout(() => goToStep(0), 250));
+</script>
+</body>
+</html>
