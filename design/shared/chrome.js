@@ -5,6 +5,7 @@
     { href: "topology.html", label: "網路拓樸 Topology" },
     { href: "scenes.html", label: "30 場景 Scenes" },
     { href: "openclaw.html", label: "OpenClaw 架構" },
+    { href: "sop.html", label: "建置 SOP" },
   ];
 
   function getTheme() {
