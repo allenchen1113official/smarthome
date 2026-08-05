@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Allen & Ann 智慧家庭 · 建置 SOP + 設計審查</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+  .page-head { max-width: 1180px; margin: 0 auto; padding: 64px 32px 8px; }
+  .crumb { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); letter-spacing: 0.1em; }
+  .page-head h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 600; letter-spacing: -0.03em; margin: 14px 0 12px; }
+  .page-head .subtitle { font-size: 17px; line-height: 1.6; color: var(--ink-2); max-width: 780px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px 80px; }
+  .layout { display: grid; grid-template-columns: 220px 1fr; gap: 40px; margin-top: 40px; align-items: start; }
+
+  /* Sticky TOC */
+  .toc { position: sticky; top: 80px; font-size: 13px; }
+  .toc .toc-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 10px; }
+  .toc a { display: block; padding: 5px 10px; border-radius: 8px; color: var(--ink-2); text-decoration: none; border-left: 2px solid transparent; transition: background 140ms, color 140ms; }
+  .toc a:hover { background: var(--bg-tint); color: var(--ink); }
+  .toc a.sub { padding-left: 22px; font-size: 12px; color: var(--ink-3); }
+
+  section.block { scroll-margin-top: 80px; margin-bottom: 56px; }
+  section.block > h2 { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 6px; display: flex; align-items: baseline; gap: 12px; }
+  section.block > h2 .k { font-family: var(--font-mono); font-size: 13px; color: var(--ink-3); }
+  section.block > .lead { font-size: 15px; color: var(--ink-2); line-height: 1.6; margin: 0 0 22px; max-width: 800px; }
+  h3.sub { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; margin: 32px 0 12px; scroll-margin-top: 80px; }
+  h4.step { font-size: 15px; font-weight: 600; margin: 22px 0 8px; }
+  p { line-height: 1.65; color: var(--ink-2); font-size: 14.5px; }
+  ul, ol { line-height: 1.7; color: var(--ink-2); font-size: 14.5px; padding-left: 22px; }
+  li { margin: 4px 0; }
+  strong { color: var(--ink); font-weight: 600; }
+  code { font-family: var(--font-mono); font-size: 12.5px; background: var(--bg-tint); padding: 1.5px 6px; border-radius: 6px; border: 1px solid var(--line-soft); }
+  a.inline { color: var(--net-lan); text-decoration: none; border-bottom: 1px solid var(--line); }
+
+  pre { background: var(--bg-elev); border: 1px solid var(--line-soft); border-radius: var(--radius-md); padding: 16px 18px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.65; color: var(--ink-2); overflow-x: auto; box-shadow: var(--shadow-1); }
+  pre .c { color: var(--ink-4); }
+  pre .k { color: var(--net-lan); }
+
+  /* Callouts */
+  .note { border-radius: var(--radius-md); padding: 14px 18px; margin: 16px 0; font-size: 14px; line-height: 1.6; border: 1px solid var(--line-soft); display: grid; grid-template-columns: 26px 1fr; gap: 12px; }
+  .note .i { font-size: 16px; line-height: 1.4; }
+  .note.warn { background: var(--c-secure-bg); border-color: color-mix(in oklab, var(--c-secure) 40%, transparent); }
+  .note.info { background: var(--c-sleep-bg); border-color: color-mix(in oklab, var(--c-sleep) 35%, transparent); }
+  .note.ok   { background: var(--c-home-bg); border-color: color-mix(in oklab, var(--c-home) 35%, transparent); }
+  .note.tip  { background: var(--c-morning-bg); border-color: color-mix(in oklab, var(--c-morning) 40%, transparent); }
+  .note b { color: var(--ink); }
+
+  /* Tables */
+  .tbl { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; overflow: hidden; border-radius: var(--radius-md); border: 1px solid var(--line-soft); }
+  .tbl th { text-align: left; background: var(--bg-tint); color: var(--ink-3); font-weight: 500; font-size: 12px; letter-spacing: 0.02em; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); }
+  .tbl td { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); color: var(--ink-2); vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl td strong { color: var(--ink); }
+  .sev { font-family: var(--font-mono); font-size: 10.5px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .sev.hi { background: var(--c-secure-bg); color: oklch(45% 0.14 25); border: 1px solid color-mix(in oklab, var(--c-secure) 45%, transparent); }
+  .sev.med { background: var(--c-morning-bg); color: oklch(45% 0.13 60); border: 1px solid color-mix(in oklab, var(--c-morning) 45%, transparent); }
+  .sev.low { background: var(--c-home-bg); color: oklch(42% 0.1 165); border: 1px solid color-mix(in oklab, var(--c-home) 45%, transparent); }
+  [data-theme="dark"] .sev.hi { color: oklch(80% 0.12 25); }
+  [data-theme="dark"] .sev.med { color: oklch(82% 0.11 70); }
+  [data-theme="dark"] .sev.low { color: oklch(80% 0.1 165); }
+
+  /* Phase cards */
+  .phase { border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 22px 24px; margin: 18px 0; background: var(--bg-elev); box-shadow: var(--shadow-1); scroll-margin-top: 80px; }
+  .phase > .ph-head { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .phase .ph-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--bg-elev); background: var(--accent, var(--ink)); border-radius: 8px; padding: 4px 10px; }
+  .phase h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.015em; }
+  .phase .ph-meta { margin-left: auto; font-size: 12px; color: var(--ink-3); font-family: var(--font-mono); }
+  .phase .ph-goal { font-size: 13.5px; color: var(--ink-3); margin: 2px 0 14px; }
+
+  .checklist { list-style: none; padding: 0; margin: 12px 0; }
+  .checklist li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--line-soft); font-size: 14px; }
+  .checklist li:first-child { border-top: 0; }
+  .checklist li::before { content: "☐"; color: var(--ink-4); font-size: 15px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: var(--radius-md); overflow: hidden; margin: 24px 0 8px; }
+  .stat-row .s { background: var(--bg-elev); padding: 16px 18px; }
+  .stat-row .s .n { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+  .stat-row .s .l { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { display: none; }
+    .stat-row { grid-template-columns: repeat(2,1fr); }
+  }
+  @media print {
+    .topbar, .toc, .theme-toggle { display: none !important; }
+    .layout { grid-template-columns: 1fr; }
+    .phase, .note, pre { break-inside: avoid; }
+    section.block { break-inside: avoid-page; }
+  }
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<header class="page-head">
+  <div class="crumb">/ 04 · BUILD SOP &amp; DESIGN REVIEW</div>
+  <h1>從無到有：建置標準作業程序</h1>
+  <p class="subtitle">本文件先審查現有 v1.0 設計（HA Black · N100 · OpenClaw），再依你最新的需求 —
+  <b>Mac mini M4 自架 · Home Assistant · Hermes Agent · Apple Home 生態</b> —
+  提供一份可逐步執行、以「安全與 100% 本地」為核心的完整建置 SOP。</p>
+  <div class="stat-row">
+    <div class="s"><div class="n">8</div><div class="l">建置階段 Phase 0–7</div></div>
+    <div class="s"><div class="n">7</div><div class="l">設計審查重點</div></div>
+    <div class="s"><div class="n">15+</div><div class="l">整合設備類別</div></div>
+    <div class="s"><div class="n">30</div><div class="l">自動化場景沿用</div></div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="layout">
+
+  <!-- ============ TOC ============ -->
+  <nav class="toc">
+    <div class="toc-title">目錄</div>
+    <a href="#review">A · 設計審查</a>
+    <a href="#arch">B · 目標架構</a>
+    <a href="#bom">C · 設備盤點</a>
+    <a href="#p0" class="sub">Phase 0 · 前置與安全基線</a>
+    <a href="#p1" class="sub">Phase 1 · Mac mini 系統</a>
+    <a href="#p2" class="sub">Phase 2 · 安裝 HA</a>
+    <a href="#p3" class="sub">Phase 3 · 網路與遠端</a>
+    <a href="#p4" class="sub">Phase 4 · 設備整合</a>
+    <a href="#p5" class="sub">Phase 5 · Apple Home</a>
+    <a href="#p6" class="sub">Phase 6 · 本地 AI 語音</a>
+    <a href="#p7" class="sub">Phase 7 · 場景與驗收</a>
+    <a href="#security">D · 安全強化</a>
+    <a href="#runbook">E · 維運手冊</a>
+  </nav>
+
+  <main>
+
+  <!-- ============ A · DESIGN REVIEW ============ -->
+  <section class="block" id="review">
+    <h2><span class="k">A</span>設計審查</h2>
+    <p class="lead">現有設計文件（總覽 / 拓樸 / 30 場景 / OpenClaw）完整度高、視覺清晰，且「本地優先、低延遲、無雲端依賴」的核心理念與你的安全考量一致。以下是把架構從 <b>HA Black（N100）+ 自建 OpenClaw</b> 轉為 <b>Mac mini M4 + Home Assistant + Hermes Agent + Apple Home</b> 時，必須修正或注意的七個重點。</p>
+
+    <table class="tbl">
+      <thead><tr><th style="width:70px">重要度</th><th style="width:200px">項目</th><th>發現與修正建議</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="sev hi">關鍵</span></td>
+          <td><strong>主機平台變更</strong><br>N100 → Mac mini M4</td>
+          <td>設計以 HAOS 直接安裝於 HA Black（x86 N100）為前提。<b>macOS 無法原生安裝 HAOS</b>。Mac mini M4 上的正確做法是：<br>① <b>（建議）以虛擬機執行 HAOS</b>（UTM／Apple Virtualization，aarch64 映像）→ 保留 Supervisor 與完整 Add-on 生態；<br>② HA Container（Docker）→ 輕量但無 Supervisor／Add-on，需自行以容器補齊 Mosquitto、Zigbee2MQTT、Whisper、Piper。<br>本 SOP 採方案①為主線。</td>
+        </tr>
+        <tr>
+          <td><span class="sev hi">關鍵</span></td>
+          <td><strong>HomePod 不能當語音衛星</strong></td>
+          <td>OpenClaw 設計讓 HomePod 透過「AirPlay → mic-bridge」把麥克風音訊送進 STT。<b>HomePod 是封閉裝置，不會把麥克風開放給第三方</b>，此路徑技術上不成立。修正：HomePod／HomePod mini 定位為 <b>Apple Home（Siri）語音入口 + 播報輸出</b>；本地 LLM 語音迴圈另用 <b>Home Assistant Voice PE</b>（或 ESP32-S3 Atom Echo／手機 Assist）作為喚醒詞麥克風衛星。</td>
+        </tr>
+        <tr>
+          <td><span class="sev hi">關鍵</span></td>
+          <td><strong>Panasonic 空調「100% 本地」</strong></td>
+          <td>設計宣稱 <code>panasonic_cc</code> 為「100% 本地端控制」。實際上 CS-UX 系列內建 IoT 走的是 <b>Panasonic Comfort Cloud（雲端）</b>，該整合仍需連網登入雲端。若要真正本地 + 進 Apple Home，建議加 <b>紅外線閘道（SwitchBot Hub 2／Broadlink RM4）</b>由 HA 以 IR 本地控制；或接受空調這一項為雲端依賴，並在文件中據實標示。</td>
+        </tr>
+        <tr>
+          <td><span class="sev med">重要</span></td>
+          <td><strong>Zigbee 無線電</strong></td>
+          <td>Mac mini 無內建 Zigbee。Aqara C3 窗簾與（若採原生 Zigbee 的）感測器需 <b>USB Zigbee 協調器</b>（Home Assistant Connect ZBT-1／Sonoff ZBDongle-E）透傳進 VM，跑 Zigbee2MQTT。替代方案：<b>Aqara Hub M3</b>（支援 Matter）→ 同時橋接進 Apple Home 與 HA。Philips Hue 維持自有 Hue Bridge（最佳實務，勿拆進 Z2M）。</td>
+        </tr>
+        <tr>
+          <td><span class="sev med">重要</span></td>
+          <td><strong>Apple Home 整合方式</strong></td>
+          <td>要讓 HomePod／iPhone 的「家庭」App 與 Siri 能控制全屋，需在 HA 啟用 <b>HomeKit Bridge 整合</b>，把精選 HA 實體匯出成 HomeKit 配件。原設計未涵蓋此層。定位：<b>Apple Home = 人／Siri 的操作面；HA = 自動化大腦</b>。</td>
+        </tr>
+        <tr>
+          <td><span class="sev med">重要</span></td>
+          <td><strong>遠端存取的攻擊面</strong></td>
+          <td>設計以「固定 IP + DuckDNS + 對外開 443/8123 反向代理」提供遠端存取。既然核心訴求是<b>安全</b>，直接把 HA 暴露在公網並不理想。建議改用 <b>Tailscale／WireGuard VPN</b> 或 <b>Nabu Casa Cloud</b>，<b>不對外開任何 port</b>；DuckDNS 方案列為備援並加嚴（詳見 Phase 3 / D 安全強化）。</td>
+        </tr>
+        <tr>
+          <td><span class="sev low">留意</span></td>
+          <td><strong>BOM 重複與其他細節</strong></td>
+          <td>設備清單第 14 項仍列「智能中樞 Home Assistant Black」，與新主機 Mac mini M4 <b>功能重複</b>——建議 Mac mini 為主機，HA Black 退居備援或省略。其他：Dyson HP10 屬<b>非連網</b>機型（需 IR/智慧插座才可自動化）、虎牌電鍋與櫻花淨水器<b>無官方智慧整合</b>（僅能以 Tapo 插座做用電偵測）、Sony Bravia 建議用本地 <code>braviatv</code> 整合並開 AirPlay/HomeKit。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note ok">
+      <div class="i">✓</div>
+      <div><b>沿用的優點：</b>30 個自動化場景的分類、觸發邏輯與 YAML 樣本、五層網路拓樸的分層概念、以及「本地 AI 語音管家」的四段式管線（STT→LLM→編排→TTS）都可直接沿用。本 SOP 只是把「跑在哪、麥克風從哪來、雲端邊界在哪」修正到真實可行的組態。</div>
+    </div>
+  </section>
+
+  <!-- ============ B · TARGET ARCHITECTURE ============ -->
+  <section class="block" id="arch">
+    <h2><span class="k">B</span>目標架構</h2>
+    <p class="lead">修正後的分層架構。核心原則：<b>本地優先、雲端最小化、公網零曝露、Apple Home 為前台、HA 為大腦</b>。</p>
+
+    <pre><span class="c"># 分層架構（由外而內）</span>
+<span class="k">網際網路</span>   中華電信 100M/40M ── (不開放任何對外 port)
+                 └─ 遠端存取：Tailscale / WireGuard VPN（建議）
+
+<span class="k">核心路由</span>   TP-Link Archer BE3600 (WiFi 7)
+                 ├─ VLAN 10  主網段（人的裝置、Mac mini 管理）
+                 └─ VLAN 20  IoT 隔離網段（燈、空調、插座、掃地機…）
+
+<span class="k">主機</span>       Mac mini M4 (macOS, 24/7)
+                 ├─ UTM VM ─► Home Assistant OS (aarch64)   ← 自動化大腦
+                 │             ├─ Add-on: Mosquitto (MQTT)
+                 │             ├─ Add-on: Zigbee2MQTT  ◄── USB Zigbee 協調器
+                 │             ├─ Add-on: faster-whisper (STT, Wyoming)
+                 │             ├─ Add-on: Piper (TTS, Wyoming)
+                 │             ├─ 整合: HomeKit Bridge  ─► Apple Home
+                 │             └─ 整合: Ollama (對話代理)
+                 └─ macOS 原生：Ollama + hermes3 模型 (Metal GPU 加速) = Hermes Agent
+
+<span class="k">設備子系統</span> Hue Bridge(照明) · Panasonic空調 · Aqara窗簾(Zigbee/Matter)
+                 · Roborock掃地 · Tapo插座 · Sony Bravia · Bose · OVO投影
+
+<span class="k">使用者介面</span> Apple Home / Siri (HomePod×2) · HA App / 壁掛平板
+                 · HA Voice PE 語音衛星（本地 LLM 迴圈的麥克風）</pre>
+
+    <div class="note info">
+      <div class="i">ℹ︎</div>
+      <div><b>「Hermes Agent」在本架構的定位：</b>由 <b>Ollama 於 macOS 原生執行 <code>hermes3</code></b>（NousResearch Hermes 3，具函式呼叫/工具調用能力，Apple Silicon Metal 加速），透過 HA 內建的 <b>Ollama 對話整合 + Assist LLM API</b> 直接呼叫 HA 服務——即設計中「Tool Calling · Function Routing」的角色。相較原 N100 CPU-only 的 Llama 3，M4 的 Metal 推理更快、可跑更大模型。</div>
+    </div>
+  </section>
+
+  <!-- ============ C · BOM ============ -->
+  <section class="block" id="bom">
+    <h2><span class="k">C</span>設備盤點與整合方式</h2>
+    <p class="lead">依你的 28 項清單，區分「智慧整合設備」「需加配件才能自動化」「非智慧（不納入）」。整合方式一律以「能否本地控制、能否進 Apple Home」為判準。</p>
+
+    <table class="tbl">
+      <thead><tr><th style="width:150px">設備</th><th style="width:130px">整合方式</th><th style="width:90px">本地?</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Philips Hue</strong> 燈具/開關/調光/感測</td><td>Hue Bridge 官方整合</td><td><span class="sev low">本地</span></td><td>Bridge 走區網 API；Tap/Dimmer 事件觸發自動化。勿併入 Z2M。</td></tr>
+        <tr><td><strong>Aqara C3</strong> 電動窗簾</td><td>Zigbee2MQTT 或 Aqara Hub M3 (Matter)</td><td><span class="sev low">本地</span></td><td>Matter 路徑可同時進 Apple Home。</td></tr>
+        <tr><td><strong>Roborock</strong> Qrevo Edge C</td><td>HA Roborock 整合（含地圖）</td><td><span class="sev med">半本地</span></td><td>雲端配對；控制走區網。攝影快照供安全場景。</td></tr>
+        <tr><td><strong>TP-Link Tapo P306</strong> 插座延伸器</td><td>HA Tapo / Kasa 整合</td><td><span class="sev low">本地</span></td><td>可對電鍋/淨水器做「用電偵測」與定時。</td></tr>
+        <tr><td><strong>Sony Bravia</strong> 65" Mini LED</td><td><code>braviatv</code> 整合 + AirPlay/HomeKit</td><td><span class="sev low">本地</span></td><td>開關機、輸入源、音量；影音場景核心。</td></tr>
+        <tr><td><strong>Panasonic 空調</strong> ×3 (UX63/28/22)</td><td>Comfort Cloud 或 IR 閘道</td><td><span class="sev hi">雲端*</span></td><td>要真本地＋Apple Home 需加 IR 閘道（見審查 A-③）。</td></tr>
+        <tr><td><strong>Panasonic 洗衣機</strong> NA-V170RPH</td><td>Comfort Cloud（如支援）／狀態通知</td><td><span class="sev hi">雲端</span></td><td>主要用於「完成通知」自動化。</td></tr>
+        <tr><td><strong>Bose</strong> Soundbar 550 + Bass 500</td><td>AirPlay 2 / HA media_player</td><td><span class="sev med">半本地</span></td><td>影音場景音訊；可作 TTS 播報備援。</td></tr>
+        <tr><td><strong>OVO U3</strong> 投影機</td><td>IR 閘道 / 智慧插座</td><td><span class="sev med">半本地</span></td><td>無官方 API，以 IR + 插座電源控制。</td></tr>
+        <tr><td><strong>HomePod / HomePod mini</strong></td><td>Apple Home + AirPlay</td><td><span class="sev low">本地</span></td><td>Siri 前台、TTS 播報輸出；非 HA 麥克風。</td></tr>
+        <tr><td>Dyson HP10 / 虎牌電鍋 / 櫻花淨水 / 林內熱水器 / Panasonic 冰箱</td><td>IR 閘道或 Tapo 插座（用電/定時）</td><td>—</td><td>原生非連網或無 API；僅能做週邊自動化。</td></tr>
+        <tr><td>掀床組 / 餐桌 / 沙發 / 茶几 / 床墊 / 換鞋凳 / 窗簾布 / 電視櫃</td><td>—</td><td>—</td><td>家具，不納入自動化範圍。</td></tr>
+      </tbody>
+    </table>
+    <div class="note tip"><div class="i">✦</div><div><b>採購建議（補件）：</b>① USB Zigbee 協調器 ×1；② HA Voice PE 語音衛星 ×1–2（客廳＋主臥）；③ IR 閘道 ×1–2（空調/投影機所在區）；④ 若走 Matter 窗簾則加 Aqara Hub M3；⑤ UPS 不斷電（保護 Mac mini 與網路）。</div></div>
+  </section>
+
+  <!-- ============ PHASES ============ -->
+  <section class="block" id="phases">
+    <h2><span class="k">D</span>建置 SOP（Phase 0–7）</h2>
+    <p class="lead">依序執行；每階段都有「目標／步驟／驗收」。指令以 Apple Silicon macOS 為準。建議每完成一階段就做一次 HA 快照備份。</p>
+
+    <!-- PHASE 0 -->
+    <div class="phase" id="p0" style="--accent: var(--c-morning);">
+      <div class="ph-head"><span class="ph-num">P0</span><h3>前置準備與安全基線</h3><span class="ph-meta">½ 天</span></div>
+      <div class="ph-goal">目標：把網路、帳號、命名規則與備援策略先立好，避免後面返工。</div>
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li>盤點固網：確認中華電信數據機模式。若為「浮動 IP + 你自己想用 VPN」即可，<b>不一定需要固定 IP</b>；用 VPN 遠端存取時可省下對外曝露。</li>
+        <li>路由器 BE3600：韌體更新 → 建立 <b>兩個 SSID/VLAN</b>：<code>Home</code>（人）與 <code>Home-IoT</code>（設備）。IoT 網段關閉「跨網段存取」，僅放行 HA 主機能連到 IoT。</li>
+        <li>規劃命名規則：實體 ID 以 <code>區域_設備_功能</code>（如 <code>living_ac</code>、<code>bedroom_curtain</code>），區域用 HA Areas：玄關/客餐廳/主臥/次臥/陽台/廚房/浴室。</li>
+        <li>準備帳號：HA 建 <b>Allen / Ann 兩個使用者</b>；Apple 家庭邀請雙方 Apple ID。</li>
+        <li>備援策略先定：HA 每日快照 + 每週外部備份（見 Phase 7 / E）。準備一顆外接 SSD 或 NAS 目的地。</li>
+      </ol>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>兩個 VLAN 可各自上網、IoT 段無法主動連主網段</li><li>路由器韌體為最新、已改預設管理密碼、關閉 WAN 側管理</li><li>命名規則與區域清單文件化</li></ul>
+    </div>
+
+    <!-- PHASE 1 -->
+    <div class="phase" id="p1" style="--accent: var(--c-evening);">
+      <div class="ph-head"><span class="ph-num">P1</span><h3>Mac mini M4 系統設定與強化</h3><span class="ph-meta">1–2 hr</span></div>
+      <div class="ph-goal">目標：把 Mac mini 設定成穩定、安全、可 24/7 無人值守的伺服器。</div>
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li>系統更新至最新 macOS；設定固定內網 IP（於路由器做 DHCP 保留，如 <code>192.168.10.2</code>）。</li>
+        <li><b>安全強化：</b>開啟 <b>FileVault</b> 全碟加密、開啟 <b>系統防火牆</b>（隱身模式）、關閉不必要的分享。</li>
+        <li><b>電源：</b>系統設定 → 節能 →「防止自動進入睡眠」「電力中斷後自動開機」「當機自動重啟」全開；關閉螢幕睡眠對背景服務無影響。</li>
+        <li><b>無人值守登入：</b>啟用自動登入或設定服務於開機執行（VM 與 Ollama 均設為登入時啟動）。</li>
+        <li>安裝套件管理：<pre><span class="c"># Homebrew（Apple Silicon）</span>
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre></li>
+        <li>開啟遠端管理：僅在<b>內網</b>啟用「螢幕共享」與（選用）SSH；不對公網開放。</li>
+      </ol>
+      <div class="note warn"><div class="i">⚠︎</div><div>Mac mini 是整套系統的單點。務必接 <b>UPS</b>，並在 Phase 7 建立「異地備份」，以便硬體故障時能在新機快速還原 HA。</div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>斷電再上電後 Mac mini 會自動開機並回到可服務狀態</li><li>FileVault 已加密、防火牆開啟</li><li>可從內網另一台裝置以螢幕共享連入</li></ul>
+    </div>
+
+    <!-- PHASE 2 -->
+    <div class="phase" id="p2" style="--accent: var(--c-sleep);">
+      <div class="ph-head"><span class="ph-num">P2</span><h3>安裝 Home Assistant（HAOS on VM）</h3><span class="ph-meta">1–2 hr</span></div>
+      <div class="ph-goal">目標：在 Mac mini 上以虛擬機執行最新穩定版 HAOS，取得完整 Supervisor / Add-on 能力。</div>
+      <h4 class="step">步驟（主線：UTM + HAOS aarch64）</h4>
+      <ol>
+        <li>安裝 UTM：<code>brew install --cask utm</code>（或 App Store）。UTM 使用 Apple Virtualization framework，M4 效能佳。</li>
+        <li>下載 <b>HAOS aarch64（generic-aarch64）</b> 最新穩定版 <code>.qcow2</code>／VMDK 映像（Home Assistant 官網 OS 下載頁）。</li>
+        <li>在 UTM 新增虛擬機：<pre><span class="c"># 建議配置</span>
+CPU  : 2–4 vCPU
+RAM  : 4 GB（若 VM 內也跑 Whisper 可給 6 GB）
+Disk : 64 GB
+Net  : Bridged（橋接到實體網卡，讓 HA 取得 IoT/主網段可達的 IP）</pre></li>
+        <li>掛載 HAOS 映像開機；等待 HAOS 初始化，於瀏覽器開 <code>http://homeassistant.local:8123</code> 或 <code>http://&lt;VM-IP&gt;:8123</code>。</li>
+        <li>完成 Onboarding：建立擁有者帳號、設定居住地/時區/單位、命名為「Allen &amp; Ann Home」。</li>
+        <li>設定 VM 開機自啟：UTM 偏好設定 → 「Start automatically」；或用 <code>utmctl</code> 於 launchd 開機啟動。</li>
+        <li>安裝核心 Add-on：<b>File editor / Studio Code Server、Mosquitto broker、Zigbee2MQTT、faster-whisper、Piper、Samba/備份工具</b>。</li>
+      </ol>
+      <div class="note info"><div class="i">ℹ︎</div><div><b>方案 B（HA Container / Docker）</b>：若不想跑 VM，可用 OrbStack/Docker Desktop 跑 <code>ghcr.io/home-assistant/home-assistant:stable</code>，另以獨立容器補 Mosquitto、Zigbee2MQTT、Wyoming-whisper、Wyoming-piper。缺點：無 Supervisor/一鍵 Add-on/內建備份，維運較繁瑣。<b>本 SOP 後續以方案 A 為準。</b></div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>重開 Mac mini 後 VM 自動啟動、HA 於 8123 可登入</li><li>Supervisor → Add-on 商店可正常瀏覽/安裝</li><li>已建立第一個手動快照備份</li></ul>
+    </div>
+
+    <!-- PHASE 3 -->
+    <div class="phase" id="p3" style="--accent: var(--c-home);">
+      <div class="ph-head"><span class="ph-num">P3</span><h3>網路、遠端存取與 TLS</h3><span class="ph-meta">1 hr</span></div>
+      <div class="ph-goal">目標：安全地遠端存取 HA，優先「公網零曝露」。</div>
+      <h4 class="step">步驟（建議：VPN 優先）</h4>
+      <ol>
+        <li><b>方案 1（強烈建議）Tailscale：</b>安裝 HA <code>Tailscale</code> Add-on 並登入，手機同裝 Tailscale。出門即透過私有網狀網路連 <code>http://&lt;ha-tailscale-ip&gt;:8123</code>，<b>路由器不需開任何 port</b>。</li>
+        <li><b>方案 2 Nabu Casa Home Assistant Cloud：</b>訂閱制、一鍵遠端 + 免自架 TLS，同時支援 Google/Alexa（此案以 Apple 為主，非必需）。</li>
+        <li><b>方案 3（備援，需嚴管）DuckDNS + Let's Encrypt：</b>安裝 <code>DuckDNS</code> Add-on 自動更新網域與憑證；於路由器只轉發 <b>443</b> 到反向代理，<b>不要直接開 8123</b>；HA 啟用 IP 封鎖與登入失敗鎖定。</li>
+        <li>啟用 HA <b>雙因素驗證（2FA）</b>（Allen、Ann 皆設）。</li>
+        <li>設定 <code>http:</code> 的 <code>ip_ban_enabled</code> 與 <code>login_attempts_threshold</code>；使用 VPN 時可加 <code>trusted_proxies</code> 白名單。</li>
+      </ol>
+      <div class="note warn"><div class="i">⚠︎</div><div>既然核心訴求是安全，請<b>避免方案 3 的對外開 port</b>，優先 Tailscale。原設計的「固定 IP + 對外 8123」不建議。</div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>關閉家中 WiFi 用行動網路仍能安全連入 HA</li><li>路由器對外 port 轉發清單為空（採 VPN 時）</li><li>兩位使用者皆已啟用 2FA</li></ul>
+    </div>
+
+    <!-- PHASE 4 -->
+    <div class="phase" id="p4" style="--accent: var(--c-secure);">
+      <div class="ph-head"><span class="ph-num">P4</span><h3>設備整合（逐子系統）</h3><span class="ph-meta">半天–1 天</span></div>
+      <div class="ph-goal">目標：把 C 章的設備逐一納入 HA，先求「單獨可控」，再談自動化。</div>
+      <h4 class="step">建議整合順序</h4>
+      <ol>
+        <li><b>Philips Hue：</b>設定 → 裝置與服務 → 新增 <code>Philips Hue</code> → 按 Bridge 配對鈕。確認 22 燈、Tap、Dimmer、Motion 皆出現；於 HA 分配區域。</li>
+        <li><b>Zigbee2MQTT（Aqara 窗簾 + 任何原生 Zigbee 感測）：</b>USB 協調器插上 Mac mini → UTM 設定將該 USB 裝置<b>透傳給 VM</b> → Z2M Add-on 指定序列埠 → permit join → 配對 Aqara C3。校正窗簾行程（0–100%）。<br><span style="color:var(--ink-3);font-size:13px">替代：用 Aqara Hub M3 走 Matter，於 HA 與 Apple Home 同時加入。</span></li>
+        <li><b>Roborock：</b>新增 <code>Roborock</code> 整合（帳號配對），取得吸塵器實體與地圖、相機快照實體。</li>
+        <li><b>TP-Link Tapo：</b>新增 <code>TP-Link Tapo</code> 整合，加入 P306 各插座；為電鍋/淨水器/投影機等設「用電量」感測。</li>
+        <li><b>Sony Bravia：</b>新增 <code>braviatv</code> 整合（電視需開啟並輸入 PIN）。同時於電視開 AirPlay/HomeKit。</li>
+        <li><b>空調（擇一）：</b>(a) HACS 安裝 <code>panasonic_cc</code> 用 Comfort Cloud 帳號（雲端）；或 (b) IR 閘道整合 + 學習遙控碼做本地控制。三台皆建立 <code>climate.*</code> 實體。</li>
+        <li><b>音訊/影音：</b>Bose 以 AirPlay/媒體播放器加入；OVO 投影機以 IR/插座控制。</li>
+      </ol>
+      <div class="note tip"><div class="i">✦</div><div>每加一個子系統就<b>單獨測試開關一次</b>並建立快照。全部設備可控後再進入 Apple Home / AI / 場景。</div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>Hue 22 燈、Aqara 窗簾、掃地機、Tapo 插座、電視、三台空調皆能在 HA 手動控制</li><li>所有實體已分配正確區域與友善名稱</li><li>窗簾開合百分比已校正</li></ul>
+    </div>
+
+    <!-- PHASE 5 -->
+    <div class="phase" id="p5" style="--accent: var(--c-morning);">
+      <div class="ph-head"><span class="ph-num">P5</span><h3>Apple Home（HomeKit）整合</h3><span class="ph-meta">1 hr</span></div>
+      <div class="ph-goal">目標：讓 iPhone「家庭」App 與 HomePod Siri 能操作全屋，HomePod 承擔語音入口與播報。</div>
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li>HA 新增 <b>HomeKit Bridge</b> 整合；用「entity/domain 篩選」<b>只匯出</b>要給 Siri 控制的實體（燈、窗簾、空調、電視、部分插座），避免把 300 多個實體全丟進 Apple Home。</li>
+        <li>iPhone 家庭 App → 加入配件 → 掃 HA 產生的 HomeKit 配對 QR/代碼。</li>
+        <li>在家庭 App 建立<b>房間</b>並把配件歸位（對應玄關/客餐廳/主臥/次臥…），指派 HomePod（客廳）與 HomePod mini（主臥）到對應房間。</li>
+        <li>設定 HomePod 為<b>家庭中樞</b>（Home Hub），讓 Apple 端自動化與遠端可用。</li>
+        <li>測試 Siri：「嘿 Siri，把客廳燈調暗」「打開主臥窗簾」「客廳冷氣 24 度」。</li>
+        <li>（播報）設定 HA 對 HomePod 的 TTS/通知路徑：可經 AirPlay 媒體播放器或 Apple 捷徑觸發，用於場景語音回饋。</li>
+      </ol>
+      <div class="note info"><div class="i">ℹ︎</div><div>採 <b>Matter</b> 的設備（如 Aqara Hub M3、部分新品）可<b>同時</b>直連 Apple Home 與 HA，多一條備援路徑；但主自動化仍集中在 HA 以維持單一大腦。</div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>iPhone 家庭 App 可見並控制精選配件</li><li>HomePod Siri 能語音控制燈/窗簾/空調</li><li>HomePod 已設為家庭中樞、房間歸位正確</li></ul>
+    </div>
+
+    <!-- PHASE 6 -->
+    <div class="phase" id="p6" style="--accent: var(--c-evening);">
+      <div class="ph-head"><span class="ph-num">P6</span><h3>本地 AI 語音（Hermes Agent 管線）</h3><span class="ph-meta">2–3 hr</span></div>
+      <div class="ph-goal">目標：在 M4 上以 Metal 加速跑本地 LLM，串成「聽懂中文 → 推理意圖 → 呼叫 HA 服務 → 中文回覆」的 100% 本地語音管家。</div>
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li><b>Ollama（macOS 原生，Metal）：</b><pre>brew install ollama
+ollama serve            <span class="c"># 背景服務（設為登入啟動）</span>
+ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼叫能力 = Hermes Agent</span></pre>
+        讓 Ollama 監聽區網（<code>OLLAMA_HOST=0.0.0.0</code>）以便 VM 內的 HA 連得到。</li>
+        <li><b>HA 接上 Ollama：</b>設定 → 裝置與服務 → 新增 <code>Ollama</code> → 填 Mac mini 的 <code>http://192.168.10.2:11434</code>，選 <code>hermes3</code>；於該對話代理<b>啟用「Assist」LLM API（允許控制家庭）</b>——這就是「Function Routing / Tool Calling」。</li>
+        <li><b>STT / TTS：</b>Add-on 安裝並啟動 <code>faster-whisper</code>（模型 <code>small</code> 或 <code>medium</code>，中文）與 <code>Piper</code>（中文聲線）。</li>
+        <li><b>Assist 管線：</b>設定 → 語音助手 → 新增管線：STT=faster-whisper、對話代理=Ollama(hermes3)、TTS=Piper。設為預設。</li>
+        <li><b>語音衛星（取代 HomePod 麥克風）：</b>設定 <b>Home Assistant Voice PE</b>（或 ESP32-S3 Atom Echo）走 Wyoming 協定，放客廳與主臥，指定使用上面的 Assist 管線與喚醒詞。手機 HA App 的 Assist 亦可作行動入口。</li>
+        <li><b>驗證工具呼叫：</b>對衛星說「開客廳燈」「主臥冷氣 24 度」「Ann 還在睡嗎？」，確認 hermes3 正確產生服務呼叫並由 HA 執行、Piper 中文回覆。</li>
+      </ol>
+      <div class="note ok"><div class="i">✓</div><div><b>與原 OpenClaw 的對應：</b>Whisper=STT、Ollama <code>hermes3</code>=推理+編排（取代 Llama 3 + 自建 Hermes 層）、Piper=TTS。差別是<b>全部走 HA 官方 Assist/Wyoming 標準介面</b>，更好維護；且 M4 Metal 推理明顯快於 N100。</div></div>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>斷網（拔 WAN）情況下語音仍能開關燈（100% 本地）</li><li>中文辨識與回覆自然、端到端延遲可接受</li><li>語音可觸發多動作場景（如「我回家了」）</li></ul>
+    </div>
+
+    <!-- PHASE 7 -->
+    <div class="phase" id="p7" style="--accent: var(--c-sleep);">
+      <div class="ph-head"><span class="ph-num">P7</span><h3>自動化場景、測試與備份</h3><span class="ph-meta">半天</span></div>
+      <div class="ph-goal">目標：導入 30 個場景、跑完驗收清單、建立自動備份。</div>
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li>依「30 場景」文件逐一建立自動化。優先落地高價值場景：<b>#4 全屋離家、#7 返家預熱、#13 女友補眠、#14 睡眠防擾、#25 凌晨告警、#29 語音全屋情境</b>。</li>
+        <li>把場景 YAML 依實際實體 ID 對應（設計中的 <code>climate.living</code>、<code>cover.bedroom_curtain</code> 等改成你 Phase 4 的命名）。</li>
+        <li>建 <code>input_select.allen_shift</code> / <code>input_select.ann_shift</code>（早班/晚班/大夜）以驅動輪班相關場景。</li>
+        <li>地理圍欄：於 Allen/Ann 手機 HA App 開啟位置，建立返家/離家 zone 觸發。</li>
+        <li><b>自動備份：</b>HA 設定每日自動快照；再用 <code>Samba Backup</code>／自動化把快照複製到外接 SSD 或 NAS（異地）。設定「備份成功/失敗」通知。</li>
+        <li>跑「總驗收清單」（下方 E 章）逐項打勾。</li>
+      </ol>
+      <h4 class="step">驗收</h4>
+      <ul class="checklist"><li>6 個核心場景實測通過</li><li>每日快照 + 每週異地備份已排程且收到成功通知</li><li>已做過一次「從備份還原」演練（在測試 VM 上）</li></ul>
+    </div>
+  </section>
+
+  <!-- ============ D · SECURITY ============ -->
+  <section class="block" id="security">
+    <h2><span class="k">E</span>安全強化清單</h2>
+    <p class="lead">呼應你「自架＝安全」的初衷。以下為分層防護要點，建議全數落實。</p>
+    <table class="tbl">
+      <thead><tr><th style="width:130px">層面</th><th>措施</th></tr></thead>
+      <tbody>
+        <tr><td><strong>網路</strong></td><td>IoT 裝置隔離 VLAN；<b>不對公網開 port</b>，遠端一律走 Tailscale/WireGuard；路由器關閉 WAN 管理、UPnP，改預設密碼。</td></tr>
+        <tr><td><strong>主機</strong></td><td>FileVault 全碟加密、系統防火牆、自動更新 macOS；僅內網開啟遠端管理；接 UPS。</td></tr>
+        <tr><td><strong>HA</strong></td><td>全員 2FA；<code>ip_ban</code> 與登入失敗鎖定；長效權杖（Long-Lived Token）最小化並定期輪替；定期更新 HA 與 Add-on。</td></tr>
+        <tr><td><strong>雲端邊界</strong></td><td>明列哪些設備為雲端依賴（空調 Comfort Cloud、洗衣機、掃地機配對）；其餘全本地。斷網時核心（燈/窗簾/本地語音）仍運作。</td></tr>
+        <tr><td><strong>資料/備份</strong></td><td>每日快照 + 每週加密異地備份；季度做一次還原演練；備份含 Z2M 與 Node-RED（若用）設定。</td></tr>
+        <tr><td><strong>帳號</strong></td><td>Allen/Ann 各自帳號與最小權限；訪客用受限儀表板；Apple 家庭以「家庭成員」邀請而非共用密碼。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ E · RUNBOOK ============ -->
+  <section class="block" id="runbook">
+    <h2><span class="k">F</span>維運手冊與總驗收</h2>
+    <h3 class="sub">例行維運節奏</h3>
+    <ul>
+      <li><b>每週：</b>檢查備份成功通知、確認所有設備在線（呼應場景 #27 離線偵測）。</li>
+      <li><b>每月：</b>更新 HA 核心與 Add-on（先快照再更新）；檢視自動化錯誤日誌。</li>
+      <li><b>每季：</b>從備份做一次還原演練；輪替長效權杖；檢查濾網/耗材提醒（場景 #24）。</li>
+    </ul>
+
+    <h3 class="sub">故障快速排除</h3>
+    <table class="tbl">
+      <thead><tr><th style="width:200px">症狀</th><th>先查</th></tr></thead>
+      <tbody>
+        <tr><td>全部設備失控</td><td>Mac mini 是否開機 → VM 是否啟動 → HA 8123 是否可登入 → 路由器/VLAN。</td></tr>
+        <tr><td>語音沒反應</td><td>Ollama 服務是否在跑（<code>ollama ps</code>）→ HA Assist 管線設定 → 語音衛星在線。</td></tr>
+        <tr><td>Siri 控不到某設備</td><td>該實體是否在 HomeKit Bridge 匯出清單 → 重新載入 HomeKit 整合。</td></tr>
+        <tr><td>窗簾/Zigbee 掉線</td><td>USB 協調器透傳是否正常 → Z2M 記錄 → 是否需增設 Zigbee 路由器（訊號）。</td></tr>
+        <tr><td>空調控不到</td><td>Comfort Cloud 是否需重新登入（雲端 token 過期）→ 或改走 IR 閘道。</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">總驗收清單（上線前）</h3>
+    <ul class="checklist">
+      <li>斷 WAN 測試：燈、窗簾、本地語音仍可運作</li>
+      <li>Mac mini 強制斷電再上電，10 分鐘內全系統自動恢復</li>
+      <li>Allen 與 Ann 手機皆可（VPN）遠端存取、皆已 2FA</li>
+      <li>iPhone 家庭 App 與 HomePod Siri 可控全屋精選設備</li>
+      <li>6 個核心自動化場景實測通過</li>
+      <li>每日快照 + 每週異地備份已排程並驗證可還原</li>
+      <li>路由器對外 port 轉發為空、IoT VLAN 隔離生效</li>
+      <li>雲端依賴設備清單已文件化並告知使用者</li>
+    </ul>
+
+    <div class="note ok"><div class="i">✓</div><div>完成以上，即達成你設定的目標：<b>Mac mini M4 自架、Home Assistant 為大腦、Hermes Agent 本地語音、Apple Home 為前台、以安全與本地優先</b>的智慧家庭。後續可再擴充場景與 Matter 設備。</div></div>
+  </section>
+
+  </main>
+</div>
+</div>
+</body>
+</html>
