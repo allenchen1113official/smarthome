@@ -100,10 +100,10 @@
   <div class="crumb">/ 04 · BUILD SOP &amp; DESIGN REVIEW</div>
   <h1>從無到有：建置標準作業程序</h1>
   <p class="subtitle">本文件先審查現有 v1.0 設計（HA Black · N100 · OpenClaw），再依你最新的需求 —
-  <b>Mac mini M4 自架 · Home Assistant · Hermes Agent · Apple Home 生態</b> —
+  <b>Mac mini M4 自架 · Home Assistant · Hermes Agent · OpenClaw Agent · Apple Home 生態</b> —
   提供一份可逐步執行、以「安全與 100% 本地」為核心的完整建置 SOP。</p>
   <div class="stat-row">
-    <div class="s"><div class="n">8</div><div class="l">建置階段 Phase 0–7</div></div>
+    <div class="s"><div class="n">9</div><div class="l">建置階段 Phase 0–8</div></div>
     <div class="s"><div class="n">7</div><div class="l">設計審查重點</div></div>
     <div class="s"><div class="n">15+</div><div class="l">整合設備類別</div></div>
     <div class="s"><div class="n">30</div><div class="l">自動化場景沿用</div></div>
@@ -127,6 +127,7 @@
     <a href="#p5" class="sub">Phase 5 · Apple Home</a>
     <a href="#p6" class="sub">Phase 6 · 本地 AI 語音</a>
     <a href="#p7" class="sub">Phase 7 · 場景與驗收</a>
+    <a href="#p8" class="sub">Phase 8 · OpenClaw Agent</a>
     <a href="#security">D · 安全強化</a>
     <a href="#runbook">E · 維運手冊</a>
   </nav>
@@ -247,8 +248,8 @@
 
   <!-- ============ PHASES ============ -->
   <section class="block" id="phases">
-    <h2><span class="k">D</span>建置 SOP（Phase 0–7）</h2>
-    <p class="lead">依序執行；每階段都有「目標／步驟／驗收」。指令以 Apple Silicon macOS 為準。建議每完成一階段就做一次 HA 快照備份。</p>
+    <h2><span class="k">D</span>建置 SOP（Phase 0–8）</h2>
+    <p class="lead">依序執行；每階段都有「目標／步驟／驗收」。指令以 Apple Silicon macOS 為準。建議每完成一階段就做一次 HA 快照備份。Phase 0–7 為核心系統；Phase 8 為選配的 OpenClaw Agent 訊息管家，建議核心穩定運作一至兩週後再導入。</p>
 
     <!-- PHASE 0 -->
     <div class="phase" id="p0" style="--accent: var(--c-morning);">
@@ -399,6 +400,42 @@ ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼�
       <h4 class="step">驗收</h4>
       <ul class="checklist"><li>6 個核心場景實測通過</li><li>每日快照 + 每週異地備份已排程且收到成功通知</li><li>已做過一次「從備份還原」演練（在測試 VM 上）</li></ul>
     </div>
+
+    <!-- PHASE 8 -->
+    <div class="phase" id="p8" style="--accent: var(--c-home);">
+      <div class="ph-head"><span class="ph-num">P8</span><h3>OpenClaw Agent（訊息 AI 管家）</h3><span class="ph-meta">2–3 hr · 選配</span></div>
+      <div class="ph-goal">目標：在 Mac mini 部署開源 <b>OpenClaw</b> agent，成為透過 Telegram／WhatsApp 等訊息軟體溝通的家庭 AI 管家——查詢家中狀態、控制設備、排程主動通知，與 Phase 6 的語音管線互補：<b>在家用語音喊、在外用訊息聊</b>。</div>
+
+      <div class="note info"><div class="i">ℹ︎</div><div><b>名詞釐清：</b>v1.0 設計頁的「OpenClaw」是自建語音管線的<b>專案代號</b>（Whisper + Llama 3 + Hermes + Piper），該能力已在 Phase 6 以 HA Assist 標準介面落地。本階段的 OpenClaw 指<b>開源 AI 助理閘道專案</b>（openclaw.ai）：跑在自己主機上、以訊息軟體為介面、能呼叫工具（含 Home Assistant）並可排程任務的個人 agent，與 Mac mini 常駐部署高度契合。兩者不衝突、角色互補。</div></div>
+
+      <h4 class="step">步驟</h4>
+      <ol>
+        <li><b>安裝與初始化：</b><pre><span class="c"># 需 Node.js 22+（brew install node）</span>
+npm install -g openclaw@latest
+openclaw onboard        <span class="c"># 精靈引導：Gateway、模型、通道</span>
+openclaw daemon install <span class="c"># launchd 常駐、開機自啟</span></pre>
+        Gateway 預設僅監聽 <code>127.0.0.1:18789</code>——<b>保持 loopback，不對外開放</b>；需遠端管理時走 Phase 3 的 Tailscale。</li>
+        <li><b>選擇模型（擇一）：</b>(a) <b>Claude API</b>——工具呼叫與中文能力最佳，但為雲端依賴；(b) <b>本地 Ollama</b>——沿用 Phase 6 的 <code>http://127.0.0.1:11434</code>（<code>hermes3</code> 或更大模型），100% 本地、隱私最大化，複雜任務能力較弱。在文件中據實標示所選路徑的雲端邊界。</li>
+        <li><b>接訊息通道：</b>建議先接 <b>Telegram</b>（BotFather 建立 bot token，設定最簡單）；WhatsApp（QR 配對）可後補。<b>開啟 DM 白名單／配對機制，僅允許 Allen 與 Ann 的帳號</b>，群組與陌生訊息一律不觸發。</li>
+        <li><b>整合 Home Assistant：</b>在 HA 建立<b>專用最小權限使用者</b>與 Long-Lived Token；將 HA REST API 設為 OpenClaw 的工具／skill（社群已有 Home Assistant skill 與 MCP server 可用）：<pre><span class="c"># agent 需要的兩類呼叫</span>
+GET  /api/states                 <span class="c"># 查狀態：溫度、燈、門窗、在家狀態</span>
+POST /api/services/&lt;domain&gt;/&lt;svc&gt; <span class="c"># 控制：燈、空調、窗簾、場景</span></pre></li>
+        <li><b>主動任務（cron）：</b>07:00 每日簡報（天氣＋今日輪班＋家中狀態總覽）、23:30 就寢檢查（燈／空調／門窗一覽）、HA 異常告警經 webhook 轉發給 OpenClaw 推送——相較單向 App 推播，訊息通道可<b>雙向追問</b>（「哪扇窗沒關？」「幫我關」）。</li>
+        <li><b>與既有場景串接：</b>把場景 <b>#6 股市摘要、#25 凌晨告警、#27 設備離線</b> 的通知出口改走 OpenClaw 訊息通道；語音場景（#29/#30）維持 Phase 6 Assist 管線不變。</li>
+        <li><b>測試：</b>傳「家裡現在幾度？」「把客廳燈關掉」「今晚 11 點提醒我收衣服」，確認查詢、控制、排程三類能力都正常。</li>
+      </ol>
+
+      <div class="note warn"><div class="i">⚠︎</div><div><b>Agent 權限是本階段的安全重點：</b>OpenClaw 是「能執行工具的 agent」，務必——① 僅 DM 白名單可觸發；② HA token 用專用最小權限帳號並定期輪替；③ <b>不開放 shell 全權</b>，工具僅限必要的 HA 呼叫；④ Gateway 僅綁 loopback；⑤ 防範 prompt injection：agent 讀取外部網頁／轉傳內容後<b>不得直接執行高風險動作</b>，解除警戒、開門鎖類操作一律設二次確認；⑥ 以獨立 macOS 使用者帳號執行，與個人資料及 HA VM 隔離。</div></div>
+
+      <h4 class="step">驗收</h4>
+      <ul class="checklist">
+        <li>Telegram 詢問家中狀態可得到正確回覆；「關客廳燈」能實際執行並回報</li>
+        <li>07:00 每日簡報準時送達 Allen 與 Ann</li>
+        <li>陌生帳號傳訊不觸發任何動作（白名單生效）</li>
+        <li>Mac mini 重開機後 OpenClaw daemon 自動恢復</li>
+        <li>HA 中可見 OpenClaw 專用使用者的操作日誌（可稽核）</li>
+      </ul>
+    </div>
   </section>
 
   <!-- ============ D · SECURITY ============ -->
@@ -412,7 +449,8 @@ ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼�
         <tr><td><strong>主機</strong></td><td>FileVault 全碟加密、系統防火牆、自動更新 macOS；僅內網開啟遠端管理；接 UPS。</td></tr>
         <tr><td><strong>HA</strong></td><td>全員 2FA；<code>ip_ban</code> 與登入失敗鎖定；長效權杖（Long-Lived Token）最小化並定期輪替；定期更新 HA 與 Add-on。</td></tr>
         <tr><td><strong>雲端邊界</strong></td><td>明列哪些設備為雲端依賴（空調 Comfort Cloud、洗衣機、掃地機配對）；其餘全本地。斷網時核心（燈/窗簾/本地語音）仍運作。</td></tr>
-        <tr><td><strong>資料/備份</strong></td><td>每日快照 + 每週加密異地備份；季度做一次還原演練；備份含 Z2M 與 Node-RED（若用）設定。</td></tr>
+        <tr><td><strong>Agent 層</strong></td><td>OpenClaw 僅 DM 白名單觸發；專用最小權限 HA token；Gateway 僅綁 <code>127.0.0.1</code>；工具不含 shell 全權；高風險動作（門鎖/警戒）二次確認；以獨立 macOS 帳號執行；prompt injection 防範（外部內容不直接觸發動作）。</td></tr>
+        <tr><td><strong>資料/備份</strong></td><td>每日快照 + 每週加密異地備份；季度做一次還原演練；備份含 Z2M 與 Node-RED（若用）設定、OpenClaw 設定目錄（<code>~/.openclaw</code>）。</td></tr>
         <tr><td><strong>帳號</strong></td><td>Allen/Ann 各自帳號與最小權限；訪客用受限儀表板；Apple 家庭以「家庭成員」邀請而非共用密碼。</td></tr>
       </tbody>
     </table>
@@ -424,7 +462,7 @@ ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼�
     <h3 class="sub">例行維運節奏</h3>
     <ul>
       <li><b>每週：</b>檢查備份成功通知、確認所有設備在線（呼應場景 #27 離線偵測）。</li>
-      <li><b>每月：</b>更新 HA 核心與 Add-on（先快照再更新）；檢視自動化錯誤日誌。</li>
+      <li><b>每月：</b>更新 HA 核心與 Add-on（先快照再更新）；更新 OpenClaw（<code>openclaw update</code>，注意其發佈頻率高，更新前看 changelog）；檢視自動化錯誤日誌。</li>
       <li><b>每季：</b>從備份做一次還原演練；輪替長效權杖；檢查濾網/耗材提醒（場景 #24）。</li>
     </ul>
 
@@ -437,6 +475,7 @@ ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼�
         <tr><td>Siri 控不到某設備</td><td>該實體是否在 HomeKit Bridge 匯出清單 → 重新載入 HomeKit 整合。</td></tr>
         <tr><td>窗簾/Zigbee 掉線</td><td>USB 協調器透傳是否正常 → Z2M 記錄 → 是否需增設 Zigbee 路由器（訊號）。</td></tr>
         <tr><td>空調控不到</td><td>Comfort Cloud 是否需重新登入（雲端 token 過期）→ 或改走 IR 閘道。</td></tr>
+        <tr><td>OpenClaw 沒回應</td><td><code>openclaw status</code> 看 daemon 與通道連線 → Telegram/WhatsApp session 是否掉線 → 模型供應端（<code>ollama ps</code> 或 API 額度）→ 看 gateway log。</td></tr>
       </tbody>
     </table>
 
@@ -450,9 +489,10 @@ ollama pull hermes3     <span class="c"># NousResearch Hermes 3，具工具呼�
       <li>每日快照 + 每週異地備份已排程並驗證可還原</li>
       <li>路由器對外 port 轉發為空、IoT VLAN 隔離生效</li>
       <li>雲端依賴設備清單已文件化並告知使用者</li>
+      <li>（選配 P8）OpenClaw 僅白名單可觸發、HA token 為最小權限、gateway 未對外</li>
     </ul>
 
-    <div class="note ok"><div class="i">✓</div><div>完成以上，即達成你設定的目標：<b>Mac mini M4 自架、Home Assistant 為大腦、Hermes Agent 本地語音、Apple Home 為前台、以安全與本地優先</b>的智慧家庭。後續可再擴充場景與 Matter 設備。</div></div>
+    <div class="note ok"><div class="i">✓</div><div>完成以上，即達成你設定的目標：<b>Mac mini M4 自架、Home Assistant 為大腦、Hermes Agent 本地語音、OpenClaw Agent 為訊息管家、Apple Home 為前台、以安全與本地優先</b>的智慧家庭。後續可再擴充場景與 Matter 設備。</div></div>
   </section>
 
   </main>

@@ -3,7 +3,8 @@
 本目錄存放 Allen 與 Ann 智慧家庭的完整設計文件，全部為單機可開的靜態 HTML，無需建置流程。
 
 > **建置指南 / 架構更新：** `sop.html` 為最新的「從無到有」建置 SOP，並包含對 v1.0 設計的審查。
-> 依最新需求，主機由 **HA Black（N100）改為 Mac mini M4 自架**（Home Assistant + Hermes Agent + Apple Home）。
+> 依最新需求，主機由 **HA Black（N100）改為 Mac mini M4 自架**（Home Assistant + Hermes Agent + OpenClaw Agent + Apple Home）。
+> Phase 8 新增 **OpenClaw**（開源 AI 助理閘道）作為訊息介面的家庭管家，與本地語音管線互補。
 > 下方硬體表與其他頁面仍描述 v1.0 規劃，實際建置請以 `sop.html` 為準。
 
 ## 檔案結構
@@ -14,7 +15,7 @@ design/
 ├── topology.html           網路拓樸圖 — 五層互動節點圖，可篩選連線類型
 ├── scenes.html             30 個自動化場景 — 網格/時序雙視圖，可展開 YAML
 ├── openclaw.html           OpenClaw 架構 — 八步語音流程動畫
-├── sop.html                建置 SOP + 設計審查 — Mac mini M4 版逐步建置指南
+├── sop.html                建置 SOP + 設計審查 — Mac mini M4 版逐步建置指南（Phase 0–8，含 OpenClaw Agent）
 ├── deck.html               9 張投影片版本（1920×1080，可匯出 PPTX）
 ├── smart-home-print.html   4 頁 A4 橫向列印版（可匯出 PDF）
 └── shared/
