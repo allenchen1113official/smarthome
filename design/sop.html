@@ -100,19 +100,19 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.0 · 2026-10-25</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.3 · 2026-11-05</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>
 </header>
 <div class="wrap">
-  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a><a href="#3.12-驗證清單">3.12 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div></nav>
+  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#一頁快速開始">一頁快速開始</a><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a><a href="#3.12-驗證清單">3.12 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch13"><span>📟</span>12 儀表板建置</a><div class="nav-sub"><a href="#12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</a><a href="#12.2-前置">12.2 前置</a><a href="#12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</a><a href="#12.4-壁掛平板設定">12.4 壁掛平板設定</a><a href="#12.5-手機">12.5 手機</a><a href="#12.6-驗收">12.6 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch14"><span>📎</span>附錄 A 總表</a><div class="nav-sub"><a href="#a.1-ip-總表">A.1 IP 總表</a><a href="#a.2-埠總表">A.2 埠總表</a><a href="#a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</a><a href="#a.4-實體命名速查">A.4 實體命名速查</a><a href="#a.5-檔案與目錄位置">A.5 檔案與目錄位置</a><a href="#a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</a><a href="#a.7-變更紀錄">A.7 變更紀錄</a></div></div></nav>
   <main>
     <div class="hero">
       <h1>從無到有：Mac mini M4 × Home Assistant × OpenClaw × Hermes</h1>
       <p>依 <code>design/</code> 規劃文件逐章實作的新手建置手冊：網路拓樸、HAOS 虛擬機、設備整合、本地語音管線、Hermes 管家，以及 35 個自動化情境的完整 YAML 與驗收步驟。</p>
       <div class="stats">
-        <div class="stat"><b>12</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
+        <div class="stat"><b>14</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
       </div>
       <div class="scenes">
         <h2>情境索引</h2>
@@ -122,9 +122,40 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
     </div>
     <section id="ch0" class="chapter"><div class="eyebrow">📘 手冊首頁</div><h1 id="allen-ann-智慧家庭-從無到有建置-sop">Allen &amp; Ann 智慧家庭 — 從無到有建置 SOP</h1>
 <blockquote>
-<p>版本 1.0 · 2026-10-25（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
+<p>版本 1.3 · 2026-11-05（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。</p>
 </blockquote>
+<h2 id="一頁快速開始">一頁快速開始</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>想要</th>
+<th>做這些</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最快跑起來（推薦）</td>
+<td>01 網路 → <code>bluemagpie/install.sh</code>（09）→ 後台填參數 → OpenClaw 一鍵串接 → 12 儀表板 → 06 逐一驗證情境</td>
+</tr>
+<tr>
+<td>傳統 HAOS 路線</td>
+<td>01 → 02 → 03 → 06 → 04 → 05 → 07 → 08</td>
+</tr>
+<tr>
+<td>第二台熱備 + 負載均衡</td>
+<td>09 §9.5（副節點）→ 11（LB）</td>
+</tr>
+<tr>
+<td>家人遠端控制</td>
+<td>10（Telegram 10 分鐘、LINE 需 https）</td>
+</tr>
+<tr>
+<td>查任何 IP / 埠 / 密鑰</td>
+<td>附錄 A</td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="文件地圖">文件地圖</h2>
 <div class="tbl"><table>
 <thead>
@@ -207,6 +238,18 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <td><a href="#ch12">11-雙節點安裝範例-負載均衡.md</a></td>
 <td>安裝範例：Mac mini 主 + HA Black 副，HAProxy + keepalived VIP，無狀態服務雙活、HA 主從自動切換、故障演練</td>
 <td>1 天</td>
+</tr>
+<tr>
+<td>12</td>
+<td><a href="#ch13">12-儀表板建置.md</a></td>
+<td>依 Claude Design 優化稿做成 HA 原生 Sections 儀表板（首頁 / 客廳房間頁 / 情境總控），壁掛平板與手機設定</td>
+<td>2 小時</td>
+</tr>
+<tr>
+<td>A</td>
+<td><a href="#ch14">A-附錄-總表.md</a></td>
+<td>IP / 埠 / 密鑰 / 實體 / 檔案位置 / 兩條路線選擇 / 變更紀錄</td>
+<td>隨查</td>
 </tr>
 </tbody>
 </table></div>
@@ -808,7 +851,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </details>
 
 <h2 id="1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</h2>
-<p>網段 <code>192.168.0.0/24</code>，路由器 <code>192.168.0.1</code>，DHCP 動態池 <code>192.168.0.100–199</code>，以下全部用 <strong>DHCP 保留</strong>（依 MAC 固定發同一個 IP），不要在設備端手動設靜態 IP。</p>
+<p>網段 <code>192.168.0.0/24</code>，路由器 <code>192.168.0.1</code>，DHCP 動態池 <code>192.168.0.101–199</code>（<code>.100</code> 保留給 VIP），以下全部用 <strong>DHCP 保留</strong>（依 MAC 固定發同一個 IP），不要在設備端手動設靜態 IP。</p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -839,9 +882,21 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </tr>
 <tr>
 <td>.12</td>
-<td>HA Black（副節點，24/7 熱備）</td>
+<td>HA Black（副節點，24/7 熱備；LB-B）</td>
 <td>LAN2 有線</td>
-<td>:8123、SMB :445、Tailscale</td>
+<td>:8123、SMB :445、Tailscale、HAProxy/keepalived</td>
+</tr>
+<tr>
+<td>.13</td>
+<td>LB-A（Mac mini 上的 Alpine VM，橋接）</td>
+<td>橋接</td>
+<td>HAProxy + keepalived（11 章）</td>
+</tr>
+<tr>
+<td>.100</td>
+<td>VIP（keepalived 虛擬 IP）</td>
+<td>—</td>
+<td>手機 / 捷徑 / Hermes / Wyoming 的統一入口（11 章）</td>
 </tr>
 <tr>
 <td>.20</td>
@@ -898,7 +953,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <td></td>
 </tr>
 <tr>
-<td>.100–.199</td>
+<td>.101–.199</td>
 <td>手機、筆電</td>
 <td>DHCP</td>
 <td></td>
@@ -956,7 +1011,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </tr>
 <tr>
 <td>進階 → 網路 → DHCP 伺服器</td>
-<td>位址池 <code>192.168.0.100 – 192.168.0.199</code>；主要 DNS <code>192.168.0.1</code>，備用 <code>1.1.1.1</code></td>
+<td>位址池 <code>192.168.0.101 – 192.168.0.199</code>（.100 留給 VIP）；主要 DNS <code>192.168.0.1</code>，備用 <code>1.1.1.1</code></td>
 </tr>
 <tr>
 <td>進階 → 網路 → DHCP → 位址保留</td>
@@ -1144,7 +1199,28 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <td>8800</td>
 <td>TCP</td>
 <td>Hermes Agent（Ollama 相容 <code>/api/chat</code> + <code>/v1/*</code>）</td>
-<td>.10</td>
+<td>.10 / VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8900</td>
+<td>TCP</td>
+<td>LINE / Telegram bot（青鳥）</td>
+<td>.11 / VIP</td>
+<td>僅 /line/webhook 經 443</td>
+</tr>
+<tr>
+<td>9000</td>
+<td>TCP</td>
+<td>青鳥後台</td>
+<td>.11 / .12 / VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8404</td>
+<td>TCP</td>
+<td>HAProxy 統計頁</td>
+<td>.13 / .12</td>
 <td>否</td>
 </tr>
 <tr>
@@ -2680,6 +2756,15 @@ script:
         then:
           - action: script.say
             data: { message: &quot;{{ message }}&quot;, target: living_homepod }
+
+  # ---------- 離家（儀表板手動按鈕，12 章）----------
+  home_leave:
+    alias: 離家（手動）
+    icon: mdi:home-export-outline
+    sequence:
+      - action: automation.trigger
+        target: { entity_id: automation.s04_leave_home }
+        data: { skip_condition: true }
 </code></pre>
 <h3 id="共用-package-s00_voice.yaml-語音入口-29-35-與-siri-捷徑都靠它">共用 package：s00_voice.yaml（語音入口；29–35 與 Siri 捷徑都靠它）</h3>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-yaml"># file: packages/s00_voice.yaml
@@ -7165,6 +7250,63 @@ automation:
 </tr>
 </tbody>
 </table></div>
+<h3 id="青鳥-docker-路線-負載均衡">青鳥 Docker 路線 / 負載均衡</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>症狀</th>
+<th>檢查</th>
+<th>處置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>後台「套用」後容器沒變</td>
+<td>後台總覽「重啟」結果</td>
+<td>埠／profile 變更要在主機 <code>docker compose up -d</code>；docker.sock 是否掛載</td>
+</tr>
+<tr>
+<td>套用後 HA 設定無效</td>
+<td>HA 設定 → 系統 → 記錄</td>
+<td>開發者工具 → YAML → 檢查設定；<code>packages/s00_magpie.yaml</code> 由後台產生，勿手改</td>
+</tr>
+<tr>
+<td>副節點沒收到備份</td>
+<td>主節點後台事件「推送失敗」</td>
+<td>兩邊 <code>shared_secret</code> 相同；副節點 9000 可達；時間同步</td>
+</tr>
+<tr>
+<td>副節點誤接手</td>
+<td>副節點事件</td>
+<td>主節點後台 9000 被防火牆擋 → 放行；或關 <code>auto_promote</code> 改手動</td>
+</tr>
+<tr>
+<td>VIP 不在任何 LB</td>
+<td>兩台 <code>ip addr</code>、<code>journalctl -u keepalived</code></td>
+<td>同網段、<code>virtual_router_id</code> 相同、<code>auth_pass</code> 相同；VM 橋接而非 NAT</td>
+</tr>
+<tr>
+<td>HAProxy 後端全 DOWN</td>
+<td><code>:8404/stats</code></td>
+<td>健康檢查路徑／期望碼；節點防火牆；<code>ip_nonlocal_bind</code></td>
+</tr>
+<tr>
+<td>Telegram 機器人沒回</td>
+<td><code>docker compose logs bot</code></td>
+<td>token 正確；成員 ID 已在白名單；同一 token 只能有一個 polling（副節點 bot 必須停止）</td>
+</tr>
+<tr>
+<td>LINE webhook 驗證失敗</td>
+<td>LINE Console Verify</td>
+<td>443 → bot:8900 的反向代理路徑 <code>/line/webhook</code>；Channel secret 正確</td>
+</tr>
+<tr>
+<td>Grok 沒生效</td>
+<td><code>docker compose logs hermes</code></td>
+<td><code>GROK_API_KEY</code>；<code>llm.provider: grok</code>；看是否 <code>fallback → ollama</code></td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">brew install node
 sudo npm i -g zigbee2mqtt
@@ -7208,6 +7350,14 @@ Z2M_DATA=~/openclaw/z2m zigbee2mqtt    # 正常後寫成 launchd plist（仿 04 
 <tr>
 <td>新增情境時</td>
 <td>走憲章流程：<code>/speckit-specify</code> → clarify → plan → 兩人 review → 先在備援機測 → 部署 → 文件</td>
+</tr>
+<tr>
+<td>青鳥路線每月</td>
+<td><code>git pull &amp;&amp; docker compose pull &amp;&amp; docker compose up -d --build</code>；先看 HA release notes；更新前後台「立即備份」</td>
+</tr>
+<tr>
+<td>每季</td>
+<td>11 章五項故障演練；附錄 A 密鑰輪替檢查（HA 權杖、共用密鑰）</td>
 </tr>
 </tbody>
 </table></div></section><section id="ch10" class="chapter"><div class="eyebrow">🐦 09 青鳥一鍵部署</div><h1 id="09-青鳥-台灣藍鵲-一鍵-docker-部署與後台">09 · 青鳥 · 台灣藍鵲：一鍵 Docker 部署與後台</h1>
@@ -8095,6 +8245,972 @@ curl -s http://192.168.0.100:8800/v1/health                                   # 
 <td>7</td>
 <td>兩台後台事件都有完整紀錄；稽核 log 正常</td>
 <td>☐</td>
+</tr>
+</tbody>
+</table></div></section><section id="ch13" class="chapter"><div class="eyebrow">📟 12 儀表板建置</div><h1 id="12-儀表板建置-壁掛平板-手機">12 · 儀表板建置（壁掛平板 / 手機）</h1>
+<blockquote>
+<p>目標：把 Claude Design 的優化設計做成 Home Assistant 原生儀表板（Sections 版面 + 內建卡片，不需 HACS），壁掛平板與手機共用同一份；Ann 不用學就會用。
+設計稿：<code>design/</code> 的 Claude Design 畫布（首頁 / 客廳房間頁 / 手機首頁）。</p>
+</blockquote>
+<h2 id="12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>設計重點</th>
+<th>HA 做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>首頁先回答「家現在怎樣」</td>
+<td>第一個 section：兩人狀態、天氣、待處理件數（<code>tile</code> + <code>conditional</code>）</td>
+</tr>
+<tr>
+<td>「最愛」改成情境列</td>
+<td><code>tile</code> 綁 <code>input_boolean.sleep_mode / movie_mode / guest_mode</code>，離家綁 <code>script.home_leave</code>（tap = 執行）</td>
+</tr>
+<tr>
+<td>房間卡片顯示實際狀態</td>
+<td>每房間一個 section：<code>heading</code> 顯示溫度徽章、<code>tile</code> 燈群（亮度 feature）、<code>tile</code> 冷氣（目標溫度 feature）、<code>tile</code> 窗簾（位置 feature）</td>
+</tr>
+<tr>
+<td>修復／更新收進「系統」</td>
+<td>最後一個 section，<code>conditional</code> 只在有更新或離線時出現</td>
+</tr>
+<tr>
+<td>Hermes 狀態與情境啟停</td>
+<td><code>tile</code> 綁 <code>binary_sensor.hermes_online</code>；「情境總控」獨立一個 view</td>
+</tr>
+<tr>
+<td>股票圖卡</td>
+<td><code>picture</code> 卡 <code>/local/hermes/latest.png</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="12.2-前置">12.2 前置</h2>
+<ul>
+<li>03 章命名規則全部到位（<code>light.living_all</code>、<code>climate.living</code>、<code>cover.living_curtain</code>…）。</li>
+<li><code>script.home_leave</code>：在 <code>packages/s00_common.yaml</code> 加一個腳本呼叫情境 04 的動作（或直接 <code>automation.trigger</code> <code>automation.s04_leave_home</code> 並 <code>skip_condition: true</code>）。</li>
+<li>人員頭像：設定 → 人員 → 上傳相片（tile 會顯示）。</li>
+<li>天氣 <code>weather.home</code>、空品 <code>sensor.aqi_home</code>（選配）。</li>
+</ul>
+<h2 id="12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</h2>
+<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-yaml">title: Allen &amp; Ann
+views:
+  # ===================== 首頁 =====================
+  - title: 首頁
+    path: home
+    type: sections
+    max_columns: 4
+    sections:
+      # --- 現況 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 現在
+            heading_style: title
+            badges:
+              - type: entity
+                entity: weather.home
+                show_name: false
+              - type: entity
+                entity: sensor.living_temperature
+                name: 客廳
+          - type: tile
+            entity: person.allen
+            name: Allen
+            show_entity_picture: true
+            state_content: [state, last_changed]
+          - type: tile
+            entity: person.ann
+            name: Ann
+            show_entity_picture: true
+            state_content: [state, last_changed]
+          - type: tile
+            entity: input_select.ann_shift
+            name: Ann 班別
+            icon: mdi:account-clock-outline
+            features:
+              - type: select-options
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.hermes_online
+                state: &quot;off&quot;
+            card:
+              type: tile
+              entity: binary_sensor.hermes_online
+              name: Hermes 離線
+              color: red
+      # --- 情境 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 情境
+            heading_style: title
+          - type: tile
+            entity: input_boolean.sleep_mode
+            name: 睡眠
+            icon: mdi:sleep
+            color: indigo
+            tap_action: { action: toggle }
+          - type: tile
+            entity: input_boolean.movie_mode
+            name: 影音
+            icon: mdi:movie-open
+            color: purple
+            tap_action: { action: toggle }
+          - type: tile
+            entity: input_boolean.guest_mode
+            name: 訪客
+            icon: mdi:account-group
+            color: amber
+            tap_action: { action: toggle }
+          - type: tile
+            entity: script.home_leave
+            name: 離家
+            icon: mdi:home-export-outline
+            color: green
+            tap_action: { action: perform-action, perform_action: script.home_leave, confirmation: { text: 關閉全屋燈光與冷氣？ } }
+      # --- 客廳 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 客廳
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.living_temperature
+                show_name: false
+              - type: entity
+                entity: sensor.living_humidity
+                show_name: false
+            tap_action: { action: navigate, navigation_path: /lovelace/living }
+          - type: tile
+            entity: light.living_all
+            name: 燈光
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: climate.living
+            name: 冷氣
+            features:
+              - type: target-temperature
+          - type: tile
+            entity: cover.living_curtain
+            name: 窗簾
+            features:
+              - type: cover-position
+          - type: tile
+            entity: media_player.living_homepod
+            name: HomePod
+            features:
+              - type: media-player-volume-slider
+      # --- 主臥 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 主臥
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.master_temperature
+                show_name: false
+          - type: tile
+            entity: light.master_all
+            name: 燈光
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: climate.master
+            name: 冷氣
+            features:
+              - type: target-temperature
+          - type: tile
+            entity: cover.bedroom_curtain
+            name: 窗簾
+            features:
+              - type: cover-position
+      # --- 次臥 / 玄關 / 浴室 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 其他房間
+            heading_style: title
+          - type: tile
+            entity: light.second_all
+            name: 次臥燈
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: climate.second
+            name: 次臥冷氣
+          - type: tile
+            entity: sensor.second_desk_plug_power
+            name: 電腦
+          - type: tile
+            entity: light.entry_1
+            name: 玄關燈
+          - type: tile
+            entity: binary_sensor.front_door
+            name: 大門
+          - type: tile
+            entity: switch.bath_fan
+            name: 浴室抽風
+      # --- 正在發生 ---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 正在發生
+            heading_style: title
+          - type: tile
+            entity: vacuum.qrevo
+            name: 掃地機
+            features:
+              - type: vacuum-commands
+                commands: [start_pause, return_home]
+          - type: tile
+            entity: binary_sensor.living_motion
+            name: 客廳動作
+          - type: tile
+            entity: binary_sensor.hallway_motion
+            name: 走廊動作
+          - type: picture
+            image: /local/hermes/latest.png
+            alt_text: 盤後掃描圖卡
+      # --- 系統（只在需要時出現）---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 系統
+            heading_style: title
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.wan_ping
+                state: &quot;off&quot;
+            card: { type: tile, entity: binary_sensor.wan_ping, name: 網路斷線, color: red }
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.hermes_world_entities
+                below: 1
+            card: { type: tile, entity: sensor.hermes_world_entities, name: Hermes 未同步, color: amber }
+          - type: tile
+            entity: binary_sensor.is_primary_node
+            name: 節點角色
+          - type: tile
+            entity: update.home_assistant_core_update
+            name: HA 更新
+            visibility:
+              - condition: state
+                entity: update.home_assistant_core_update
+                state: &quot;on&quot;
+
+  # ===================== 客廳房間頁 =====================
+  - title: 客廳
+    path: living
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: 場景
+            heading_style: title
+          - type: tile
+            entity: scene.living_welcome
+            name: Welcome
+            icon: mdi:door-open
+          - type: tile
+            entity: scene.living_dinner
+            name: 晚餐 2700K
+            icon: mdi:silverware-fork-knife
+          - type: tile
+            entity: input_boolean.movie_mode
+            name: 影音
+            icon: mdi:movie-open
+            tap_action: { action: toggle }
+          - type: tile
+            entity: light.living_all
+            name: 全關
+            icon: mdi:lightbulb-off
+            tap_action: { action: perform-action, perform_action: light.turn_off, target: { entity_id: light.living_all } }
+      - type: grid
+        cards:
+          - type: heading
+            heading: 燈光
+            heading_style: title
+          - type: tile
+            entity: light.living_all
+            name: 客餐廳燈群
+            features:
+              - type: light-brightness
+              - type: light-color-temp
+          - type: entities
+            title: 逐盞
+            entities:
+              - light.living_1
+              - light.living_2
+              - light.living_3
+              - light.living_4
+              - light.living_5
+              - light.living_6
+              - light.living_7
+              - light.living_8
+              - light.living_9
+              - light.living_10
+              - light.play_bar
+              - switch.hue_sync_box_power
+      - type: grid
+        cards:
+          - type: heading
+            heading: 冷氣 / 窗簾 / 音訊
+            heading_style: title
+          - type: thermostat
+            entity: climate.living
+            features:
+              - type: climate-hvac-modes
+                hvac_modes: [cool, dry, fan_only, &quot;off&quot;]
+          - type: tile
+            entity: cover.living_curtain
+            name: 窗簾
+            features:
+              - type: cover-open-close
+              - type: cover-position
+          - type: tile
+            entity: media_player.living_homepod
+            name: HomePod
+            features:
+              - type: media-player-volume-slider
+      - type: grid
+        cards:
+          - type: heading
+            heading: 這個房間的情境
+            heading_style: title
+          - type: entities
+            entities:
+              - entity: input_boolean.s09_enabled
+                name: 09 晚餐氛圍
+              - entity: input_boolean.s08_enabled
+                name: 08 影音模式
+              - entity: input_boolean.s19_enabled
+                name: 19 掃地避讓
+              - entity: input_boolean.s21_enabled
+                name: 21 除濕自動化
+              - entity: input_boolean.s26_enabled
+                name: 26 網路警告
+
+  # ===================== 情境總控 =====================
+  - title: 情境總控
+    path: scenes
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: 晨間與通勤
+            heading_style: title
+          - type: entities
+            entities:
+              - { entity: input_boolean.s01_enabled, name: 01 溫柔喚醒 }
+              - { entity: input_boolean.s02_enabled, name: 02 天氣預報 }
+              - { entity: input_boolean.s03_enabled, name: 03 輪班模式 }
+              - { entity: input_boolean.s04_enabled, name: 04 全屋離家 }
+              - { entity: input_boolean.s05_enabled, name: 05 門鎖連動 }
+              - { entity: input_boolean.s06_enabled, name: 06 晨間股市摘要 }
+              - input_datetime.allen_wake
+              - input_datetime.ann_wake
+      - type: grid
+        cards:
+          - type: heading
+            heading: 下班與休憩 · 輪班與睡眠
+            heading_style: title
+          - type: entities
+            entities:
+              - { entity: input_boolean.s07_enabled, name: 07 返家預熱 }
+              - { entity: input_boolean.s08_enabled, name: 08 影音模式 }
+              - { entity: input_boolean.s09_enabled, name: 09 晚餐氛圍 }
+              - { entity: input_boolean.s10_enabled, name: 10 浴室自動化 }
+              - { entity: input_boolean.s11_enabled, name: 11 深夜靜音 }
+              - { entity: input_boolean.s12_enabled, name: 12 洗完澡乾燥 }
+              - { entity: input_boolean.s13_enabled, name: 13 女友補眠 }
+              - { entity: input_boolean.s14_enabled, name: 14 睡眠防擾 }
+              - { entity: input_boolean.s15_enabled, name: 15 臥室恆溫 }
+              - { entity: input_boolean.s16_enabled, name: 16 快速入睡 }
+              - { entity: input_boolean.s17_enabled, name: 17 早退晚回判斷 }
+              - { entity: input_boolean.s18_enabled, name: 18 次臥工作室 }
+      - type: grid
+        cards:
+          - type: heading
+            heading: 家電 · 安全 · Hermes
+            heading_style: title
+          - type: entities
+            entities:
+              - { entity: input_boolean.s19_enabled, name: 19 掃地避讓 }
+              - { entity: input_boolean.s20_enabled, name: 20 節能監控 }
+              - { entity: input_boolean.s21_enabled, name: 21 除濕自動化 }
+              - { entity: input_boolean.s22_enabled, name: 22 Qrevo 水箱提醒 }
+              - { entity: input_boolean.s23_enabled, name: 23 快照同步副節點 }
+              - { entity: input_boolean.s24_enabled, name: 24 耗材更換提醒 }
+              - { entity: input_boolean.s25_enabled, name: 25 運動偵測告警 }
+              - { entity: input_boolean.s26_enabled, name: 26 網路警告 }
+              - { entity: input_boolean.s27_enabled, name: 27 設備離線偵測 }
+              - { entity: input_boolean.s28_enabled, name: 28 緊急 SOS }
+              - { entity: input_boolean.s29_enabled, name: 29 全屋情境切換（AI） }
+              - { entity: input_boolean.s30_enabled, name: 30 狀態查詢（AI） }
+              - { entity: input_boolean.s32_enabled, name: 32 收盤圖卡 }
+              - { entity: input_boolean.s33_enabled, name: 33 盤中停損告警 }
+              - { entity: input_boolean.s34_enabled, name: 34 模擬單 }
+              - { entity: input_boolean.s35_enabled, name: 35 深夜確認改推播 }
+          - type: entities
+            title: 維護
+            entities:
+              - script.reset_ac_filter
+              - script.reset_vacuum_runs
+              - script.weather_briefing
+              - counter.ac_filter_hours
+              - counter.vacuum_runs
+</code></pre>
+<p><code>script.home_leave</code>（加進 <code>packages/s00_common.yaml</code> 的 <code>script:</code> 區）：</p>
+<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-yaml">  home_leave:
+    alias: 離家（手動）
+    icon: mdi:home-export-outline
+    sequence:
+      - action: automation.trigger
+        target: { entity_id: automation.s04_leave_home }
+        data: { skip_condition: true }
+</code></pre>
+<h2 id="12.4-壁掛平板設定">12.4 壁掛平板設定</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>瀏覽器</td>
+<td>iPad：HA Companion App → 設定 → Companion App → 全螢幕；Android：Fully Kiosk Browser（可整合 HA 螢幕喚醒）</td>
+</tr>
+<tr>
+<td>自動喚醒</td>
+<td>情境 05 / 14 的走廊動作 → <code>notify.mobile_app_&lt;平板&gt;</code> 命令 <code>command_screen_on</code>（Android Companion）或 Fully Kiosk REST</td>
+</tr>
+<tr>
+<td>夜間</td>
+<td>23:00–07:00 主題切換深色：<code>frontend.set_theme</code> 動作 + 自動化（HA 內建深色主題）</td>
+</tr>
+<tr>
+<td>使用者</td>
+<td>平板用獨立帳號 <code>tablet</code>（非管理員），儀表板「僅管理員可編輯」</td>
+</tr>
+<tr>
+<td>儀表板預設</td>
+<td>平板帳號登入後 → 儀表板 ⋮ → 設為此裝置預設</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="12.5-手機">12.5 手機</h2>
+<p>同一份儀表板；Sections 在手機自動單欄。Companion App → 設定 → 捷徑：把「情境」section 的四個 tile 加成 iOS 小工具／Android Quick Settings。</p>
+<h2 id="12.6-驗收">12.6 驗收</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>檢查</th>
+<th>通過</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>首頁第一屏（平板）看得到：兩人狀態、天氣、四個情境、客廳與主臥燈／冷氣／窗簾</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>2</td>
+<td>任何 tile 點一下 ≤ 1 秒有反應</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Hermes 離線時「Hermes 離線」紅色 tile 出現；恢復後消失</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>4</td>
+<td>客廳房間頁逐盞燈可控、thermostat 可切模式</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>5</td>
+<td>情境總控能關閉任一情境並在 06 章測試中生效</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Ann 不看說明 2 分鐘內切換班別與開睡眠模式</td>
+<td>☐</td>
+</tr>
+</tbody>
+</table></div></section><section id="ch14" class="chapter"><div class="eyebrow">📎 附錄 A 總表</div><h1 id="附錄-a-總表-ip-埠-密鑰-實體-檔案位置-變更紀錄">附錄 A · 總表（IP / 埠 / 密鑰 / 實體 / 檔案位置 / 變更紀錄）</h1>
+<blockquote>
+<p>貼在路由器旁、存一份在手機；所有章節的數字以本附錄為準。</p>
+</blockquote>
+<h2 id="a.1-ip-總表">A.1 IP 總表</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>IP</th>
+<th>設備 / 服務</th>
+<th>章</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.0.1</td>
+<td>TP-Link BE3600</td>
+<td>01</td>
+</tr>
+<tr>
+<td>192.168.0.10</td>
+<td>Mac mini M4（macOS 主機）</td>
+<td>02</td>
+</tr>
+<tr>
+<td>192.168.0.11</td>
+<td>節點 A：HAOS VM（HAOS 路線）或 Docker 主節點（青鳥路線）</td>
+<td>02 / 09</td>
+</tr>
+<tr>
+<td>192.168.0.12</td>
+<td>節點 B：HA Black（副節點）</td>
+<td>07 / 09</td>
+</tr>
+<tr>
+<td>192.168.0.13</td>
+<td>LB-A（Mac mini 上的 Alpine VM）</td>
+<td>11</td>
+</tr>
+<tr>
+<td>192.168.0.100</td>
+<td>VIP（keepalived 虛擬 IP）</td>
+<td>11</td>
+</tr>
+<tr>
+<td>192.168.0.20</td>
+<td>Hue Bridge v2</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.21</td>
+<td>Hue Play HDMI Sync Box</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.25</td>
+<td>SLZB-06 Zigbee 協調器</td>
+<td>02 / 07</td>
+</tr>
+<tr>
+<td>192.168.0.30 / .31</td>
+<td>HomePod / HomePod mini</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.40</td>
+<td>Roborock Qrevo Edge C</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.50–.52</td>
+<td>Panasonic 客廳 / 主臥 / 次臥</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.55–.57</td>
+<td>Broadlink RM4 mini ×3</td>
+<td>03</td>
+</tr>
+<tr>
+<td>192.168.0.60 / .61</td>
+<td>壁掛平板 玄關 / 客廳</td>
+<td>12</td>
+</tr>
+<tr>
+<td>192.168.0.70</td>
+<td>HA Voice PE（選配）</td>
+<td>04</td>
+</tr>
+<tr>
+<td>.100–.199</td>
+<td>DHCP 動態（手機、筆電）；<strong>.100 已被 VIP 佔用，池改 .101–.199</strong></td>
+<td>01</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="a.2-埠總表">A.2 埠總表</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>埠</th>
+<th>服務</th>
+<th>主機</th>
+<th>外部</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>443</td>
+<td>NGINX / Caddy → HA（https）</td>
+<td>主節點</td>
+<td>是</td>
+</tr>
+<tr>
+<td>51820/udp</td>
+<td>WireGuard（選配）</td>
+<td>主節點</td>
+<td>是</td>
+</tr>
+<tr>
+<td>8123</td>
+<td>Home Assistant</td>
+<td>節點 A/B、VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>9000</td>
+<td>青鳥後台</td>
+<td>節點 A/B、VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8800</td>
+<td>Hermes</td>
+<td>節點 A/B、VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8900</td>
+<td>LINE / Telegram bot（LINE webhook 經 443 反代）</td>
+<td>節點 A/B、VIP</td>
+<td>僅 /line/webhook</td>
+</tr>
+<tr>
+<td>10300 / 10200</td>
+<td>Whisper / Piper（Wyoming）</td>
+<td>節點 A/B、VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>11434</td>
+<td>Ollama</td>
+<td>節點 A、VIP</td>
+<td>否</td>
+</tr>
+<tr>
+<td>1883</td>
+<td>Mosquitto</td>
+<td>節點 A/B</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8099（青鳥）/ 8099（HAOS 附加元件）</td>
+<td>Zigbee2MQTT 前端</td>
+<td>主節點</td>
+<td>否</td>
+</tr>
+<tr>
+<td>6638</td>
+<td>SLZB-06 Zigbee 串列</td>
+<td>.25</td>
+<td>否</td>
+</tr>
+<tr>
+<td>8404</td>
+<td>HAProxy 統計頁</td>
+<td>LB-A / LB-B</td>
+<td>否</td>
+</tr>
+<tr>
+<td>445</td>
+<td>Samba（HAOS 路線）</td>
+<td>.11 / .12</td>
+<td>否</td>
+</tr>
+<tr>
+<td>22 / 5900</td>
+<td>SSH / 螢幕共享</td>
+<td>.10 / .12 / .13</td>
+<td>否</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>密鑰</th>
+<th>位置</th>
+<th>產生方式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HA 長效權杖</td>
+<td>HAOS：<code>~/openclaw/hermes/.plist</code> env；青鳥：後台 → <code>.env HA_TOKEN</code></td>
+<td>HA 個人 → 安全性</td>
+<td>Hermes、後台、bot</td>
+</tr>
+<tr>
+<td>MQTT 密碼</td>
+<td><code>secrets.yaml mqtt_password</code>；青鳥後台自動產生</td>
+<td>後台 / 手動</td>
+<td>Z2M、HA MQTT 整合、Hermes</td>
+</tr>
+<tr>
+<td>備份加密密碼</td>
+<td><code>secrets.yaml backup_password</code>，<strong>兩節點相同、紙本貼機身</strong></td>
+<td>後台自動產生</td>
+<td>備份還原</td>
+</tr>
+<tr>
+<td>節點共用密鑰</td>
+<td>青鳥 <code>cluster.shared_secret</code></td>
+<td>後台自動產生</td>
+<td>備份推送、bot 推播、後台互認</td>
+</tr>
+<tr>
+<td>DuckDNS token</td>
+<td><code>secrets.yaml duckdns_token</code></td>
+<td>duckdns.org</td>
+<td>憑證與 DNS</td>
+</tr>
+<tr>
+<td>webhook id ×2</td>
+<td><code>secrets.yaml openclaw_webhook_id / white_noise_webhook_id</code></td>
+<td>後台自動產生（32 位隨機）</td>
+<td>Siri 捷徑</td>
+</tr>
+<tr>
+<td>Telegram bot token</td>
+<td>後台 → <code>config/bot/bot.yaml</code></td>
+<td>@BotFather</td>
+<td>bot</td>
+</tr>
+<tr>
+<td>LINE secret / access token</td>
+<td>同上</td>
+<td>LINE Developers</td>
+<td>bot</td>
+</tr>
+<tr>
+<td>Grok API key</td>
+<td>後台 → <code>.env GROK_API_KEY</code></td>
+<td>console.x.ai</td>
+<td>Hermes 雲端大腦（選配）</td>
+</tr>
+<tr>
+<td>Twilio（選配）</td>
+<td><code>secrets.yaml twilio_*</code></td>
+<td>twilio.com</td>
+<td>SOS 簡訊</td>
+</tr>
+<tr>
+<td>keepalived auth_pass</td>
+<td><code>lb/keepalived.conf</code>（<code>PASS=</code>）</td>
+<td>install-lb.sh 參數</td>
+<td>VRRP</td>
+</tr>
+<tr>
+<td>Tailscale</td>
+<td>主機層</td>
+<td>tailscale.com</td>
+<td>遠端存取</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="a.4-實體命名速查">A.4 實體命名速查</h2>
+<p>見 00 章 §0.5；補充本手冊後續章節新增的實體：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>實體</th>
+<th>來源</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binary_sensor.is_primary_node</code></td>
+<td>s00_node</td>
+<td>節點角色</td>
+</tr>
+<tr>
+<td><code>input_text.magpie_role</code></td>
+<td>s00_node（青鳥版）</td>
+<td>後台寫入角色</td>
+</tr>
+<tr>
+<td><code>binary_sensor.hermes_online</code>、<code>sensor.hermes_world_entities</code></td>
+<td>s31（REST）</td>
+<td>Hermes 狀態</td>
+</tr>
+<tr>
+<td><code>sensor.hermes_paper_holdings</code></td>
+<td>s34（REST）</td>
+<td>模擬持股</td>
+</tr>
+<tr>
+<td><code>binary_sensor.wan_ping</code>、<code>binary_sensor.macmini_ping</code></td>
+<td>ping</td>
+<td>網路 / 主節點</td>
+</tr>
+<tr>
+<td><code>script.ac_set / say / flash_lights / vacuum_rooms / emergency_sos / hermes_alert / home_leave</code></td>
+<td>s00_common</td>
+<td>共用腳本</td>
+</tr>
+<tr>
+<td><code>rest_command.hermes_command / hermes_screen / hermes_alerts / magpie_backup / magpie_bot_notify</code></td>
+<td>configuration.yaml 或 s00_magpie</td>
+<td>對外呼叫</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="a.5-檔案與目錄位置">A.5 檔案與目錄位置</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>內容</th>
+<th>HAOS 路線</th>
+<th>青鳥 Docker 路線</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HA 設定</td>
+<td>HAOS <code>/config</code>（Samba <code>config</code>）</td>
+<td><code>bluemagpie/config/homeassistant/</code></td>
+</tr>
+<tr>
+<td>packages</td>
+<td><code>/config/packages/</code></td>
+<td><code>bluemagpie/config/homeassistant/packages/</code>（套用時從 <code>provision/</code> 複製）</td>
+</tr>
+<tr>
+<td>Hermes 程式 / 設定 / DB</td>
+<td><code>~/openclaw/hermes/</code>、<code>config/</code>、<code>hermes.db</code></td>
+<td>映像 <code>bluemagpie/hermes</code>、<code>config/hermes/</code>、<code>data/hermes/hermes.db</code></td>
+</tr>
+<tr>
+<td>語音模型</td>
+<td><code>~/openclaw/whisper</code>、<code>voices</code></td>
+<td><code>data/whisper</code>、<code>data/piper</code>、<code>data/ollama</code></td>
+</tr>
+<tr>
+<td>圖卡</td>
+<td><code>/config/www/hermes/</code></td>
+<td><code>config/homeassistant/www/hermes/</code></td>
+</tr>
+<tr>
+<td>備份</td>
+<td>HA 備份頁 + 副節點 Samba <code>backup</code></td>
+<td><code>backups/magpie_*.tar.gz</code>、副節點 <code>backups/recv_*</code></td>
+</tr>
+<tr>
+<td>後台設定</td>
+<td>—</td>
+<td><code>data/admin/settings.yaml</code></td>
+</tr>
+<tr>
+<td>bot 設定 / 稽核</td>
+<td>—</td>
+<td><code>config/bot/bot.yaml</code>、<code>data/bot/audit.log</code></td>
+</tr>
+<tr>
+<td>LB 設定</td>
+<td>—</td>
+<td><code>/etc/haproxy/haproxy.cfg</code>、<code>/etc/keepalived/keepalived.conf</code>（LB 節點）</td>
+</tr>
+<tr>
+<td>記錄</td>
+<td>HA 設定 → 系統 → 記錄；<code>~/openclaw/*/logs</code></td>
+<td><code>docker compose logs &lt;service&gt;</code>；後台「容器記錄」</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>HAOS 路線（02–07 章）</th>
+<th>青鳥 Docker 路線（09–11 章）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>適合</td>
+<td>想用 HA 附加元件生態、已習慣 HAOS</td>
+<td>想一鍵部署、後台統一設參數、跨平台、熱備與 LB</td>
+</tr>
+<tr>
+<td>Mac mini 上</td>
+<td>UTM 跑 HAOS VM + 原生 OpenClaw</td>
+<td>Docker Desktop 跑全套 + 原生 Ollama</td>
+</tr>
+<tr>
+<td>備份 / 熱備</td>
+<td>HA 內建 + <code>hassio.*</code></td>
+<td>後台內建</td>
+</tr>
+<tr>
+<td>35 情境 / Hermes</td>
+<td>相同</td>
+<td>相同（s23、s00_node 為 Docker 版）</td>
+</tr>
+<tr>
+<td>建議</td>
+<td>單機先上手</td>
+<td>正式長期運作</td>
+</tr>
+</tbody>
+</table></div>
+<p>兩條路線的 packages、Hermes、設計文件共用；可從 HAOS 路線用 HA 備份搬到青鳥路線（還原到 <code>config/homeassistant/</code>）。</p>
+<h2 id="a.7-變更紀錄">A.7 變更紀錄</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>日期（台北）</th>
+<th>版本</th>
+<th>內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-25</td>
+<td>1.0</td>
+<td>00–08 章、35 情境 packages、Hermes v0.1、成品網頁</td>
+</tr>
+<tr>
+<td>2026-10-25</td>
+<td>1.1</td>
+<td>07 章改熱備雙節點、SLZB-06、Hermes 節點容錯</td>
+</tr>
+<tr>
+<td>2026-10-29</td>
+<td>1.2</td>
+<td>儀表板優化設計（Claude Design 畫布）</td>
+</tr>
+<tr>
+<td>2026-11-05</td>
+<td>1.3</td>
+<td>09 青鳥一鍵部署與後台、OpenClaw 一鍵串接、10 LINE/Telegram、Grok 接口、11 雙節點負載均衡、12 儀表板、附錄 A；GitHub 同步</td>
 </tr>
 </tbody>
 </table></div></section>

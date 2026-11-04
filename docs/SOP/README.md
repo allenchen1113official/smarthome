@@ -1,7 +1,17 @@
 # Allen & Ann 智慧家庭 — 從無到有建置 SOP
 
-> 版本 1.0 · 2026-10-25（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
+> 版本 1.3 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
 > 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。
+
+## 一頁快速開始
+
+| 想要 | 做這些 |
+|---|---|
+| 最快跑起來（推薦） | 01 網路 → `bluemagpie/install.sh`（09）→ 後台填參數 → OpenClaw 一鍵串接 → 12 儀表板 → 06 逐一驗證情境 |
+| 傳統 HAOS 路線 | 01 → 02 → 03 → 06 → 04 → 05 → 07 → 08 |
+| 第二台熱備 + 負載均衡 | 09 §9.5（副節點）→ 11（LB） |
+| 家人遠端控制 | 10（Telegram 10 分鐘、LINE 需 https） |
+| 查任何 IP / 埠 / 密鑰 | 附錄 A |
 
 ## 文件地圖
 
@@ -19,6 +29,8 @@
 | 09 | [09-青鳥一鍵部署.md](09-青鳥一鍵部署.md) | **青鳥 · 台灣藍鵲 BlueMagpie**：一個資料夾 + Docker 一鍵部署 + 後台設定（`SmartHome/bluemagpie/`），跨 Linux / macOS / Windows，熱備由後台負責 | 1 小時 |
 | 10 | [10-LINE-Telegram-遠端控制介面.md](10-LINE-Telegram-遠端控制介面.md) | 家庭成員用 LINE / Telegram 遠端控制裝置與情境：指令文法、介面、安全、`magpie-bot` 建置 | 1 小時 |
 | 11 | [11-雙節點安裝範例-負載均衡.md](11-雙節點安裝範例-負載均衡.md) | 安裝範例：Mac mini 主 + HA Black 副，HAProxy + keepalived VIP，無狀態服務雙活、HA 主從自動切換、故障演練 | 1 天 |
+| 12 | [12-儀表板建置.md](12-儀表板建置.md) | 依 Claude Design 優化稿做成 HA 原生 Sections 儀表板（首頁 / 客廳房間頁 / 情境總控），壁掛平板與手機設定 | 2 小時 |
+| A | [A-附錄-總表.md](A-附錄-總表.md) | IP / 埠 / 密鑰 / 實體 / 檔案位置 / 兩條路線選擇 / 變更紀錄 | 隨查 |
 
 ## 附帶的可直接使用檔案
 
