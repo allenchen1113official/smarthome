@@ -17,9 +17,10 @@ def _hosts(d: dict) -> dict:
         for line in envp.read_text(encoding="utf-8").splitlines():
             if "=" in line and not line.startswith("#"):
                 k, _, v = line.partition("="); env[k.strip()] = v.split("#")[0].strip()
+    vip = d["cluster"].get("lb_vip")
     return {
-        "whisper": (h or "whisper", int(env.get("WHISPER_PORT", 10300)) if h else 10300),
-        "piper": (h or "piper", int(env.get("PIPER_PORT", 10200)) if h else 10200),
+        "whisper": (vip, 10300) if vip else (h or "whisper", int(env.get("WHISPER_PORT", 10300)) if h else 10300),
+        "piper": (vip, 10200) if vip else (h or "piper", int(env.get("PIPER_PORT", 10200)) if h else 10200),
         "hermes_url": f"http://{h or 'hermes'}:{env.get('HERMES_PORT', 8800) if h else 8800}",
         "ollama_url": d["voice"]["ollama_url"] if d["voice"]["ollama_source"] == "host" else "http://ollama:11434",
         "ha_url": f"http://{'host.docker.internal' if hostnet else 'homeassistant'}:8123",

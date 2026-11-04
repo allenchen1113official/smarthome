@@ -11,6 +11,7 @@ bluemagpie/
 ├── admin/                        Magpie Admin 後台（:9000）— 設定、套用、健康、備份、熱備
 ├── hermes/                       Hermes Agent（Docker 版）
 ├── bot/                          LINE + Telegram 遠端控制機器人
+├── lb/                           HAProxy + keepalived VIP：無狀態服務雙活、HA 主從切換（SOP 11 章）
 ├── provision/                    初始範本：HA packages（35 情境）、Hermes 設定、Mosquitto
 ├── config/  data/  backups/      執行時產生（後台「套用」維護；備份會打包這些）
 ```

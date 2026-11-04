@@ -75,6 +75,7 @@ SCHEMA: list[dict] = [
     ]},
     {"id": "cluster", "title": "熱備（雙節點）", "fields": [
         {"k": "peer_url", "label": "另一節點後台網址", "type": "text", "default": "", "help": "例 http://192.168.0.12:9000"},
+        {"k": "lb_vip", "label": "負載均衡虛擬 IP（VIP）", "type": "text", "default": "", "help": "例 192.168.0.100；填了之後 Hermes、Whisper/Piper 的 HA 端串接都走 VIP（bluemagpie/lb，SOP 11 章）"},
         {"k": "shared_secret", "label": "節點共用密鑰", "type": "password", "default": "", "secret": True, "help": "兩邊相同；留空自動產生，請複製到另一節點"},
         {"k": "hourly_backup", "label": "每小時備份並推送", "type": "bool", "default": True},
         {"k": "keep", "label": "保留份數", "type": "int", "default": 30},
@@ -194,6 +195,8 @@ def apply(d: dict) -> dict:
         shutil.copytree(PROVISION / "hermes" / "tools", hdir / "tools")
     hcfg = yaml.safe_load((PROVISION / "hermes" / "hermes.yaml").read_text(encoding="utf-8"))
     urls = [ha_url_internal]
+    if d["cluster"].get("lb_vip"):
+        urls.insert(0, f"http://{d['cluster']['lb_vip']}:8123")   # 走 VIP：LB 自動導向活著的 HA
     peer = d["cluster"]["peer_url"]
     if peer:
         urls.append(peer.replace(":9000", ":8123"))

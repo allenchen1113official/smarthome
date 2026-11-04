@@ -18,6 +18,7 @@
 | 08 | [08-驗收測試與故障排除.md](08-驗收測試與故障排除.md) | 全系統驗收清單、常見故障與處置 | 持續 |
 | 09 | [09-青鳥一鍵部署.md](09-青鳥一鍵部署.md) | **青鳥 · 台灣藍鵲 BlueMagpie**：一個資料夾 + Docker 一鍵部署 + 後台設定（`SmartHome/bluemagpie/`），跨 Linux / macOS / Windows，熱備由後台負責 | 1 小時 |
 | 10 | [10-LINE-Telegram-遠端控制介面.md](10-LINE-Telegram-遠端控制介面.md) | 家庭成員用 LINE / Telegram 遠端控制裝置與情境：指令文法、介面、安全、`magpie-bot` 建置 | 1 小時 |
+| 11 | [11-雙節點安裝範例-負載均衡.md](11-雙節點安裝範例-負載均衡.md) | 安裝範例：Mac mini 主 + HA Black 副，HAProxy + keepalived VIP，無狀態服務雙活、HA 主從自動切換、故障演練 | 1 天 |
 
 ## 附帶的可直接使用檔案
 
