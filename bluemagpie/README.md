@@ -62,6 +62,10 @@ bash install.sh standby
 
 OpenClaw = `whisper` + `piper` + `ollama` + `hermes` 四個容器（compose 標籤 `magpie.group=openclaw`）。後台「OpenClaw 語音」頁：檢查四元件狀態、下載 LLM 模型、**一鍵串接到 HA**（自動新增 Wyoming ×2 與 Ollama→Hermes 整合、建立並預設 Assist 管線「OpenClaw」）。
 
+## Grok（xAI）接口（選配）
+
+後台「語音」頁把 Hermes 大腦切成 `grok`、填 xAI API Key；只送文字上下文，失敗自動退回本地 Ollama。預設關閉，符合本地優先。
+
 ## 熱備
 
 主節點後台每小時 :05 打包 `config/ + data/` 推到副節點；副節點後台每 30 秒監看主節點，失聯 5 分鐘自動還原最新備份並啟動 HA / Zigbee2MQTT / Hermes（兩邊共用 `shared_secret`）。回切：主節點還原副節點備份 → 副節點後台按「回切」。

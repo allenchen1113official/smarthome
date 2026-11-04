@@ -129,6 +129,7 @@ services:
       TZ: ${TZ:-Asia/Taipei}
       HERMES_CONFIG_DIR: /config
       HERMES_HA_TOKEN: ${HA_TOKEN:-}
+      HERMES_GROK_API_KEY: ${GROK_API_KEY:-}
     volumes:
       - ./config/hermes:/config
       - ./data/hermes:/data

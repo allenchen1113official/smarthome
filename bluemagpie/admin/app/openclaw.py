@@ -48,6 +48,15 @@ async def status() -> dict:
             r = await cl.get("http://hermes:8800/v1/health"); out["hermes"] = r.json()
     except Exception as e:
         out["hermes"] = {"ok": False, "error": type(e).__name__}
+    out["llm_provider"] = d["voice"].get("llm_provider", "ollama")
+    if d["voice"].get("grok_api_key"):
+        try:
+            async with httpx.AsyncClient(timeout=8, headers={"Authorization": f"Bearer {d['voice']['grok_api_key']}"}) as cl:
+                r = await cl.get("https://api.x.ai/v1/models"); out["grok"] = {"ok": r.status_code == 200, "code": r.status_code}
+        except Exception as e:
+            out["grok"] = {"ok": False, "error": type(e).__name__}
+    else:
+        out["grok"] = {"ok": False, "error": "未設定 API key"}
     out["ha"] = await _ha_entities(d, H)
     return out
 

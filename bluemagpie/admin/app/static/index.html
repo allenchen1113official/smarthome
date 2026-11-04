@@ -79,7 +79,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px 10px;border-bottom:1
     <section id="v-openclaw" hidden>
       <h2>OpenClaw 本地語音</h2>
       <div class="card">
-        <p class="muted">OpenClaw = Whisper（語音轉文字）+ Ollama（Llama 3 推理）+ Piper（文字轉語音）+ Hermes（管家編排）。四個容器都在本機，資料不出家門。</p>
+        <p class="muted">OpenClaw = Whisper（語音轉文字）+ Ollama（Llama 3 推理）+ Piper（文字轉語音）+ Hermes（管家編排）。四個容器都在本機，資料不出家門。選配：在「語音」頁把 Hermes 大腦切到 Grok（xAI 雲端接口），只送文字、失敗退回本地。</p>
         <div class="bar">
           <button class="btn" onclick="ocStatus()">檢查狀態</button>
           <button class="btn" onclick="ocPull()">下載 LLM 模型</button>
@@ -160,7 +160,7 @@ async function backupNow(){toast('備份中…');const r=await api('/api/backup/
 async function restore(n){if(!confirmBox(`還原 ${n}？會停止並重啟 HA / Zigbee / Hermes。`))return;const r=await api('/api/backup/restore',{method:'POST',body:JSON.stringify({name:n})});toast(JSON.stringify(r))}
 async function cluster(a){if(!confirmBox(a==='promote'?'確定要讓本節點接手為主節點？':'確定回切為副節點？'))return;const r=await api('/api/cluster/'+a,{method:'POST'});toast(JSON.stringify(r));loadSettings()}
 async function ocStatus(){const r=await api('/api/openclaw/status');const g=$('#ocgrid');g.innerHTML='';
-  const items=[['Whisper STT',r.whisper,'tcp 10300'],['Piper TTS',r.piper,'tcp 10200'],['Ollama',r.ollama.ok&&r.ollama.has_model,r.ollama.ok?('模型：'+(r.ollama.models.join(', ')||'尚未下載')):('無法連線 '+r.ollama.error)],['Hermes',!!(r.hermes&&r.hermes.ok),r.hermes&&r.hermes.ok?('world '+r.hermes.world_entities+' entities'):'離線'],['HA 整合',r.ha.ok&&r.ha.stt.length&&r.ha.tts.length&&r.ha.conversation.length,r.ha.ok?('stt '+r.ha.stt.length+' · tts '+r.ha.tts.length+' · 對話 '+r.ha.conversation.length):r.ha.error]];
+  const items=[['Whisper STT',r.whisper,'tcp 10300'],['Piper TTS',r.piper,'tcp 10200'],['Ollama',r.ollama.ok&&r.ollama.has_model,r.ollama.ok?('模型：'+(r.ollama.models.join(', ')||'尚未下載')):('無法連線 '+r.ollama.error)],['Grok（xAI）雲端',r.grok&&r.grok.ok,r.grok&&r.grok.ok?('可用 · 目前大腦：'+r.llm_provider):((r.grok&&r.grok.error)||'未設定')+' · 目前大腦：'+r.llm_provider],['Hermes',!!(r.hermes&&r.hermes.ok),r.hermes&&r.hermes.ok?('world '+r.hermes.world_entities+' entities'):'離線'],['HA 整合',r.ha.ok&&r.ha.stt.length&&r.ha.tts.length&&r.ha.conversation.length,r.ha.ok?('stt '+r.ha.stt.length+' · tts '+r.ha.tts.length+' · 對話 '+r.ha.conversation.length):r.ha.error]];
   items.forEach(([n,ok,sub])=>{const d=document.createElement('div');d.className='svc';d.innerHTML=`<b>${n}<span class="dot ${ok?'ok':'bad'}"></span></b><small>${sub}</small>`;g.appendChild(d)});$('#ocout').textContent=JSON.stringify(r,null,2)}
 async function ocPull(){toast('下載模型中，依網速需 2–10 分鐘…');$('#ocout').textContent='下載中…';const r=await api('/api/openclaw/pull',{method:'POST'});$('#ocout').textContent=JSON.stringify(r,null,2);toast(r.ok?'模型就緒':'失敗');ocStatus()}
 async function ocSetup(){toast('串接中…');const r=await api('/api/openclaw/setup',{method:'POST'});$('#ocout').textContent=JSON.stringify(r,null,2);toast(r.next||r.error);ocStatus()}

@@ -1,6 +1,6 @@
 """Ollama（Llama 3 8B）：自然語言 → JSON Plan。注入精簡工具 schema 與 ~600 tokens 的上下文。"""
 from __future__ import annotations
-import json, logging, re
+import json, logging, os, re
 from datetime import datetime
 import httpx
 from .config import CFG, compact_tool_schema
@@ -40,15 +40,46 @@ async def build_context() -> str:
     return "# context\n" + json.dumps(ctx, ensure_ascii=False)
 
 
-async def plan(user_text: str) -> dict:
+async def _ollama(messages: list[dict]) -> str:
     o = CFG["ollama"]
-    messages = [{"role": "system", "content": SYSTEM + "\n" + await build_context()}, {"role": "user", "content": user_text}]
     body = {"model": o["model"], "messages": messages, "stream": False, "format": "json",
             "options": {"temperature": o.get("temperature", 0.1), "num_ctx": o.get("num_ctx", 4096)}, "keep_alive": -1}
     async with httpx.AsyncClient(timeout=o.get("timeout_s", 8)) as cl:
         r = await cl.post(o["url"].rstrip("/") + "/api/chat", json=body)
         r.raise_for_status()
-        content = r.json()["message"]["content"]
+        return r.json()["message"]["content"]
+
+
+async def _grok(messages: list[dict]) -> str:
+    """xAI Grok（OpenAI 相容 chat/completions）。只送文字上下文，不送語音；金鑰由環境變數提供。"""
+    g = CFG.get("grok") or {}
+    key = os.environ.get(g.get("api_key_env", "HERMES_GROK_API_KEY"), "")
+    if not key:
+        raise RuntimeError("HERMES_GROK_API_KEY 未設定")
+    body = {"model": g.get("model", "grok-4-fast"), "messages": messages, "temperature": g.get("temperature", 0.1),
+            "response_format": {"type": "json_object"}, "max_tokens": g.get("max_tokens", 600)}
+    async with httpx.AsyncClient(timeout=g.get("timeout_s", 15), headers={"Authorization": f"Bearer {key}"}) as cl:
+        r = await cl.post(g.get("base_url", "https://api.x.ai/v1").rstrip("/") + "/chat/completions", json=body)
+        r.raise_for_status()
+        return r.json()["choices"][0]["message"]["content"]
+
+
+PROVIDERS = {"ollama": _ollama, "grok": _grok}
+
+
+async def plan(user_text: str) -> dict:
+    messages = [{"role": "system", "content": SYSTEM + "\n" + await build_context()}, {"role": "user", "content": user_text}]
+    llm = CFG.get("llm") or {}
+    primary = llm.get("provider", "ollama"); fallback = llm.get("fallback", "ollama" if primary != "ollama" else None)
+    try:
+        content = await PROVIDERS[primary](messages)
+    except Exception as e:
+        log.warning("LLM provider %s failed: %s", primary, e)
+        if fallback and fallback != primary:
+            log.warning("fallback → %s", fallback)
+            content = await PROVIDERS[fallback](messages)
+        else:
+            raise
     try:
         j = json.loads(content)
     except json.JSONDecodeError:

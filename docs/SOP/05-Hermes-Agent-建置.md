@@ -146,7 +146,39 @@ curl -s localhost:8800/v1/holdings
 
 ⚠️ 邊界：`broker.place_order` 在 `policy.never`，`validate_steps()` 第一行就擋；`market.yaml` 的 `broker.enabled: false`。每次播報結尾附免責。
 
-## 5.9 驗證清單
+## 5.9 Grok（xAI）雲端大腦接口（選配）
+
+Hermes 的 LLM 層做成可抽換：`llm.provider` 可選 `ollama`（本地，預設）或 `grok`（xAI Grok，OpenAI 相容 `chat/completions`）。
+
+```yaml
+# config/hermes.yaml
+llm:
+  provider: grok          # ollama | grok
+  fallback: ollama        # Grok 逾時／金鑰失效／額度用完 → 自動退回本地；null 則不退回
+grok:
+  base_url: https://api.x.ai/v1
+  model: grok-4-fast      # 或 grok-3-mini；以 https://docs.x.ai 當期清單為準
+  api_key_env: HERMES_GROK_API_KEY
+  timeout_s: 15
+  max_tokens: 600
+```
+
+```bash
+export HERMES_GROK_API_KEY='xai-...'     # launchd plist 的 EnvironmentVariables 再加一組
+launchctl kickstart -k gui/$(id -u)/com.allenann.hermes
+```
+
+與憲章 I「本地優先」的關係：Grok 是**顯式選用**，預設關閉；開啟後送出的只有 Hermes 組好的文字上下文（指令、家中狀態摘要、偏好），**語音錄音與影像不會離開家**；`net.egress` 白名單加入 `api.x.ai`。適合用在 Mac mini 記憶體吃緊、或想要更強的中文語意理解時；fast lane（報價、幾度、還在睡嗎）與 guard／確認／回滾完全不變，只有「解析成 Plan」這一步換了模型。
+
+| 比較 | Ollama Llama 3 8B（本地） | Grok（雲端） |
+|---|---|---|
+| 延遲 | ~250 ms 首 token | ~0.8–2 s（含網路） |
+| 隱私 | 不出家門 | 文字上下文送 xAI |
+| 成本 | 電費 | 依 token 計費 |
+| 斷網 | 正常 | 退回 Ollama |
+| 中文語意 | 可用，偶爾要重講 | 較強 |
+
+## 5.10 驗證清單
 
 | # | 測試 | 預期 |
 |---|---|---|
@@ -163,5 +195,6 @@ curl -s localhost:8800/v1/holdings
 | 11 | 「幫我模擬買 2330 一張」→「好」 | `/v1/holdings` 多一筆 |
 | 12 | 「幫我真的下單」 | 回「broker.place_order 是永久封鎖的動作」或「這個我還不會」 |
 | 13 | 連說 4 句指令 | 第 4 句回「等我一下，前面還有指令在處理」 |
+| 14 | `llm.provider: grok` + 拔網路線 →「客廳燈開」 | hermes.err 出現 `fallback → ollama`，仍回覆確認句 |
 
 通過 → 06 章情境 29–35。

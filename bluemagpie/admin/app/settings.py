@@ -44,6 +44,10 @@ SCHEMA: list[dict] = [
         {"k": "ollama_source", "label": "Ollama 來源", "type": "select", "options": ["container", "host"], "default": "container", "help": "macOS 選 host（主機原生 Ollama 有 Metal 加速）"},
         {"k": "ollama_url", "label": "主機 Ollama 網址（host 模式）", "type": "text", "default": "http://host.docker.internal:11434"},
         {"k": "ollama_model", "label": "LLM 模型", "type": "text", "default": "llama3:8b"},
+        {"k": "llm_provider", "label": "Hermes 大腦", "type": "select", "options": ["ollama", "grok"], "default": "ollama", "help": "ollama＝本地（符合本地優先憲章）；grok＝xAI 雲端 Grok 接口，只送文字上下文（不送語音、不送錄音），失敗自動退回本地"},
+        {"k": "grok_api_key", "label": "Grok（xAI）API Key", "type": "password", "default": "", "secret": True, "help": "https://console.x.ai 建立；存於 .env 的 GROK_API_KEY"},
+        {"k": "grok_model", "label": "Grok 模型", "type": "text", "default": "grok-4-fast"},
+        {"k": "grok_fallback", "label": "Grok 失敗時退回本地 Ollama", "type": "bool", "default": True},
     ]},
     {"id": "hermes", "title": "Hermes 管家", "fields": [
         {"k": "autonomy", "label": "自主程度", "type": "select", "options": ["confirm_all", "confirm_write_only"], "default": "confirm_all"},
@@ -197,6 +201,8 @@ def apply(d: dict) -> dict:
     v = d["voice"]
     hcfg["ollama"]["url"] = v["ollama_url"] if v["ollama_source"] == "host" else "http://ollama:11434"
     hcfg["ollama"]["model"] = v["ollama_model"]
+    hcfg["llm"] = {"provider": v["llm_provider"], "fallback": ("ollama" if v["grok_fallback"] else None) if v["llm_provider"] == "grok" else None}
+    hcfg["grok"] = {"base_url": "https://api.x.ai/v1", "model": v["grok_model"], "api_key_env": "HERMES_GROK_API_KEY", "temperature": 0.1, "timeout_s": 15, "max_tokens": 600}
     hcfg["notify"] = {"allen": d["notify"]["allen"], "ann": d["notify"]["ann"], "both": "notify.both"}
     hcfg["paths"] = {"db": "/data/hermes.db", "tx_log": "/data/logs/hermes.tx.log", "cards_dir": "/cards", "cards_url_prefix": "/local/hermes"}
     (hdir / "hermes.yaml").write_text(yaml.safe_dump(hcfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
@@ -332,7 +338,7 @@ magpie: !include magpie.yaml
         for line in env_path.read_text(encoding="utf-8").splitlines():
             if "=" in line and not line.startswith("#"):
                 k, _, val = line.partition("="); env[k.strip()] = val.split("#")[0].strip()
-    env.update({"TZ": d["site"]["timezone"], "HA_TOKEN": d["ha"]["token"], "WHISPER_MODEL": v["whisper_model"], "PIPER_VOICE": v["piper_voice"]})
+    env.update({"TZ": d["site"]["timezone"], "HA_TOKEN": d["ha"]["token"], "WHISPER_MODEL": v["whisper_model"], "PIPER_VOICE": v["piper_voice"], "GROK_API_KEY": v["grok_api_key"]})
     if d["site"]["admin_password"]:
         env["ADMIN_PASSWORD"] = d["site"]["admin_password"]
     profiles = ["standby"] if role == "standby" else ["primary"] + (["ollama"] if v["ollama_source"] == "container" else [])

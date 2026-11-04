@@ -153,7 +153,11 @@ Bot：你還不是家庭成員。請把這組 ID 交給管理員加入白名單�
 | 10 | HA 開發者工具執行 `rest_command.magpie_bot_notify` | 所有成員收到推播 |
 | 11 | `data/bot/audit.log` | 每筆指令一行 |
 
-## 10.9 v0.2 規劃
+## 10.9 Grok 接口的定位
+
+「Grok Bot」不是訊息平台（X 私訊 API 不對一般機器人開放），所以不列為第三個聊天通道；Grok 以 **Hermes 的雲端大腦選項**接入（05 章 §5.9、後台「語音」頁）。LINE / Telegram 送來的自然語言，會依後台設定由 Ollama 或 Grok 解析成 Plan，其餘流程相同。
+
+## 10.10 v0.2 規劃
 
 - 股票圖卡以圖片推送（Telegram `sendPhoto`、LINE image message）。
 - LINE Flex Message 的「家裡現況」卡片（溫度、燈、冷氣一張圖）。
