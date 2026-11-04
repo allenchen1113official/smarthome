@@ -142,12 +142,71 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 
 適合「Allen 回家了」「晚安」這種固定指令。原理：HomePod 聽到「嘿 Siri，Allen 回家了」→ 執行同名捷徑 → 捷徑把文字 POST 到 HA webhook → HA 自動化丟給 Assist 處理並由 HomePod 播回覆。
 
-1. iPhone 捷徑 App → 新增捷徑 → 名稱 `Allen 回家了`：
-   - 動作 1：**取得 URL 內容** — URL `https://AllenandAnn.duckdns.org/api/webhook/openclaw_voice_<隨機32字>`（07 章前先用 `http://192.168.0.11:8123/...`），方法 `POST`，請求本文 JSON：`text` = `Allen 回家了`，`speaker` = `allen`，`output` = `living_homepod`。
-   - 不需 token：webhook 本身不驗證，所以 ID 要長且隨機。
-2. 在 HomePod 說「嘿 Siri，Allen 回家了」即可（HomePod 會執行同一 Apple ID 下的個人捷徑）。
-3. 對應 HA 自動化在 `packages/s00_voice.yaml`：webhook → `conversation.process`（agent = OpenClaw/Hermes）→ 回覆文字 → `script.say` 到指定 HomePod。
-4. 再做幾個：`晚安`、`我出門了`、`Ann 還在睡嗎`、`二三三零現在怎樣`。
+欄位對應 `packages/s00_voice.yaml` 的 `s00_voice_webhook`：捷徑 POST `{"text","speaker","output"}` → `rest_command.hermes_command`（Hermes 離線時自動退回 HA 內建 Assist）→ `script.say` 到指定 HomePod。
+
+#### A-0 事前準備（一次）
+
+| 項目 | 怎麼拿 |
+|---|---|
+| webhook id | `secrets.yaml` 的 `openclaw_webhook_id`（青鳥路線：後台 → 語音 頁自動產生，複製即可）。格式 `openclaw_voice_` + 32 位隨機字，例如 `openclaw_voice_k3Jd9...`。 |
+| HA 網址 | 07 章做完前：`http://192.168.0.11:8123`（在家 Wi-Fi 才能用）；做完後：`https://AllenandAnn.duckdns.org`（在外也能用，HomePod 在家兩者皆可）。青鳥 + LB 路線用 VIP `http://192.168.0.100:8123`。 |
+| 先驗證 webhook 活著 | Mac 終端機：`curl -X POST http://192.168.0.11:8123/api/webhook/<id> -H 'Content-Type: application/json' -d '{"text":"客廳幾度","speaker":"allen","output":"living_homepod"}'`；HomePod 應說出溫度。這一步不通就不要往下做捷徑。 |
+
+#### A-1 建立第一個捷徑「Allen 回家了」（iPhone，約 5 分鐘）
+
+每一步後面的 📷 是建議截圖位置；截下來放進 `docs/SOP/assets/siri/` 並以同名檔名取代（`siri-01.png` …），`build_site.py` 會自動帶進網頁。
+
+| 步 | 操作 | 要看到什麼 | 📷 |
+|---|---|---|---|
+| 1 | 開 **捷徑** App → 右上 **＋** | 空白捷徑編輯頁，上方標題「新捷徑 1」 | siri-01 |
+| 2 | 點上方標題 → **重新命名** → 輸入 `Allen 回家了` | 標題變成這五個字。**這個名字就是對 Siri 說的話**，不要加標點 | siri-02 |
+| 3 | 下方搜尋動作 → 輸入「URL」→ 選 **取得 URL 內容**（Get Contents of URL） | 動作卡片出現，顯示「取得 [URL] 的內容」 | siri-03 |
+| 4 | 點卡片裡的 `URL` 欄 → 貼上 `http://192.168.0.11:8123/api/webhook/<你的 id>` | URL 完整、結尾是你的 id | siri-04 |
+| 5 | 點卡片右側 **▸ 顯示更多** | 展開「方法 / 標頭 / 請求本文」 | siri-05 |
+| 6 | **方法** 改成 `POST` | 方法顯示 POST | siri-06 |
+| 7 | **請求本文** 選 `JSON` | 出現「新增欄位」 | siri-07 |
+| 8 | 新增欄位 → 類型 **文字**：鍵 `text`、值 `Allen 回家了` | 第一列 text | siri-08 |
+| 9 | 再新增文字欄位：鍵 `speaker`、值 `allen` | 第二列 speaker | — |
+| 10 | 再新增文字欄位：鍵 `output`、值 `living_homepod` | 第三列 output（主臥用 `master_mini`，全部用 `all`；對應 `script.say` 的 target 選項） | siri-09 |
+| 11 | **標頭** 新增：鍵 `Content-Type`、值 `application/json` | 標頭一列（HA 收 JSON 必須） | siri-10 |
+| 12 | 點右下 **▶** 試跑 | 第一次會問「允許 Allen 回家了 連線到 192.168.0.11？」→ **總是允許**；HomePod 應播出回覆 | siri-11 |
+| 13 | 右上 **完成** | 捷徑出現在「所有捷徑」 | — |
+| 14 | 捷徑上長按 → **詳細資訊** → 關掉「在分享工作表中顯示」、開 **「在 Apple Watch 上顯示」** | 手錶也能按 | siri-12 |
+
+HomePod 執行條件：HomePod 與 iPhone 同一 Apple ID、家庭 App 裡「個人請求」對此 HomePod 已開（家庭 App → 你的名字 → 個人請求 → 勾該 HomePod），且 iPhone 在家中網路。這樣對 HomePod 說「嘿 Siri，Allen 回家了」，它會跑 iPhone 上的這個捷徑。
+
+#### A-2 複製出其餘捷徑
+
+長按「Allen 回家了」→ **複製** → 改名與改 `text` 值即可（其他欄位不動）：
+
+| 捷徑名（對 Siri 說的話） | text | speaker | output | 對應情境 |
+|---|---|---|---|---|
+| `Ann 回家了` | Ann 回家了 | ann | living_homepod | 30 |
+| `晚安` | 晚安 | allen | master_mini | 13 / 15 |
+| `我出門了` | 我出門了 | allen | living_homepod | 04 |
+| `Ann 還在睡嗎` | Ann 還在睡嗎 | allen | living_homepod | 14 |
+| `二三三零現在怎樣` | 2330 現在怎樣 | allen | living_homepod | 32 |
+| `還原剛剛那個` | 還原剛剛那個 | allen | living_homepod | Hermes 回滾 |
+
+Siri 聽不懂名字時：把捷徑名改成口語更常見的講法（例如「晚安」有時會被 Siri 自己的晚安回應吃掉 → 改成「家裡晚安」）。
+
+#### A-3 可選：帶變數的自由句捷徑「跟管家說」
+
+1. 新捷徑 `跟管家說` → 動作 **聽寫文字**（Dictate Text，語言 中文台灣）。
+2. 動作 **取得 URL 內容**，同 A-1，但 `text` 的值點選「聽寫的文字」魔法變數。
+3. 說「嘿 Siri，跟管家說」→ Siri 回「好，請說」→ 講任何一句 → 走 Hermes。
+
+這條路徑的 STT 是 Apple 的（不是 Whisper），準確度高但句子會上傳 Apple；只在 B 路徑不方便時用。
+
+#### A-4 測試與排錯
+
+| 症狀 | 檢查 | 處置 |
+|---|---|---|
+| 試跑跳「無法連線」 | iPhone 是否在家 Wi-Fi；URL 打錯 | 用 A-0 的 curl 先驗證 |
+| 回 `405` / `400` | 方法不是 POST；本文不是 JSON；少 Content-Type | 重做第 6、7、11 步 |
+| 捷徑成功但 HomePod 沒聲 | HA 記錄簿有無 `語音：Siri 捷徑 webhook` 觸發 | `output` 拼錯 → 看 `script.say` 的 target 清單；深夜 sleep_mode 會改推播（§4.8） |
+| HomePod 回「我在 iPhone 上找不到」 | 個人請求沒開 / Apple ID 不同 | 家庭 App → 個人請求 |
+| 在外面 4G 跑失敗 | URL 仍是 192.168.0.11 | 07 章完成後改成 https 網址 |
 
 ### B. Companion App / Apple Watch Assist — 自由句
 
@@ -163,7 +222,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 
 `packages/s00_common.yaml` 的 `script.say`：
 
-- 參數 `message`、`target`（`living_homepod` / `master_homepod_mini` / `all`，預設客廳）。
+- 參數 `message`、`target`（`living_homepod` / `master_mini` / `all`，預設客廳）。
 - 23:00–07:00 音量上限 20%；`input_boolean.sleep_mode` 開且 target 含主臥 → 改推播 `notify.both`，不出聲。
 - 先 `media_player.volume_set` → `tts.speak`（piper）→ 不還原音量（HomePod 自己會記住上次音量，避免切換時爆音）。
 

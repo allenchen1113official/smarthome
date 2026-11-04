@@ -1,6 +1,6 @@
 # Allen & Ann 智慧家庭 — 從無到有建置 SOP
 
-> 版本 1.3 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
+> 版本 1.4 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
 > 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。
 
 ## 一頁快速開始
@@ -21,15 +21,15 @@
 | 01 | [01-網路拓樸實作.md](01-網路拓樸實作.md) | 畫出並實作五層網路拓樸、IP 規劃、BE3600 設定、連接埠表 | 2 小時 |
 | 02 | [02-Mac-mini-M4-HAOS-安裝.md](02-Mac-mini-M4-HAOS-安裝.md) | macOS 整備、UTM 建立 HAOS 虛擬機、Zigbee Stick USB 直通、HA 初始化 | 2–3 小時 |
 | 03 | [03-設備整合.md](03-設備整合.md) | Hue / Panasonic / Zigbee2MQTT+Aqara / Roborock / HomePod / Companion App / 輔助實體 | 半天 |
-| 04 | [04-OpenClaw-本地語音管線.md](04-OpenClaw-本地語音管線.md) | Faster-Whisper + Ollama + Piper 安裝，串接 HA Assist，HomePod 進出路徑 | 半天 |
+| 04 | [04-OpenClaw-本地語音管線.md](04-OpenClaw-本地語音管線.md) | Faster-Whisper + Ollama + Piper 安裝，串接 HA Assist，HomePod 進出路徑，Siri 捷徑逐步建立（14 步 + 截圖位） | 半天 |
 | 05 | [05-Hermes-Agent-建置.md](05-Hermes-Agent-建置.md) | 部署 Hermes 編排服務（14 工具 / 權限 / 記憶 / 股票模組），用 launchd 常駐 | 半天 |
-| 06 | [06-35情境逐一建置.md](06-35情境逐一建置.md) | 35 個情境每一個的前置、實體、YAML、測試與手動覆寫 | 分 5 週，每週一類 |
+| 06 | [06-35情境逐一建置.md](06-35情境逐一建置.md) | 35 個情境每一個的前置、實體、YAML、測試、手動覆寫與實測紀錄表 | 分 5 週，每週一類 |
 | 07 | [07-備援備份與遠端存取.md](07-備援備份與遠端存取.md) | 熱備雙節點（主 Mac mini／副 HA Black 24/7）、SLZB-06、每小時設定備份、失聯自動接手與回切、DuckDNS+SSL、Tailscale | 1 天 |
 | 08 | [08-驗收測試與故障排除.md](08-驗收測試與故障排除.md) | 全系統驗收清單、常見故障與處置 | 持續 |
 | 09 | [09-青鳥一鍵部署.md](09-青鳥一鍵部署.md) | **青鳥 · 台灣藍鵲 BlueMagpie**：一個資料夾 + Docker 一鍵部署 + 後台設定（`SmartHome/bluemagpie/`），跨 Linux / macOS / Windows，熱備由後台負責 | 1 小時 |
 | 10 | [10-LINE-Telegram-遠端控制介面.md](10-LINE-Telegram-遠端控制介面.md) | 家庭成員用 LINE / Telegram 遠端控制裝置與情境：指令文法、介面、安全、`magpie-bot` 建置 | 1 小時 |
 | 11 | [11-雙節點安裝範例-負載均衡.md](11-雙節點安裝範例-負載均衡.md) | 安裝範例：Mac mini 主 + HA Black 副，HAProxy + keepalived VIP，無狀態服務雙活、HA 主從自動切換、故障演練 | 1 天 |
-| 12 | [12-儀表板建置.md](12-儀表板建置.md) | 依 Claude Design 優化稿做成 HA 原生 Sections 儀表板（首頁 / 客廳房間頁 / 情境總控），壁掛平板與手機設定 | 2 小時 |
+| 12 | [12-儀表板建置.md](12-儀表板建置.md) | 依 Claude Design 優化稿做成 HA 原生 Sections 儀表板（首頁 / 客廳房間頁 / 情境總控），貼上前 85 個實體一鍵自檢，壁掛平板與手機設定 | 2 小時 |
 | A | [A-附錄-總表.md](A-附錄-總表.md) | IP / 埠 / 密鑰 / 實體 / 檔案位置 / 兩條路線選擇 / 變更紀錄 | 隨查 |
 
 ## 附帶的可直接使用檔案

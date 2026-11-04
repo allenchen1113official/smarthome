@@ -422,6 +422,7 @@ out.append("""# 06 · 35 種情境逐一建置
 3. 開發者工具 → YAML → **檢查設定** → 「設定有效」→ **重新載入所有 YAML 設定**（不用整台重啟）。
 4. 設定 → 自動化：確認該情境的自動化出現；開發者工具 → 狀態：`input_boolean.sXX_enabled` 存在。
 5. 依該節「測試步驟」逐項打勾；通過後把 `specs/0XX/spec.md` 的 Status 改 **Deployed** 並記錄 as-built 差異（憲章 V）。
+6. 把結果填進該節末的「實測紀錄」表（本手冊即工作底稿；網頁版可列印或用 Markdown 直接編輯）。「部分」= 有步驟失敗但不影響主要功能，須在備註寫明哪一步；三次都填完、驗收列打勾，才算 08 章 C 表的「通過」。
 
 ### 儀表板（建議）
 
@@ -490,6 +491,11 @@ for s in S:
     out.append(f"\n**package：`ha-config/packages/{fn}`**\n\n```yaml\n{pkg(fn)}\n```\n")
     out.append("**測試步驟（全部通過才算完成）**\n")
     for i, t in enumerate(tests, 1): out.append(f"{i}. [ ] {t}")
+    out.append(f"\n**實測紀錄（情境 {n:02d}）**\n")
+    out.append("| 次 | 日期（台北） | 測試者 | 結果 | as-built 差異 / 備註 |\n|---|---|---|---|---|")
+    out.append("| 初測 | ____-__-__ | Allen ☐ Ann ☐ | 通過 ☐ 失敗 ☐ 部分 ☐ | |")
+    out.append("| 複測 | ____-__-__ | Allen ☐ Ann ☐ | 通過 ☐ 失敗 ☐ 部分 ☐ | |")
+    out.append("| 驗收（08 章 C 表） | ____-__-__ | 兩人 ☐ | 通過 ☐ | spec Status → Deployed ☐ |")
     out.append("")
 
 out.append("""

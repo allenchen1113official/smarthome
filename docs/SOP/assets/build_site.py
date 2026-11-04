@@ -45,6 +45,16 @@ for i, (fn, label, ico) in enumerate(CH):
         src = src.replace(f"]({fn2})", f"](#ch{j})")
     # mermaid 區塊 → 已渲染圖 + 可展開原始碼
     src = re.sub(r"```mermaid\n(.*?)```", lambda m: f'<figure class="topo"><img src="{TOPO}" alt="五層網路拓樸圖"><figcaption>五層網路拓樸（assets/topology.png）</figcaption></figure>\n<details><summary>Mermaid 原始碼</summary>\n\n```text\n{m.group(1)}```\n</details>', src, flags=re.S)
+    # Siri 捷徑截圖：assets/siri/siri-NN.png 存在時，把表格內的 siri-NN 代碼換成縮圖
+    SIRI_DIR = os.path.join(ROOT, "assets", "siri")
+    def siri_img(m):
+        p = os.path.join(SIRI_DIR, f"{m.group(1)}.png")
+        if os.path.exists(p):
+            with open(p, "rb") as f:
+                data = "data:image/png;base64," + base64.b64encode(f.read()).decode()
+            return f'<a class="siri-shot" href="{data}" target="_blank"><img src="{data}" alt="{m.group(1)}" loading="lazy"></a>'
+        return f'<span class="siri-ph" title="尚無截圖：放到 assets/siri/{m.group(1)}.png 後重建">📷 {m.group(1)}</span>'
+    src = re.sub(r"\| (siri-\d{2}) \|$", lambda m: "| " + siri_img(m) + " |", src, flags=re.M)
     md.reset()
     body = md.convert(src)
     # 情境標題加上類別色與錨點
@@ -148,6 +158,7 @@ details{margin:0 0 18px}summary{cursor:pointer;color:var(--ink-2);font-size:13px
 .scene-h{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-sm);background:var(--cat-bg);border-left:4px solid var(--cat);margin-top:40px!important}
 .scene-num{font-family:var(--font-mono);font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 .chk{width:15px;height:15px;vertical-align:-2px;margin-right:4px;accent-color:var(--accent)}
+.siri-shot img{width:84px;border-radius:8px;border:1px solid var(--line);display:block}.siri-ph{font-size:11px;color:var(--ink-3);white-space:nowrap;border:1px dashed var(--line);border-radius:6px;padding:2px 6px}
 hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
 .toast.on{opacity:1}
@@ -194,7 +205,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
 <style>{CSS}</style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.3 · 2026-11-05</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.4 · 2026-11-05</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>
