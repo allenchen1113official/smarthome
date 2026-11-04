@@ -1,0 +1,10 @@
+# Linux 覆寫：Home Assistant 用 host 網路（mDNS / AirPlay / HomeKit 探索完整）；USB Zigbee 直通範例
+services:
+  homeassistant:
+    network_mode: host
+    ports: !reset []
+  zigbee2mqtt:
+    # 若用 USB Stick 而非 SLZB-06，取消下兩行註解並在後台 Zigbee 設定選 serial
+    # devices:
+    #   - /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2-if00:/dev/ttyUSB0
+    extra_hosts: ["host.docker.internal:host-gateway"]

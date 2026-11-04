@@ -1,0 +1,54 @@
+# file: packages/s03_shift_mode.yaml
+# 情境 03 輪班模式：Ann 切到早班時客廳 5000K 白光提神；切夜班時白天進入靜音保護
+input_boolean:
+  s03_enabled: { name: "03 輪班模式", initial: on, icon: mdi:calendar-clock }
+
+automation:
+  - id: s03_shift_day_focus
+    alias: 03 輪班模式（早班 → 客廳白光）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_select.ann_shift
+        to: day
+      - trigger: time
+        at: input_datetime.ann_wake
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s03_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_select.ann_shift
+        state: day
+      - condition: state
+        entity_id: person.ann
+        state: home
+      - condition: time
+        after: "05:00:00"
+        before: "10:00:00"
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.living_all }
+        data: { brightness_pct: 100, color_temp_kelvin: 5000, transition: 5 }
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.ann_wake }
+        data: { time: "06:00:00" }
+
+  - id: s03_shift_change_schedule
+    alias: 03 輪班模式（班別改變 → 重設喚醒時間與通知）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_select.ann_shift
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s03_enabled
+        state: "on"
+    actions:
+      - action: input_datetime.set_datetime
+        target: { entity_id: input_datetime.ann_wake }
+        data:
+          time: "{{ {'day':'06:00:00','evening':'10:00:00','night':'16:00:00','off':'09:00:00'}[trigger.to_state.state] }}"
+      - action: notify.both
+        data:
+          message: "Ann 班別已切換為 {{ {'day':'早班','evening':'小夜','night':'大夜','off':'休假'}[trigger.to_state.state] }}，喚醒時間已更新。"

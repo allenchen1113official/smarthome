@@ -1,0 +1,42 @@
+# file: packages/s26_wan_alert.yaml
+# 情境 26 網路警告：WAN 斷線 2 分鐘 → 客廳燈閃紅 3 次 + 本機通知；恢復時推播
+input_boolean:
+  s26_enabled: { name: "26 網路警告", initial: on, icon: mdi:wan }
+
+automation:
+  - id: s26_wan_down
+    alias: 26 網路警告（斷線）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.wan_ping
+        to: "off"
+        for: { minutes: 2 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s26_enabled
+        state: "on"
+    actions:
+      - if:
+          - condition: time
+            after: "07:00:00"
+            before: "23:00:00"
+        then:
+          - action: script.flash_lights
+            data: { color: red, count: 3, targets: [light.living_all] }
+      - action: persistent_notification.create
+        data: { title: 網路斷線, message: "{{ now().strftime('%m/%d %H:%M') }} WAN 無法連線（PPPoE？）", notification_id: wan_down }
+
+  - id: s26_wan_up
+    alias: 26 網路警告（恢復）
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.wan_ping
+        from: "off"
+        to: "on"
+        for: { minutes: 1 }
+    actions:
+      - action: persistent_notification.dismiss
+        data: { notification_id: wan_down }
+      - action: notify.both
+        data: { message: "📡 網路已恢復（{{ now().strftime('%H:%M') }}）。" }

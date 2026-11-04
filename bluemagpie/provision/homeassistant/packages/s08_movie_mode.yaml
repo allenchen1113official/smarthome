@@ -1,0 +1,71 @@
+# file: packages/s08_movie_mode.yaml
+# 情境 08 影音模式：Hue Tap 鍵 2 或開關 movie_mode → Sync Box + Play 燈條，其餘崁燈 10%，窗簾關；結束還原
+input_boolean:
+  s08_enabled: { name: "08 影音模式", initial: on, icon: mdi:television-play }
+
+automation:
+  - id: s08_movie_tap
+    alias: 08 影音模式（Hue Tap 鍵 2 切換）
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_tap_button_2, type: short_release }   # ⚠️ 改成 03 章記下的 id
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s08_enabled
+        state: "on"
+    actions:
+      - action: input_boolean.toggle
+        target: { entity_id: input_boolean.movie_mode }
+
+  - id: s08_movie_on
+    alias: 08 影音模式（啟動）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.movie_mode
+        to: "on"
+    actions:
+      - action: scene.create
+        data:
+          scene_id: before_movie
+          snapshot_entities: [light.living_all, light.play_bar, cover.living_curtain, switch.hue_sync_box_power]
+      - action: cover.close_cover
+        target: { entity_id: cover.living_curtain }
+        continue_on_error: true
+      - action: light.turn_on
+        target: { entity_id: light.living_all }
+        data: { brightness_pct: 10, color_temp_kelvin: 2700, transition: 3 }
+      - action: switch.turn_on
+        target: { entity_id: switch.hue_sync_box_power }
+        continue_on_error: true
+      - action: select.select_option
+        target: { entity_id: select.hue_sync_box_mode }
+        data: { option: video }
+        continue_on_error: true
+      - action: notify.both
+        data: { message: "🎬 影音模式啟動；3 小時後自動結束。" }
+      - delay: { hours: 3 }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.movie_mode }
+
+  - id: s08_movie_off
+    alias: 08 影音模式（結束還原）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.movie_mode
+        to: "off"
+    actions:
+      - action: automation.turn_off
+        target: { entity_id: automation.s08_movie_on }   # 取消 3 小時倒數
+      - action: automation.turn_on
+        target: { entity_id: automation.s08_movie_on }
+      - action: switch.turn_off
+        target: { entity_id: switch.hue_sync_box_power }
+        continue_on_error: true
+      - action: scene.turn_on
+        target: { entity_id: scene.before_movie }
+        data: { transition: 3 }
+        continue_on_error: true

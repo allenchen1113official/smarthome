@@ -1,0 +1,50 @@
+# file: packages/s23_nightly_backup.yaml
+# 情境 23 快照同步副節點：每晚 03:00 全備（本機 + standby）；每小時 :05 只備設定到 standby（熱備用，落後 ≤ 1 小時）
+# 前置：設定 → 系統 → 儲存空間 加入「standby」（SMB //192.168.0.12/backup）；secrets.yaml 有 backup_password（兩台相同）
+input_boolean:
+  s23_enabled: { name: "23 快照同步副節點", initial: on, icon: mdi:backup-restore }
+
+automation:
+  - id: s23_nightly_backup
+    alias: 23 每晚全備（03:00）
+    mode: single
+    triggers:
+      - trigger: time
+        at: "03:00:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s23_enabled
+        state: "on"
+    actions:
+      - action: backup.create_automatic     # 依「備份」頁設定：本機 + standby、加密、保留 7 份
+        continue_on_error: true
+      - delay: { minutes: 10 }
+      - action: notify.mobile_app_allen_iphone
+        data:
+          message: >-
+            💾 全備完成：{{ states('sensor.backup_last_successful_automatic_backup') | as_datetime | as_local | default('—') }}
+            ／WAN {{ '正常' if is_state('binary_sensor.wan_ping','on') else '異常' }}
+
+  - id: s23_hourly_config_backup
+    alias: 23 每小時設定備份到副節點
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: 5
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s23_enabled
+        state: "on"
+      - condition: state
+        entity_id: binary_sensor.is_primary_node
+        state: "on"
+    actions:
+      - action: hassio.backup_partial
+        continue_on_error: true
+        data:
+          name: "hourly_{{ now().strftime('%H') }}"
+          homeassistant: true
+          addons: [45df7312_zigbee2mqtt, core_mosquitto]
+          location: standby
+          compressed: true
+          password: !secret backup_password

@@ -1,0 +1,48 @@
+# file: packages/s16_white_noise.yaml
+# 情境 16 快速入睡：Siri 捷徑「白噪音」→ 主臥 HomePod mini 播 20 分鐘白噪音後停止
+# 先把 white_noise.mp3 放到 /config/www/audio/
+input_boolean:
+  s16_enabled: { name: "16 快速入睡", initial: on, icon: mdi:weather-windy }
+
+script:
+  white_noise:
+    alias: 白噪音 20 分鐘
+    sequence:
+      - action: media_player.volume_set
+        target: { entity_id: media_player.master_homepod_mini }
+        data: { volume_level: 0.15 }
+      - action: media_player.play_media
+        target: { entity_id: media_player.master_homepod_mini }
+        data:
+          media_content_type: music
+          media_content_id: "http://192.168.0.11:8123/local/audio/white_noise.mp3"
+      - action: timer.start
+        target: { entity_id: timer.white_noise }
+        data: { duration: "00:20:00" }
+
+automation:
+  - id: s16_white_noise_webhook
+    alias: 16 快速入睡（Siri 捷徑 webhook）
+    mode: single
+    triggers:
+      - trigger: webhook
+        webhook_id: !secret white_noise_webhook_id
+        allowed_methods: [POST]
+        local_only: false
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s16_enabled
+        state: "on"
+    actions:
+      - action: script.white_noise
+
+  - id: s16_white_noise_stop
+    alias: 16 快速入睡（計時結束停止）
+    triggers:
+      - trigger: event
+        event_type: timer.finished
+        event_data: { entity_id: timer.white_noise }
+    actions:
+      - action: media_player.media_stop
+        target: { entity_id: media_player.master_homepod_mini }
+        continue_on_error: true

@@ -1,0 +1,61 @@
+# file: packages/s24_consumables.yaml
+# 情境 24 耗材更換提醒：空調運轉累計 500 小時提醒洗濾網；掃地機每 30 次提醒清刷/換濾網
+input_boolean:
+  s24_enabled: { name: "24 耗材更換提醒", initial: on, icon: mdi:wrench-clock }
+
+script:
+  reset_ac_filter:
+    alias: 已清洗空調濾網（歸零）
+    sequence:
+      - action: counter.reset
+        target: { entity_id: counter.ac_filter_hours }
+  reset_vacuum_runs:
+    alias: 已保養掃地機（歸零）
+    sequence:
+      - action: counter.reset
+        target: { entity_id: counter.vacuum_runs }
+
+automation:
+  - id: s24_ac_hours
+    alias: 24 耗材（空調每小時計數）
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: 0
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s24_enabled
+        state: "on"
+      - condition: or
+        conditions:
+          - condition: not
+            conditions: [{ condition: state, entity_id: climate.living, state: "off" }]
+          - condition: not
+            conditions: [{ condition: state, entity_id: climate.master, state: "off" }]
+          - condition: not
+            conditions: [{ condition: state, entity_id: climate.second, state: "off" }]
+    actions:
+      - action: counter.increment
+        target: { entity_id: counter.ac_filter_hours }
+
+  - id: s24_ac_filter_reminder
+    alias: 24 耗材（空調濾網 500 小時）
+    triggers:
+      - trigger: numeric_state
+        entity_id: counter.ac_filter_hours
+        above: 499
+    actions:
+      - action: notify.both
+        data:
+          message: "🛠️ 空調已累計運轉 500 小時，請清洗濾網；完成後在儀表板按「已清洗濾網」。"
+
+  - id: s24_vacuum_reminder
+    alias: 24 耗材（掃地機 30 次）
+    triggers:
+      - trigger: numeric_state
+        entity_id: counter.vacuum_runs
+        above: 29
+    actions:
+      - action: notify.both
+        data:
+          message: "🛠️ 掃地機已清掃 30 次，請清理滾刷、濾網並檢查拖布；完成後按「已保養掃地機」。"

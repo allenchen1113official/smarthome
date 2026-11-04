@@ -1,0 +1,81 @@
+# file: packages/s07_arrival_precool.yaml
+# 情境 07 返家預熱：距家 2 km 且朝家方向 → 客廳冷氣設舒適溫度
+input_boolean:
+  s07_enabled: { name: "07 返家預熱", initial: on, icon: mdi:home-import-outline }
+
+automation:
+  - id: s07_precool_allen
+    alias: 07 返家預熱（Allen 2 km）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: proximity.home_allen
+        below: 2000
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s07_enabled
+        state: "on"
+      - condition: state
+        entity_id: proximity.home_allen
+        attribute: direction_of_travel
+        state: towards
+      - condition: state
+        entity_id: person.allen
+        state: not_home
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      - condition: time
+        after: "10:00:00"
+        before: "23:00:00"
+      - condition: numeric_state
+        entity_id: sensor.living_temperature
+        above: 26
+    actions:
+      - action: script.ac_set
+        data: { room: living, hvac_mode: cool, temperature: "{{ states('input_number.comfort_temp_allen') | float }}" }
+      - action: notify.mobile_app_allen_iphone
+        data: { message: "❄️ 正在為您預冷客廳（{{ states('input_number.comfort_temp_allen') }}°C）" }
+      # 30 分鐘內沒到家就關掉，避免白開
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: person.allen
+            to: home
+        timeout: { minutes: 30 }
+        continue_on_timeout: true
+      - if: "{{ not wait.trigger }}"
+        then:
+          - action: script.ac_set
+            data: { room: living, hvac_mode: "off" }
+          - action: notify.mobile_app_allen_iphone
+            data: { message: "30 分鐘內未到家，已關閉預冷。" }
+
+  - id: s07_precool_ann
+    alias: 07 返家預熱（Ann 2 km）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: proximity.home_ann
+        below: 2000
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s07_enabled
+        state: "on"
+      - condition: state
+        entity_id: proximity.home_ann
+        attribute: direction_of_travel
+        state: towards
+      - condition: state
+        entity_id: person.ann
+        state: not_home
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      - condition: numeric_state
+        entity_id: sensor.master_temperature
+        above: 26
+    actions:
+      - action: script.ac_set
+        data: { room: master, hvac_mode: cool, temperature: "{{ states('input_number.comfort_temp_ann') | float }}" }
+      - action: notify.mobile_app_ann_iphone
+        data: { message: "❄️ 正在為您預冷主臥（{{ states('input_number.comfort_temp_ann') }}°C）" }

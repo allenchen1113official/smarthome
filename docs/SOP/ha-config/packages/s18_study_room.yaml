@@ -1,0 +1,48 @@
+# file: packages/s18_study_room.yaml
+# 情境 18 次臥工作室：電腦插座功率 > 30 W 持續 2 分鐘 → 次臥 Focus 照明與空調；低於 10 W 10 分鐘 → 關
+input_boolean:
+  s18_enabled: { name: "18 次臥工作室", initial: on, icon: mdi:desktop-tower-monitor }
+
+automation:
+  - id: s18_study_on
+    alias: 18 次臥工作室（開機 → 照明/空調）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.second_desk_plug_power
+        above: 30
+        for: { minutes: 2 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s18_enabled
+        state: "on"
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.second_all }
+        data: { brightness_pct: 100, color_temp_kelvin: 5000, transition: 3 }
+      - if:
+          - condition: numeric_state
+            entity_id: sensor.living_temperature
+            above: 27
+        then:
+          - action: script.ac_set
+            data: { room: second, hvac_mode: cool, temperature: "{{ states('input_number.comfort_temp_allen') | float }}" }
+
+  - id: s18_study_off
+    alias: 18 次臥工作室（關機 → 關燈/關空調）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.second_desk_plug_power
+        below: 10
+        for: { minutes: 10 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s18_enabled
+        state: "on"
+    actions:
+      - action: light.turn_off
+        target: { entity_id: light.second_all }
+        data: { transition: 5 }
+      - action: script.ac_set
+        data: { room: second, hvac_mode: "off" }

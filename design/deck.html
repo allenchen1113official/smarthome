@@ -371,11 +371,11 @@
 <section class="slide s-cover" data-screen-label="01 Cover">
   <div class="eyebrow">SMART HOME PLAN · v1.0 · APR 2026</div>
   <h1>為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
-  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C — 打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。</p>
+  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為備援，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C — 打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。</p>
   <div class="stats">
     <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
     <div class="stat"><div class="n">5</div><div class="l">空調主機</div></div>
-    <div class="stat"><div class="n">30</div><div class="l">自動化場景</div></div>
+    <div class="stat"><div class="n">35</div><div class="l">自動化場景</div></div>
     <div class="stat"><div class="n">100%</div><div class="l">本地端執行</div></div>
     <div class="stat"><div class="n">&lt;1s</div><div class="l">語音回應</div></div>
   </div>
@@ -392,22 +392,22 @@
         <div class="num">/ 01</div>
         <h3>網路拓樸</h3>
         <div class="en">Network Topology</div>
-        <p>從中華電信 100M/40M 固定 IP，到 tp-link BE3600 (WiFi 7)、HA Black 中樞，再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統。</p>
+        <p>從中華電信 100M/40M 固定 IP，到 tp-link BE3600 (WiFi 7)、Mac mini M4 中樞，再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統。</p>
       </div>
       <div class="agenda-card" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
         <div class="num">/ 02</div>
-        <h3>30 個自動化場景</h3>
+        <h3>35 個自動化場景</h3>
         <div class="en">Automation Scenes</div>
-        <p>晨間 · 下班 · 睡眠 · 家電 · 安全五大類別 × 6 場景。涵蓋 Allen 早班與 Ann 大夜班的真實作息差異。</p>
+        <p>晨間 · 下班 · 睡眠 · 家電 · 安全五大類別共 35 個場景，其中 31–35 由 Hermes 主導。涵蓋 Allen 早班與 Ann 大夜班的真實作息差異。</p>
       </div>
       <div class="agenda-card" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);">
         <div class="num">/ 03</div>
         <h3>OpenClaw 架構</h3>
         <div class="en">Local AI Voice Assistant</div>
-        <p>Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper，全部跑在 HA Black N100 的 Docker 中。端到端延遲 ~870ms。</p>
+        <p>Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper，全部跑在 Mac mini M4 上（Metal GPU 加速）。端到端延遲 ~520ms，含 Hermes 的 14 工具編排與權限模型。</p>
       </div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Smart Home</span><span>02 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Smart Home</span><span>02 / 11</span></div>
   </div>
 </section>
 
@@ -434,7 +434,8 @@
       <div class="topo-row">
         <div class="lyr-label">中樞<small>Smart Hub</small></div>
         <div class="nodes">
-          <div class="topo-node" data-tone="primary"><div class="nl">🏠 Home Assistant Black</div><div class="nm">N100 · 8GB · 256GB SSD · HAOS + OpenClaw + Zigbee Stick</div></div>
+          <div class="topo-node" data-tone="primary"><div class="nl">🏠 Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD · HAOS VM + OpenClaw + Zigbee Stick</div></div>
+          <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="nl">🛟 HA Black (N100) · 備援</div><div class="nm">待命 · 每晚接收快照 · 主機失聯即接手</div></div>
         </div>
       </div>
       <div class="topo-row">
@@ -456,7 +457,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Topology</span><span>03 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Topology</span><span>03 / 11</span></div>
   </div>
 </section>
 
@@ -476,7 +477,7 @@
       <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 05</div><div class="st">🔒 門鎖連動</div><p class="sd">偵測開門且光線暗，自動開啟玄關燈。</p></div>
       <div class="scene" style="--accent: var(--c-morning); --tint: var(--c-morning-bg);"><div class="sn">SCENE 06 · NEW</div><div class="st">📈 晨間股市摘要</div><p class="sd">HomePod 播報自選收盤，Allen 邊吃早餐邊聽。</p></div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>04 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>04 / 11</span></div>
   </div>
 </section>
 
@@ -496,7 +497,7 @@
       <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 11</div><div class="st">🌙 深夜靜音</div><p class="sd">23:00 後 HomePod 語音回饋音量自動降至 20%。</p></div>
       <div class="scene" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);"><div class="sn">SCENE 12</div><div class="st">🚿 洗完澡乾燥</div><p class="sd">偵測冷氣溫度差，自動切換至乾燥模式。</p></div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>05 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>05 / 11</span></div>
   </div>
 </section>
 
@@ -516,7 +517,7 @@
       <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 17</div><div class="st">💡 早退晚回判斷</div><p class="sd">根據進門時間切換語音回饋組合。</p></div>
       <div class="scene" style="--accent: var(--c-sleep); --tint: var(--c-sleep-bg);"><div class="sn">SCENE 18</div><div class="st">💻 次臥工作室</div><p class="sd">有人且電腦開啟時，自動加強該區照明。</p></div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>06 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>06 / 11</span></div>
   </div>
 </section>
 
@@ -554,7 +555,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>07 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Scenes</span><span>07 / 11</span></div>
   </div>
 </section>
 
@@ -563,7 +564,7 @@
   <div class="slide-pad">
     <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
     <h1>OpenClaw 本地 AI 語音管家</h1>
-    <p class="lede">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~870ms 端到端延遲</p>
+    <p class="lede">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~520ms 端到端延遲</p>
 
     <div class="arch-grid">
       <div class="col">
@@ -580,7 +581,7 @@
         </div>
       </div>
       <div class="col">
-        <div class="col-title">OpenClaw 核心<small>Docker on N100</small></div>
+        <div class="col-title">OpenClaw 核心<small>macOS · Metal on M4</small></div>
         <div class="col-frame openclaw">
           <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
           <div class="module openclaw-core">
@@ -589,7 +590,7 @@
           </div>
           <div class="module openclaw-core">
             <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
-            <div class="m-spec">CPU only · 8 GB · ~600ms</div>
+            <div class="m-spec">Metal GPU · 16 GB · ~250ms</div>
           </div>
           <div class="module openclaw-core">
             <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
@@ -629,7 +630,7 @@
         </div>
       </div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · OpenClaw</span><span>08 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · OpenClaw</span><span>08 / 11</span></div>
   </div>
 </section>
 
@@ -638,7 +639,7 @@
   <div class="slide-pad">
     <div class="crumb">/ 03 · VOICE FLOW · 「ALLEN 回家了」</div>
     <h1>八步語音流程</h1>
-    <p class="lede">從 Allen 說出「Allen 回家了」開始，經 Hermes Agent 編排任務，到 HomePod 播報「冷氣設為 24 度」結束 — 全程在 HA Black 本地完成，無雲端依賴。</p>
+    <p class="lede">從 Allen 說出「Allen 回家了」開始，經 Hermes Agent 編排任務，到 HomePod 播報「冷氣設為 24 度」結束 — 全程在 Mac mini M4 本地完成，無雲端依賴。</p>
 
     <div class="steps-grid">
       <div class="step-box"><div class="sn">STEP 01</div><div class="st">說：「Allen 回家了」</div><div class="sd">語音輸入 · 客廳 HomePod</div></div>
@@ -652,12 +653,113 @@
     </div>
 
     <div class="advantages">
-      <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 HA Black，資料不出家門</p></div></div>
+      <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 Mac mini M4，資料不出家門</p></div></div>
       <div class="adv"><div class="ico">⚡</div><div><h4>低延遲</h4><p>STT + LLM + Hermes + TTS 完整流程 &lt; 1 秒</p></div></div>
       <div class="adv"><div class="ico">☁️</div><div><h4>無雲端依賴</h4><p>網路斷線時，核心功能不受影響</p></div></div>
       <div class="adv"><div class="ico">🇹🇼</div><div><h4>中文原生</h4><p>Whisper + Piper 中文聲線</p></div></div>
     </div>
-    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Voice Flow</span><span>09 / 09</span></div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Voice Flow</span><span>09 / 11</span></div>
+  </div>
+</section>
+
+<!-- ============ S10 HERMES ORCHESTRATION ============ -->
+<section class="slide" data-screen-label="10 Hermes Agent">
+  <div class="slide-pad">
+    <div class="crumb">/ 04 · HERMES AGENT · 編排與權限</div>
+    <h1>Hermes Agent — 可驗證的任務編排</h1>
+    <p class="lede">Llama 3 與 Home Assistant 之間的那一層：把自然語意轉成帶 guard、retry 與 rollback 的工具呼叫序列。14 個註冊工具、三條介面通道、六種權限 scope，全部動作先覆誦確認。</p>
+
+    <div class="steps-grid" style="grid-template-columns:repeat(6,1fr);margin-top:28px;">
+      <div class="step-box"><div class="sn">01 PARSE</div><div class="st" style="font-size:20px">解析計畫</div><div class="sd">LLM JSON → Plan<br>schema 驗證</div></div>
+      <div class="step-box" style="border-color:var(--c-secure)"><div class="sn">02 GUARD</div><div class="st" style="font-size:20px">前置條件</div><div class="sd">上線 · 時段<br>睡眠 · scope</div></div>
+      <div class="step-box" style="border-color:var(--c-secure)"><div class="sn">03 CONFIRM</div><div class="st" style="font-size:20px">人工確認</div><div class="sd">語音覆誦<br>逾時 12s 取消</div></div>
+      <div class="step-box"><div class="sn">04 DISPATCH</div><div class="st" style="font-size:20px">分派執行</div><div class="sd">HA / MQTT<br>Matter</div></div>
+      <div class="step-box"><div class="sn">05 RETRY</div><div class="st" style="font-size:20px">重試</div><div class="sd">指數退避 3 次<br>0.4 / 1.2 / 3.6s</div></div>
+      <div class="step-box" style="border-color:var(--c-home)"><div class="sn">06 SETTLE</div><div class="st" style="font-size:20px">收斂或回滾</div><div class="sd">全成功回報<br>失敗反向補償</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:28px;margin-top:32px;flex:1;">
+      <div style="background:white;border:2px solid var(--line);border-radius:18px;padding:24px 26px;">
+        <div style="font-size:24px;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em">工具清單 Tool Registry</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-family:var(--font-mono);font-size:17px;color:var(--ink-2);line-height:1.5">
+          <div>light.set</div><div>home.get_state</div>
+          <div>light.activate_scene</div><div>home.snapshot</div>
+          <div>climate.set</div><div>notify.push</div>
+          <div>cover.set_position</div><div>emergency.sos</div>
+          <div>media.say</div><div>market.quote</div>
+          <div>vacuum.control</div><div>market.indicators</div>
+          <div style="color:var(--c-secure)">market.screen</div><div style="color:var(--c-secure)">market.paper_order</div>
+        </div>
+        <div style="margin-top:16px;font-size:17px;color:var(--ink-3);line-height:1.45">精簡 schema 約 1.1k tokens 注入 system prompt；未註冊的工具名一律拒絕。</div>
+      </div>
+      <div style="background:white;border:2px solid var(--line);border-radius:18px;padding:24px 26px;">
+        <div style="font-size:24px;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em">權限 Scope</div>
+        <div style="font-size:19px;line-height:1.85;color:var(--ink-2)">
+          <div><b style="font-family:var(--font-mono);font-size:17px">read</b> — 免確認</div>
+          <div><b style="font-family:var(--font-mono);font-size:17px">write.comfort</b> — 需確認</div>
+          <div><b style="font-family:var(--font-mono);font-size:17px">write.appliance</b> — 需確認</div>
+          <div><b style="font-family:var(--font-mono);font-size:17px">write.security</b> — 聲紋限定</div>
+          <div><b style="font-family:var(--font-mono);font-size:17px">finance.sim</b> — 覆誦確認</div>
+          <div><b style="font-family:var(--font-mono);font-size:17px">net.egress</b> — 白名單</div>
+        </div>
+        <div style="margin-top:14px;font-size:17px;color:var(--ink-3);line-height:1.45">23:00–07:00 改推播確認，不出聲。</div>
+      </div>
+      <div style="background:white;border:2px solid var(--line);border-radius:18px;padding:24px 26px;">
+        <div style="font-size:24px;font-weight:600;margin-bottom:14px;letter-spacing:-0.01em">M4 併發策略</div>
+        <div style="font-size:19px;line-height:1.7;color:var(--ink-2)">
+          <div><b>LLM lane ×1</b> — 意圖解析，佇列上限 3</div>
+          <div style="margin-top:8px"><b>Fast lane ×4</b> — 查狀態、HA 呼叫、報價</div>
+          <div style="margin-top:8px"><b>Batch lane ×1</b> — 盤後掃描、圖卡、備份；聽到喚醒詞即暫停</div>
+        </div>
+        <div style="margin-top:14px;font-size:17px;color:var(--ink-3);line-height:1.45">「冷氣幾度？」走 fast lane 免 LLM，~310ms。記憶體合計 11.6 GB / 16 GB。</div>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Hermes Agent</span><span>10 / 11</span></div>
+  </div>
+</section>
+
+<!-- ============ S11 HERMES MARKET MODULE ============ -->
+<section class="slide" data-screen-label="11 Market Module">
+  <div class="slide-pad">
+    <div class="crumb">/ 04 · HERMES AGENT · 股票分析模組</div>
+    <h1>股票分析：只分析、不下單</h1>
+    <p class="lede">Hermes 新增自選股掃描、盤中告警、語音問答、收盤圖卡與模擬單記帳。資料來源為公開行情 API，快取 15 分鐘；<b>broker.place_order 永遠在 policy.never 清單內</b>。</p>
+
+    <div class="steps-grid" style="grid-template-columns:repeat(5,1fr);margin-top:28px;">
+      <div class="step-box"><div class="sn">13:30 盤後</div><div class="st" style="font-size:21px">掃描自選</div><div class="sd">加權評分排序<br>batch lane ~40s</div></div>
+      <div class="step-box"><div class="sn">14:00</div><div class="st" style="font-size:21px">產出圖卡</div><div class="sd">熱力圖 PNG<br>客廳螢幕＋雲端</div></div>
+      <div class="step-box"><div class="sn">06:35 隔日</div><div class="st" style="font-size:21px">語音播報</div><div class="sd">前 3 檔＋一句理由<br>場景 06 延伸</div></div>
+      <div class="step-box" style="border-color:var(--c-secure)"><div class="sn">09:00–13:30</div><div class="st" style="font-size:21px">盤中告警</div><div class="sd">突破 / 量增 / 停損<br>燈效＋推播</div></div>
+      <div class="step-box"><div class="sn">隨時</div><div class="st" style="font-size:21px">語音問答</div><div class="sd">「2330 現在怎樣？」<br>~1.9s 回覆</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:32px;flex:1;">
+      <div style="background:white;border:2px solid var(--line);border-radius:18px;padding:24px 28px;">
+        <div style="font-size:24px;font-weight:600;margin-bottom:12px;letter-spacing:-0.01em">選股規則（可語音調整，需確認）</div>
+        <div style="font-family:var(--font-mono);font-size:19px;line-height:1.75;color:var(--ink-2)">
+          <div>price &gt; ma20 &gt; ma60 &nbsp;<span style="color:var(--ink-4)">權重 30</span></div>
+          <div>volume &gt; ma_vol20 × 1.5 &nbsp;<span style="color:var(--ink-4)">權重 25</span></div>
+          <div>40 &lt; rsi14 &lt; 70 &nbsp;<span style="color:var(--ink-4)">權重 20</span></div>
+          <div>macd_hist 翻正 &nbsp;<span style="color:var(--ink-4)">權重 25</span></div>
+          <div style="margin-top:10px;color:var(--c-secure)">min_score 60 · top_n 3</div>
+        </div>
+        <div style="margin-top:14px;font-size:18px;color:var(--ink-3);line-height:1.45">分數不足就說「今天沒有符合條件的」；拿不到報價就說拿不到，不編造數字。</div>
+      </div>
+      <div style="background:var(--c-secure-bg);border:2px solid var(--c-secure);border-radius:18px;padding:24px 28px;">
+        <div style="font-size:24px;font-weight:600;margin-bottom:12px;letter-spacing:-0.01em">邊界與確認</div>
+        <div style="font-size:20px;line-height:1.6;color:var(--ink);">
+          <div>· 模擬單需覆誦「標的／股數／價格」後才記帳</div>
+          <div style="margin-top:10px">· 不連券商、不持有交易憑證、無下單能力</div>
+          <div style="margin-top:10px">· 停損提醒依 holding.cost，每檔每日最多 2 次</div>
+          <div style="margin-top:10px">· 每次播報與圖卡結尾附「非投資建議」</div>
+        </div>
+        <div style="margin-top:16px;font-family:var(--font-mono);font-size:18px;color:var(--ink-2);background:white;border-radius:12px;padding:14px 16px;line-height:1.5">
+          user: 「幫我模擬買 2330 一張」<br>
+          hermes: 「模擬買進台積電 1000 股，<br>&nbsp;&nbsp;以現價 1085 記錄，確認嗎？」
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Market Module</span><span>11 / 11</span></div>
   </div>
 </section>
 

@@ -231,24 +231,15 @@
 <section class="hero">
   <span class="eyebrow"><span class="glyph"></span>Smart Home Plan · v1.0 · Apr 2026</span>
   <h1 class="title">為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
-  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本規劃涵蓋三個面向 — 網路拓樸、30 個自動化場景、以及 OpenClaw 語音流程。</p>
+  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為備援，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本規劃涵蓋三個面向 — 網路拓樸、30 個自動化場景、以及 OpenClaw 語音流程。</p>
 
   <div class="stats">
     <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
     <div class="stat"><div class="n">5</div><div class="l">空調主機</div></div>
-    <div class="stat"><div class="n">30</div><div class="l">自動化場景</div></div>
+    <div class="stat"><div class="n">35</div><div class="l">自動化場景</div></div>
     <div class="stat"><div class="n">100%</div><div class="l">本地端執行</div></div>
     <div class="stat"><div class="n">&lt;1s</div><div class="l">語音回應延遲</div></div>
   </div>
-
-  <a href="sop.html" style="display:flex;align-items:center;gap:16px;margin-top:24px;padding:18px 24px;background:var(--bg-elev);border:1px solid var(--line-soft);border-radius:var(--radius-lg);text-decoration:none;color:inherit;box-shadow:var(--shadow-1);">
-    <span style="font-size:26px;">🛠️</span>
-    <span style="flex:1;">
-      <span style="display:block;font-size:16px;font-weight:600;letter-spacing:-0.01em;">建置 SOP + 設計審查 — Mac mini M4 版</span>
-      <span style="display:block;font-size:13px;color:var(--ink-3);margin-top:2px;">從無到有的逐步建置指南：主機/HA/網路/設備/Apple Home/本地 AI/場景，含 v1.0 設計審查與安全強化。</span>
-    </span>
-    <span style="font-size:13px;font-weight:500;color:var(--c-morning);white-space:nowrap;">開始建置 →</span>
-  </a>
 </section>
 
 <section class="pillars">
@@ -266,7 +257,7 @@
         <text x="140" y="22" font-size="6" fill="var(--ink-2)" text-anchor="middle">tp-link</text>
         <!-- ha -->
         <rect x="120" y="48" width="40" height="16" rx="4" fill="var(--c-sleep-bg)" stroke="var(--c-sleep)"/>
-        <text x="140" y="58" font-size="6" fill="var(--ink)" text-anchor="middle">HA Black</text>
+        <text x="140" y="58" font-size="6" fill="var(--ink)" text-anchor="middle">Mac mini M4</text>
         <!-- subsystems -->
         <circle cx="40" cy="90" r="7" fill="var(--c-morning-bg)" stroke="var(--c-morning)"/>
         <circle cx="100" cy="90" r="7" fill="var(--c-home-bg)" stroke="var(--c-home)"/>
@@ -281,13 +272,13 @@
         <path d="M140 64 L220 83" stroke="var(--ink-4)" opacity=".6"/>
       </svg>
     </div>
-    <p class="desc">從中華電信 100M/40M 固定 IP，到 tp-link BE3600（WiFi 7）、HA Black 中樞，再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統 — 完整可互動節點圖。</p>
+    <p class="desc">從中華電信 100M/40M 固定 IP，到 tp-link BE3600（WiFi 7）、Mac mini M4 主中樞（HA Black 備援），再到 Hue / HVAC / 窗簾 / 感測 / 音訊五大子系統 — 完整可互動節點圖。</p>
     <span class="cta">查看拓樸 →</span>
   </a>
 
   <a class="pillar" href="scenes.html" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
     <div class="num">/ 02</div>
-    <h2>30 個自動化場景</h2>
+    <h2>35 個自動化場景</h2>
     <div class="en">Automation Scenes</div>
     <div class="preview">
       <div class="mini-scene-grid">
@@ -298,7 +289,7 @@
         <div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div><div style="background: var(--c-secure-bg)"></div>
       </div>
     </div>
-    <p class="desc">五大類別 × 6 場景。從晨間溫柔喚醒、Ann 輪班補眠、深夜靜音，到緊急 SOS 與 OpenClaw 全屋情境切換 — 每張卡可展開觸發條件與 YAML 細節。</p>
+    <p class="desc">五大類別共 35 個場景。從晨間溫柔喚醒、Ann 輪班補眠、深夜靜音，到緊急 SOS、OpenClaw 全屋情境切換，以及 31–35 由 Hermes 主導的股票分析與深夜確認策略 — 每張卡可展開 YAML 細節。</p>
     <span class="cta">瀏覽場景 →</span>
   </a>
 
@@ -337,8 +328,39 @@
         <path d="M220 55 L244 55" stroke="var(--ink-4)"/>
       </svg>
     </div>
-    <p class="desc">Faster-Whisper（STT）+ Ollama Llama 3 8B（推理）+ Hermes Agent（任務編排）+ Piper（TTS），全部跑在 HA Black N100 的 Docker 中。可播放八步語音流程動畫 — 從「Allen 回家了」到冷氣自動設定 24°C。</p>
+    <p class="desc">Faster-Whisper（STT）+ Ollama Llama 3 8B（推理）+ Hermes Agent（任務編排）+ Piper（TTS），全部跑在 Mac mini M4 上（Metal GPU 加速）。可播放八步語音流程動畫 — 從「Allen 回家了」到冷氣自動設定 24°C。</p>
     <span class="cta">啟動流程 →</span>
+  </a>
+
+  <a class="pillar" href="hermes.html" style="--accent: var(--c-home); --tint: var(--c-home-bg); grid-column: 1 / -1; display:grid; grid-template-columns: 1.1fr 1fr; gap:28px; align-items:center;">
+    <div>
+      <div class="num">/ 04</div>
+      <h2>Hermes Agent 實作規格</h2>
+      <div class="en">Tool Registry · Orchestration · Permissions</div>
+      <p class="desc" style="margin-top:12px">Llama 3 與 Home Assistant 之間的編排層：14 個註冊工具與 JSON Schema、條件／重試／回滾的 Plan 執行、HA REST + MQTT + Matter 介面契約與 scope 權限矩陣、三層本地記憶，以及 Mac mini M4 上的併發車道策略。新增股票分析模組 — 盤後掃描、盤中告警、語音問答、收盤圖卡與模擬單（只分析不下單）。所有改變實體狀態的動作一律先覆誦確認。</p>
+      <span class="cta">閱讀規格 →</span>
+    </div>
+    <div class="preview" style="height:190px">
+      <svg viewBox="0 0 300 170" fill="none" stroke-width="1.4" style="width:100%;height:100%;">
+        <rect x="8" y="16" width="86" height="138" rx="9" fill="var(--bg-tint)" stroke="var(--line)"/>
+        <text x="51" y="32" font-size="8" fill="var(--ink-3)" text-anchor="middle">Tool Registry</text>
+        <rect x="16" y="40" width="70" height="15" rx="4" fill="var(--c-home-bg)" stroke="var(--c-home)"/><text x="51" y="50" font-size="6.5" fill="var(--ink)" text-anchor="middle">light.set</text>
+        <rect x="16" y="59" width="70" height="15" rx="4" fill="var(--c-evening-bg)" stroke="var(--c-evening)"/><text x="51" y="69" font-size="6.5" fill="var(--ink)" text-anchor="middle">climate.set</text>
+        <rect x="16" y="78" width="70" height="15" rx="4" fill="var(--c-sleep-bg)" stroke="var(--c-sleep)"/><text x="51" y="88" font-size="6.5" fill="var(--ink)" text-anchor="middle">home.get_state</text>
+        <rect x="16" y="97" width="70" height="15" rx="4" fill="var(--c-morning-bg)" stroke="var(--c-morning)"/><text x="51" y="107" font-size="6.5" fill="var(--ink)" text-anchor="middle">market.screen</text>
+        <rect x="16" y="116" width="70" height="15" rx="4" fill="var(--c-secure-bg)" stroke="var(--c-secure)"/><text x="51" y="126" font-size="6.5" fill="var(--ink)" text-anchor="middle">paper_order</text>
+        <text x="51" y="145" font-size="6.5" fill="var(--ink-4)" text-anchor="middle">+ 9 more</text>
+        <rect x="112" y="52" width="78" height="66" rx="9" fill="var(--c-secure-bg)" stroke="var(--c-secure)" stroke-width="1.6"/>
+        <text x="151" y="78" font-size="9" fill="var(--ink)" text-anchor="middle">Hermes</text>
+        <text x="151" y="90" font-size="6.5" fill="var(--ink-3)" text-anchor="middle">guard · confirm</text>
+        <text x="151" y="100" font-size="6.5" fill="var(--ink-3)" text-anchor="middle">retry · rollback</text>
+        <path d="M94 85 L112 85" stroke="var(--ink-4)"/>
+        <path d="M190 68 L212 44" stroke="var(--ink-4)"/><path d="M190 85 L212 85" stroke="var(--ink-4)"/><path d="M190 102 L212 126" stroke="var(--ink-4)"/>
+        <rect x="212" y="32" width="80" height="24" rx="6" fill="var(--bg-tint)" stroke="var(--line)"/><text x="252" y="47" font-size="7" fill="var(--ink-2)" text-anchor="middle">HA REST</text>
+        <rect x="212" y="73" width="80" height="24" rx="6" fill="var(--bg-tint)" stroke="var(--line)"/><text x="252" y="88" font-size="7" fill="var(--ink-2)" text-anchor="middle">MQTT</text>
+        <rect x="212" y="114" width="80" height="24" rx="6" fill="var(--bg-tint)" stroke="var(--line)"/><text x="252" y="129" font-size="7" fill="var(--ink-2)" text-anchor="middle">Matter</text>
+      </svg>
+    </div>
   </a>
 </section>
 

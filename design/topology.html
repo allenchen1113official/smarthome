@@ -157,6 +157,8 @@
   .node[data-tone="sensor"] { background: linear-gradient(180deg, var(--c-secure-bg), var(--bg-elev)); border-color: var(--c-secure); }
   .node[data-tone="audio"] { background: linear-gradient(180deg, var(--c-sleep-bg), var(--bg-elev)); border-color: var(--c-sleep); }
   .node[data-tone="external"] { background: var(--bg-tint); }
+  .node[data-tone="standby"] { background: var(--bg-tint); border-style: dashed; border-color: var(--ink-4); }
+  .node[data-tone="standby"] .badge { background: var(--ink-4); }
   .node .icon {
     width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
@@ -367,9 +369,15 @@
       <div class="layer-row" id="row-hub">
         <div class="node" data-tone="primary" data-id="ha">
           <div class="icon">🏠</div>
-          <div class="label">Home Assistant Black</div>
-          <div class="meta">N100 · 8GB · 256GB SSD<br>HAOS + OpenClaw + Zigbee Stick</div>
-          <div class="badge">本地 AI</div>
+          <div class="label">Mac mini M4 · Home Assistant</div>
+          <div class="meta">M4 · 16GB · 256GB SSD<br>HAOS VM + OpenClaw + Zigbee Stick</div>
+          <div class="badge">主中樞 · 本地 AI</div>
+        </div>
+        <div class="node" data-tone="standby" data-id="ha-backup">
+          <div class="icon">🛟</div>
+          <div class="label">HA Black (N100) · 備援</div>
+          <div class="meta">N100 · 8GB · 待命<br>每晚同步快照 · 主機失聯即接手</div>
+          <div class="badge">Standby</div>
         </div>
       </div>
 
@@ -447,11 +455,23 @@ const NODE_DATA = {
     list: ["Port 8123 → HAOS Web UI", "Port 443 → Reverse Proxy (NGINX)", "VLAN 隔離 IoT 與主網段（建議啟用）"],
     ports: ["8123/tcp HAOS", "443/tcp HTTPS", "1883/tcp MQTT", "5683/udp Matter"],
   },
-  ha: {
-    icon: "🏠", title: "Home Assistant Black", en: "HA Black + N100",
-    rows: [["CPU", "Intel N100 · 4-core"], ["RAM", "8 GB DDR5"], ["儲存", "256 GB NVMe"], ["OS", "HAOS · Docker"], ["附加", "Zigbee Stick · MQTT Broker"]],
+  "ha-backup": {
+    icon: "🛟", title: "HA Black (N100) · 備援中樞", en: "Standby Hub · Warm Spare",
+    rows: [["CPU", "Intel N100 · 4-core"], ["RAM", "8 GB DDR5"], ["狀態", "待命（HAOS 開機、整合停用）"], ["同步", "每晚 03:00 接收主機快照"], ["接手條件", "Mac mini 失聯 > 5 分鐘"]],
     list: [
-      "HAOS — Home Assistant Operating System",
+      "過熱當機紀錄：原為主中樞，長時間滿載會過熱重啟，故降為備援",
+      "備援模式只跑 HAOS，不跑 OpenClaw / Ollama（記憶體不足）→ 語音降級為 HomePod 原生 Siri",
+      "接手流程：拔 Zigbee Stick 插到 HA Black → 還原最新快照 → 路由 :8123 轉向改指備援 IP",
+      "主機恢復後反向還原快照，手動切回",
+    ],
+    ports: ["8123/tcp HAOS (standby IP)", "22/tcp 快照同步 (rsync)"],
+  },
+  ha: {
+    icon: "🏠", title: "Mac mini M4 · Home Assistant（主中樞）", en: "Apple M4 · 16 GB · Primary",
+    rows: [["晶片", "Apple M4 · 10 核 CPU / 10 核 GPU"], ["記憶體", "16 GB 統一記憶體"], ["儲存", "256 GB SSD"], ["OS", "macOS · HAOS (UTM VM)"], ["附加", "Zigbee Stick (USB 直通) · MQTT Broker"]],
+    list: [
+      "HAOS — 以 UTM 虛擬機運行於 macOS，USB 直通 Zigbee Stick",
+      "每晚 03:00 HA 完整快照 → 同步到備援 HA Black（場景 23）",
       "OpenClaw 容器 — Faster-Whisper + Ollama (Llama 3 8B) + Hermes Agent + Piper",
       "Mosquitto MQTT Broker",
       "Zigbee2MQTT — 整合 Aqara 與其他 Zigbee 設備",
@@ -531,6 +551,8 @@ const EDGES = [
   ["cht", "router", "lan"],
   ["duckdns", "cht", "logic"],
   ["router", "ha", "lan"],
+  ["router", "ha-backup", "lan"],
+  ["ha", "ha-backup", "logic"],
   ["ha", "hue", "wifi"],
   ["ha", "hvac", "wifi"],
   ["ha", "curtain", "zigbee"],

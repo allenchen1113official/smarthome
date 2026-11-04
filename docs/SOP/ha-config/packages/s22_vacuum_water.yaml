@@ -1,0 +1,25 @@
+# file: packages/s22_vacuum_water.yaml
+# 情境 22 Qrevo 水箱提醒：清掃完成回充 → HomePod 提醒補水 + 推播；計數清掃次數（供情境 24）
+input_boolean:
+  s22_enabled: { name: "22 Qrevo 水箱提醒", initial: on, icon: mdi:water-alert }
+
+automation:
+  - id: s22_vacuum_done
+    alias: 22 Qrevo 水箱提醒
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: vacuum.qrevo
+        from: returning
+        to: docked
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s22_enabled
+        state: "on"
+    actions:
+      - action: counter.increment
+        target: { entity_id: counter.vacuum_runs }
+      - action: script.say
+        data: { message: 打掃完成了，記得幫掃地機補水、倒塵盒。, target: living_homepod }
+      - action: notify.mobile_app_allen_iphone
+        data: { message: "💧 Qrevo 清掃完成（第 {{ states('counter.vacuum_runs') }} 次），請補水。" }

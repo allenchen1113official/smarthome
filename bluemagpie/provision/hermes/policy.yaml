@@ -1,0 +1,49 @@
+# hermes/policy.yaml — 權限與確認策略（對應 design/hermes.html）
+autonomy: confirm_all            # 任何改變實體狀態的動作都先覆誦確認
+
+confirm:
+  channel: [voice, ha_companion_push]
+  phrase: "要我{summary}嗎？"
+  accept: ["好", "可以", "執行", "yes", "ok", "好啊", "確認"]
+  reject: ["不用", "取消", "算了", "no", "不要"]
+  timeout_s: 12                  # 逾時視為取消
+  quiet_hours:
+    window: ["23:00", "07:00"]
+    channel: [ha_companion_push] # 深夜只推播，不出聲
+
+scopes:
+  read:
+    confirm: false
+  write.comfort:
+    confirm: true
+    night_master_volume_max: 20  # 23:00–07:00 主臥音量上限 %
+    night_master_brightness_max: 20
+  write.appliance:
+    confirm: true
+    deny_when_sleep_mode: true
+    deny_window: ["23:00", "07:00"]
+  write.security:
+    confirm: true
+    voiceprint_only: [allen, ann]
+  finance.sim:
+    confirm: true
+    repeat_back: [symbol, shares, price]
+  net.egress:
+    confirm: false
+    allow_hosts: ["mis.twse.com.tw", "www.twse.com.tw", "www.tpex.org.tw", "api.met.no"]
+    timeout_s: 5
+
+exempt:                          # 免確認白名單
+  - scope: read
+  - tool: emergency.sos          # 硬體長按路徑由 HA 直通，不經 Hermes
+  - source: ha_automation        # 既有 HA 自動化照舊
+
+never:                           # 永不允許（即使模型要求）
+  - broker.place_order
+  - lock.unlock_remote
+
+plan:
+  max_total_ms: 8000
+  retry_backoff_s: [0.4, 1.2, 3.6]
+  snapshot_ttl_min: 10
+  rate_limit_per_min: 10

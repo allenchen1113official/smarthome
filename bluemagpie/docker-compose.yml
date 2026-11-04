@@ -1,0 +1,120 @@
+# 青鳥 · 台灣藍鵲 BlueMagpie — 智慧家庭一鍵部署
+# 預設為 bridge 網路（macOS / Windows Docker Desktop 可用）。
+# Linux 主機請加上 -f docker-compose.host.yml（host 網路，mDNS 探索 HomePod / Hue 完整）。
+name: bluemagpie
+
+x-common: &common
+  restart: unless-stopped
+  environment:
+    TZ: ${TZ:-Asia/Taipei}
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  # ---------- 後台：系統參數 / 接口設定 / 健康 / 備份 / 熱備 ----------
+  admin:
+    <<: *common
+    build: ./admin
+    image: bluemagpie/admin:0.1
+    container_name: magpie-admin
+    ports: ["${ADMIN_PORT:-9000}:9000"]
+    environment:
+      TZ: ${TZ:-Asia/Taipei}
+      MAGPIE_PROJECT: /project
+      MAGPIE_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-bluemagpie}
+    volumes:
+      - ./:/project                           # 整個專案資料夾（設定、provision、backups）
+      - /var/run/docker.sock:/var/run/docker.sock
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://127.0.0.1:9000/api/health/self')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ---------- Home Assistant ----------
+  homeassistant:
+    <<: *common
+    image: ghcr.io/home-assistant/home-assistant:${HA_VERSION:-stable}
+    container_name: magpie-homeassistant
+    ports: ["${HA_PORT:-8123}:8123"]
+    volumes:
+      - ./config/homeassistant:/config
+      - ./backups:/backup
+      - /etc/localtime:/etc/localtime:ro
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: [mosquitto]
+    profiles: [primary]
+
+  # ---------- MQTT ----------
+  mosquitto:
+    <<: *common
+    image: eclipse-mosquitto:2
+    container_name: magpie-mosquitto
+    ports: ["${MQTT_PORT:-1883}:1883"]
+    volumes:
+      - ./config/mosquitto:/mosquitto/config
+      - ./data/mosquitto:/mosquitto/data
+
+  # ---------- Zigbee2MQTT（SLZB-06 網路協調器；USB 需 Linux 並在 host 覆寫檔開啟 devices）----------
+  zigbee2mqtt:
+    <<: *common
+    image: koenkk/zigbee2mqtt:${Z2M_VERSION:-latest}
+    container_name: magpie-zigbee2mqtt
+    ports: ["${Z2M_PORT:-8099}:8080"]
+    volumes:
+      - ./config/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    depends_on: [mosquitto]
+    profiles: [primary]
+
+  # ---------- OpenClaw 本地語音管線：Whisper STT / Piper TTS / Ollama（+ 下方 Hermes）----------
+  whisper:
+    <<: *common
+    image: rhasspy/wyoming-whisper:latest
+    container_name: magpie-whisper
+    labels: { magpie.group: openclaw }
+    command: ["--model", "${WHISPER_MODEL:-small}", "--language", "${WHISPER_LANG:-zh}", "--beam-size", "2", "--initial-prompt", "以下是繁體中文的智慧家庭語音指令。"]
+    ports: ["${WHISPER_PORT:-10300}:10300"]
+    volumes: ["./data/whisper:/data"]
+
+  piper:
+    <<: *common
+    image: rhasspy/wyoming-piper:latest
+    container_name: magpie-piper
+    labels: { magpie.group: openclaw }
+    command: ["--voice", "${PIPER_VOICE:-zh_CN-huayan-medium}"]
+    ports: ["${PIPER_PORT:-10200}:10200"]
+    volumes: ["./data/piper:/data"]
+
+  ollama:
+    <<: *common
+    image: ollama/ollama:latest
+    container_name: magpie-ollama
+    labels: { magpie.group: openclaw }
+    ports: ["${OLLAMA_PORT:-11434}:11434"]
+    volumes: ["./data/ollama:/root/.ollama"]
+    environment:
+      TZ: ${TZ:-Asia/Taipei}
+      OLLAMA_KEEP_ALIVE: "-1"
+    profiles: [ollama]                      # macOS 用主機原生 Ollama（Metal）時不啟動此容器
+
+  # ---------- Hermes Agent ----------
+  hermes:
+    <<: *common
+    build: ./hermes
+    image: bluemagpie/hermes:0.1
+    container_name: magpie-hermes
+    labels: { magpie.group: openclaw }
+    ports: ["${HERMES_PORT:-8800}:8800"]
+    environment:
+      TZ: ${TZ:-Asia/Taipei}
+      HERMES_CONFIG_DIR: /config
+      HERMES_HA_TOKEN: ${HA_TOKEN:-}
+    volumes:
+      - ./config/hermes:/config
+      - ./data/hermes:/data
+      - ./config/homeassistant/www/hermes:/cards
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    profiles: [primary]

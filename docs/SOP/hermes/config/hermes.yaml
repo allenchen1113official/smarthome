@@ -1,0 +1,69 @@
+# Hermes Agent v0.1 — 主設定
+# 機密值一律放環境變數（HERMES_HA_TOKEN、HERMES_MQTT_PASS），不要寫進這個檔案。
+
+server:
+  host: 0.0.0.0
+  port: 8800
+  model_name: "hermes:latest"        # HA Ollama 整合看到的模型名稱
+
+ha:
+  urls:                              # 依序：主節點 → 副節點（接手後 token 相同，因 .storage 隨備份還原）
+    - http://192.168.0.11:8123
+    - http://192.168.0.12:8123
+  token_env: HERMES_HA_TOKEN         # 由環境變數讀取 HA 長效 token
+  timeout_s: 1.1
+  health_interval_s: 60              # 每 60 秒檢查目前節點是否存活，不活就切換
+  ws_enabled: true                   # WebSocket 訂閱 state_changed → world model
+
+ollama:
+  url: http://127.0.0.1:11434
+  model: llama3:8b
+  temperature: 0.1
+  num_ctx: 4096
+  timeout_s: 8
+
+paths:
+  db: /Users/allen/openclaw/hermes/hermes.db
+  tx_log: /Users/allen/openclaw/hermes/logs/hermes.tx.log
+  cards_dir: /Volumes/config/www/hermes       # HAOS Samba config 分享 → HA 可用 /local/hermes/ 取圖
+  cards_url_prefix: /local/hermes
+
+lanes:
+  llm_workers: 1
+  llm_queue_max: 3
+  fast_workers: 4
+  batch_window: ["13:30", "06:00"]
+
+# 自然語言 → HA 實體 的別名（alias 表初始值，之後可語音新增）
+aliases:
+  客廳: living
+  客餐廳: living
+  主臥: master
+  房間: master
+  次臥: second
+  小房間: second
+  書房: second
+  玄關: entry
+  浴室: bath
+
+areas:
+  living:  { light: light.living_all,  climate: climate.living,  cover: cover.living_curtain,  motion: binary_sensor.living_motion }
+  master:  { light: light.master_all,  climate: climate.master,  cover: cover.bedroom_curtain, motion: null, temp: sensor.master_temperature }
+  second:  { light: light.second_all,  climate: climate.second }
+  entry:   { light: light.entry_1 }
+  bath:    { light: light.bath_1, motion: binary_sensor.bath_motion }
+
+media:
+  living_homepod: media_player.living_homepod
+  master_mini: media_player.master_homepod_mini
+
+notify:
+  allen: notify.mobile_app_allen_iphone
+  ann: notify.mobile_app_ann_iphone
+  both: notify.both
+
+presence:
+  allen: person.allen
+  ann: person.ann
+  ann_shift: input_select.ann_shift
+  sleep_mode: input_boolean.sleep_mode

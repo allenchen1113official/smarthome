@@ -1,0 +1,38 @@
+# file: packages/s13_ann_nap.yaml
+# 情境 13 女友補眠：Tap 鍵 1 → 主臥窗簾全閉、主臥燈關、HomePod mini 靜音、睡眠模式開
+input_boolean:
+  s13_enabled: { name: "13 女友補眠", initial: on, icon: mdi:power-sleep }
+
+script:
+  ann_nap:
+    alias: Ann 補眠模式
+    sequence:
+      - action: cover.close_cover
+        target: { entity_id: cover.bedroom_curtain }
+        continue_on_error: true
+      - action: light.turn_off
+        target: { entity_id: light.master_all }
+        data: { transition: 5 }
+      - action: media_player.volume_set
+        target: { entity_id: media_player.master_homepod_mini }
+        data: { volume_level: 0 }
+        continue_on_error: true
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.sleep_mode }
+      - action: notify.mobile_app_allen_iphone
+        data: { message: "😴 Ann 進入補眠模式，主臥已靜音。" }
+
+automation:
+  - id: s13_ann_nap_tap
+    alias: 13 女友補眠（Tap 鍵 1）
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_tap_button_1, type: short_release }   # ⚠️ 改 id
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s13_enabled
+        state: "on"
+    actions:
+      - action: script.ann_nap

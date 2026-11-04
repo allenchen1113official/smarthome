@@ -1,0 +1,32 @@
+# file: packages/s23_nightly_backup.yaml（青鳥版）
+# 情境 23 快照同步副節點：由 Magpie Admin 後台負責每小時備份與推送；本情境只做每晚通知與手動觸發按鈕
+input_boolean:
+  s23_enabled: { name: "23 快照同步副節點", initial: on, icon: mdi:backup-restore }
+
+script:
+  magpie_backup_now:
+    alias: 立即備份並推送到副節點（青鳥後台）
+    sequence:
+      - action: rest_command.magpie_backup
+
+automation:
+  - id: s23_nightly_backup
+    alias: 23 每晚備份通知（03:10）
+    mode: single
+    triggers:
+      - trigger: time
+        at: "03:10:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s23_enabled
+        state: "on"
+    actions:
+      - action: rest_command.magpie_backup
+        continue_on_error: true
+        response_variable: r
+      - action: notify.mobile_app_allen_iphone
+        data:
+          message: >-
+            💾 青鳥備份：{{ r.content.name if r is defined and r.status == 200 else '失敗，請看後台' }}
+            ／副節點 {{ r.content.pushed if r is defined and r.status == 200 else '—' }}
+            ／WAN {{ '正常' if is_state('binary_sensor.wan_ping','on') else '異常' }}

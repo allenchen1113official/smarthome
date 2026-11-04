@@ -1,0 +1,48 @@
+# file: packages/s14_sleep_nightlight.yaml
+# 情境 14 睡眠防擾：睡眠模式中走廊有動作 → 走廊燈 1% 暖光 2 分鐘；其他燈不亮
+input_boolean:
+  s14_enabled: { name: "14 睡眠防擾", initial: on, icon: mdi:lightbulb-night }
+
+automation:
+  - id: s14_nightlight
+    alias: 14 睡眠防擾（夜燈）
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.hallway_motion
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s14_enabled
+        state: "on"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.sleep_mode
+            state: "on"
+          - condition: time
+            after: "23:30:00"
+            before: "06:00:00"
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.bedroom_hall_1 }
+        data: { brightness_pct: 1, color_temp_kelvin: 2200, transition: 1 }
+      - delay: { minutes: 2 }
+      - action: light.turn_off
+        target: { entity_id: light.bedroom_hall_1 }
+        data: { transition: 5 }
+
+  - id: s14_sleep_mode_on
+    alias: 14 睡眠模式開啟（關燈、關音樂）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.sleep_mode
+        to: "on"
+    actions:
+      - action: light.turn_off
+        target: { entity_id: [light.master_all, light.bedroom_hall_1] }
+        data: { transition: 10 }
+      - action: media_player.media_stop
+        target: { entity_id: media_player.master_homepod_mini }
+        continue_on_error: true

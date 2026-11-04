@@ -1,0 +1,37 @@
+# file: packages/s15_bedroom_thermostat.yaml
+# 情境 15 臥室恆溫：02:00–06:00 室溫 < 22°C 持續 10 分鐘且冷氣開著 → 設定溫度 +1（上限 28）
+input_boolean:
+  s15_enabled: { name: "15 臥室恆溫", initial: on, icon: mdi:thermometer }
+
+automation:
+  - id: s15_bedroom_thermostat
+    alias: 15 臥室恆溫（太冷 +1 度）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.master_temperature
+        below: 22
+        for: { minutes: 10 }
+      - trigger: time_pattern
+        minutes: "/30"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s15_enabled
+        state: "on"
+      - condition: time
+        after: "02:00:00"
+        before: "06:00:00"
+      - condition: numeric_state
+        entity_id: sensor.master_temperature
+        below: 22
+      - condition: state
+        entity_id: climate.master
+        state: cool
+    actions:
+      - variables:
+          cur: "{{ state_attr('climate.master', 'temperature') | float(24) }}"
+          new: "{{ [cur + 1, 28] | min }}"
+      - action: script.ac_set
+        data: { room: master, temperature: "{{ new }}" }
+      - action: logbook.log
+        data: { name: 臥室恆溫, message: "室溫 {{ states('sensor.master_temperature') }}°C，冷氣 {{ cur }} → {{ new }}°C" }

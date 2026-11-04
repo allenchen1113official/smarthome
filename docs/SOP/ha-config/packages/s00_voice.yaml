@@ -1,0 +1,56 @@
+# file: packages/s00_voice.yaml
+# 語音進聲：Siri 捷徑 webhook → Hermes；Hermes 深夜推播確認的「好 / 取消」按鈕回傳
+automation:
+  - id: s00_voice_webhook
+    alias: 語音：Siri 捷徑 webhook → Hermes
+    description: 捷徑 POST {"text","speaker","output"} 到 /api/webhook/<id>；Hermes 離線時退回 HA 內建 Assist
+    mode: queued
+    triggers:
+      - trigger: webhook
+        webhook_id: !secret openclaw_webhook_id
+        allowed_methods: [POST]
+        local_only: false
+    actions:
+      - action: rest_command.hermes_command
+        continue_on_error: true
+        response_variable: r
+        data:
+          text: "{{ trigger.json.text }}"
+          speaker: "{{ trigger.json.speaker | default('allen') }}"
+          output: "{{ trigger.json.output | default('living_homepod') }}"
+          say: true
+      - if: "{{ r is not defined or r.status != 200 }}"
+        then:
+          # Hermes 離線 → 先廣播 fallback 事件（情境 29/30 的純 HA 版會接手），再交給 HA 內建對話代理
+          - event: openclaw_fallback
+            event_data:
+              text: "{{ trigger.json.text }}"
+              speaker: "{{ trigger.json.speaker | default('allen') }}"
+              output: "{{ trigger.json.output | default('living_homepod') }}"
+          - action: conversation.process
+            response_variable: c
+            data:
+              text: "{{ trigger.json.text }}"
+              agent_id: conversation.home_assistant
+              language: zh-TW
+          - action: script.say
+            data:
+              message: "{{ c.response.speech.plain.speech | default('管家暫時離線，已用基本模式處理。') }}"
+              target: "{{ trigger.json.output | default('living_homepod') }}"
+
+  - id: s00_voice_push_confirm
+    alias: 語音：推播確認按鈕 → Hermes
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data: { action: HERMES_YES }
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data: { action: HERMES_NO }
+    actions:
+      - action: rest_command.hermes_command
+        data:
+          text: "{{ '好' if trigger.event.data.action == 'HERMES_YES' else '取消' }}"
+          speaker: "{{ 'allen' if 'allen' in (trigger.event.data.device_id | default('')) else 'both' }}"
+          say: false

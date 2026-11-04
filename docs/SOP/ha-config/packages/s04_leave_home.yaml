@@ -1,0 +1,56 @@
+# file: packages/s04_leave_home.yaml
+# 情境 04 全屋離家：兩人都離家 2 分鐘後關燈、關冷氣、啟動掃地機
+input_boolean:
+  s04_enabled: { name: "04 全屋離家", initial: on, icon: mdi:home-export-outline }
+
+automation:
+  - id: s04_leave_home
+    alias: 04 全屋離家
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: [person.allen, person.ann]
+        to: not_home
+        for: { minutes: 2 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s04_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: "off"
+      - condition: state
+        entity_id: person.allen
+        state: not_home
+      - condition: state
+        entity_id: person.ann
+        state: not_home
+    actions:
+      - action: light.turn_off
+        target: { entity_id: light.all_lights }
+        continue_on_error: true
+      - action: switch.turn_off
+        target: { entity_id: switch.hue_sync_box_power }
+        continue_on_error: true
+      - repeat:
+          for_each: [living, master, second]
+          sequence:
+            - action: script.ac_set
+              continue_on_error: true
+              data: { room: "{{ repeat.item }}", hvac_mode: "off" }
+      - action: media_player.media_stop
+        target: { entity_id: [media_player.living_homepod, media_player.master_homepod_mini] }
+        continue_on_error: true
+      - if:
+          - condition: time
+            after: "08:00:00"
+            before: "20:00:00"
+          - condition: state
+            entity_id: vacuum.qrevo
+            state: docked
+        then:
+          - action: vacuum.start
+            target: { entity_id: vacuum.qrevo }
+            continue_on_error: true
+      - action: notify.both
+        data: { message: "🏠 全屋離家：燈光與冷氣已關{{ '，掃地機已出動' if is_state('vacuum.qrevo','cleaning') else '' }}。" }

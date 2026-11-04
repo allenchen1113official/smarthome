@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.allenann.hermes</string>
+  <key>WorkingDirectory</key><string>/Users/allen/openclaw/hermes</string>
+  <key>ProgramArguments</key><array>
+    <string>/Users/allen/openclaw/venv/bin/uvicorn</string>
+    <string>hermes.app:app</string>
+    <string>--host</string><string>0.0.0.0</string>
+    <string>--port</string><string>8800</string>
+    <string>--workers</string><string>1</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>HERMES_HA_TOKEN</key><string>把HA長效token貼在這裡</string>
+    <key>HERMES_CONFIG_DIR</key><string>/Users/allen/openclaw/hermes/config</string>
+  </dict>
+  <key>RunAtLoad</key><true/><key>KeepAlive</key><true/>
+  <key>Nice</key><integer>0</integer>
+  <key>StandardOutPath</key><string>/Users/allen/openclaw/hermes/logs/hermes.log</string>
+  <key>StandardErrorPath</key><string>/Users/allen/openclaw/hermes/logs/hermes.err</string>
+</dict></plist>

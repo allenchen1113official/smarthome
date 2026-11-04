@@ -1,0 +1,46 @@
+# file: packages/s27_device_offline.yaml
+# 情境 27 設備離線偵測：關鍵設備 unavailable 5 分鐘 → 推播（主機失聯偵測在備援機，見 07 章）
+input_boolean:
+  s27_enabled: { name: "27 設備離線偵測", initial: on, icon: mdi:lan-disconnect }
+
+automation:
+  - id: s27_device_offline
+    alias: 27 設備離線偵測
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - light.living_1
+          - light.master_1
+          - climate.living
+          - climate.master
+          - climate.second
+          - cover.living_curtain
+          - cover.bedroom_curtain
+          - vacuum.qrevo
+          - media_player.living_homepod
+          - binary_sensor.hallway_motion
+          - binary_sensor.front_door
+        to: unavailable
+        for: { minutes: 5 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s27_enabled
+        state: "on"
+    actions:
+      - action: notify.both
+        data: { message: "📵 {{ trigger.to_state.name }}（{{ trigger.entity_id }}）已離線 5 分鐘。" }
+
+  - id: s27_device_back
+    alias: 27 設備恢復上線
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: [climate.living, climate.master, climate.second, vacuum.qrevo, cover.living_curtain, cover.bedroom_curtain]
+        from: unavailable
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.to_state.state != 'unavailable' }}"
+    actions:
+      - action: notify.mobile_app_allen_iphone
+        data: { message: "✅ {{ trigger.to_state.name }} 已恢復。" }

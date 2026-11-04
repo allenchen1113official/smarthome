@@ -1,0 +1,61 @@
+# file: packages/s10_bathroom.yaml
+# 情境 10 浴室自動化：有人進入開燈；濕度 > 70% 開抽風；無人且濕度降回關
+input_boolean:
+  s10_enabled: { name: "10 浴室自動化", initial: on, icon: mdi:shower }
+
+automation:
+  - id: s10_bath_light
+    alias: 10 浴室燈（人體感應）
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.bath_motion
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s10_enabled
+        state: "on"
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.bath_1 }
+        data: { brightness_pct: "{{ 15 if (now().hour >= 23 or now().hour < 6) else 100 }}" }
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.bath_motion
+            to: "off"
+            for: { minutes: 5 }
+      - action: light.turn_off
+        target: { entity_id: light.bath_1 }
+
+  - id: s10_bath_fan_on
+    alias: 10 浴室抽風（濕度高）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.bath_humidity
+        above: 70
+        for: { minutes: 2 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s10_enabled
+        state: "on"
+    actions:
+      - action: switch.turn_on
+        target: { entity_id: switch.bath_fan }
+
+  - id: s10_bath_fan_off
+    alias: 10 浴室抽風（濕度降且無人）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.bath_humidity
+        below: 60
+        for: { minutes: 10 }
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.bath_motion
+        state: "off"
+        for: { minutes: 5 }
+    actions:
+      - action: switch.turn_off
+        target: { entity_id: switch.bath_fan }

@@ -1,0 +1,35 @@
+# file: packages/s06_morning_stock.yaml
+# 情境 06 晨間股市摘要：平日 06:35 由 Hermes 盤後掃描結果播報前 3 檔
+input_boolean:
+  s06_enabled: { name: "06 晨間股市摘要", initial: on, icon: mdi:chart-line }
+
+automation:
+  - id: s06_morning_stock
+    alias: 06 晨間股市摘要（Hermes）
+    mode: single
+    triggers:
+      - trigger: time
+        at: "06:35:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s06_enabled
+        state: "on"
+      - condition: time
+        weekday: [mon, tue, wed, thu, fri]
+      - condition: state
+        entity_id: person.allen
+        state: home
+      - condition: state
+        entity_id: input_select.allen_shift
+        state: morning
+    actions:
+      - action: rest_command.hermes_screen
+        continue_on_error: true
+        response_variable: r
+      - if: "{{ r is defined and r.status == 200 }}"
+        then:
+          - action: script.say
+            data: { message: "{{ r.content.speech }}", target: living_homepod }
+        else:
+          - action: script.say
+            data: { message: 早安，股市管家暫時離線，今天先略過盤後摘要。, target: living_homepod }

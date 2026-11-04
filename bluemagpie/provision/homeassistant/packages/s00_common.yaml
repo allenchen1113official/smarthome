@@ -1,0 +1,264 @@
+# file: packages/s00_common.yaml
+# 共用輔助實體與腳本（所有情境都依賴；先裝這個）
+input_select:
+  allen_shift:
+    name: Allen 班別
+    options: [morning, "off"]
+    initial: morning
+    icon: mdi:account-clock
+  ann_shift:
+    name: Ann 班別
+    options: [day, evening, night, "off"]
+    initial: night
+    icon: mdi:account-clock-outline
+
+input_boolean:
+  sleep_mode:
+    name: 睡眠模式
+    icon: mdi:sleep
+  movie_mode:
+    name: 影音模式
+    icon: mdi:movie-open
+  guest_mode:
+    name: 訪客模式（停用地理圍欄類情境）
+    icon: mdi:account-group
+
+input_datetime:
+  allen_wake:
+    name: Allen 喚醒時間
+    has_date: false
+    has_time: true
+    initial: "06:30:00"
+  ann_wake:
+    name: Ann 喚醒時間
+    has_date: false
+    has_time: true
+    initial: "09:00:00"
+
+input_number:
+  comfort_temp_allen:
+    name: Allen 舒適溫度
+    min: 18
+    max: 30
+    step: 0.5
+    initial: 24
+    unit_of_measurement: "°C"
+  comfort_temp_ann:
+    name: Ann 舒適溫度
+    min: 18
+    max: 30
+    step: 0.5
+    initial: 26
+    unit_of_measurement: "°C"
+
+counter:
+  dimmer_hold:
+    name: Dimmer 長按計數（SOS）
+    initial: 0
+    step: 1
+  ac_filter_hours:
+    name: 空調濾網運轉時數
+    initial: 0
+    step: 1
+  vacuum_runs:
+    name: 掃地機清掃次數
+    initial: 0
+    step: 1
+
+timer:
+  white_noise:
+    name: 白噪音計時
+    duration: "00:20:00"
+  goodnight:
+    name: 晚安倒數
+    duration: "00:01:00"
+
+script:
+  # ---------- 空調：Comfort Cloud 雲端 → SmartIR 本地 IR 降級 ----------
+  ac_set:
+    alias: 空調設定（雲端→IR 降級）
+    icon: mdi:air-conditioner
+    fields:
+      room:
+        description: living / master / second
+        selector: { select: { options: [living, master, second] } }
+      temperature:
+        selector: { number: { min: 18, max: 30, step: 0.5 } }
+      hvac_mode:
+        selector: { select: { options: [cool, dry, fan_only, heat, auto, "off"] } }
+      fan_mode:
+        selector: { select: { options: [auto, low, medium, high] } }
+    variables:
+      cloud: "climate.{{ room }}"
+      ir: "climate.{{ room }}_ac_ir"
+      target: "{{ cloud if states(cloud) not in ['unavailable','unknown'] else ir }}"
+    sequence:
+      - if: "{{ hvac_mode is defined }}"
+        then:
+          - action: climate.set_hvac_mode
+            target: { entity_id: "{{ target }}" }
+            data: { hvac_mode: "{{ hvac_mode }}" }
+      - if: "{{ temperature is defined and (hvac_mode is not defined or hvac_mode != 'off') }}"
+        then:
+          - action: climate.set_temperature
+            target: { entity_id: "{{ target }}" }
+            data: { temperature: "{{ temperature }}" }
+      - if: "{{ fan_mode is defined }}"
+        then:
+          - action: climate.set_fan_mode
+            target: { entity_id: "{{ target }}" }
+            data: { fan_mode: "{{ fan_mode }}" }
+      - if: "{{ target == ir }}"
+        then:
+          - action: logbook.log
+            data: { name: 空調, message: "{{ room }} 走 IR 備援路徑（雲端不可用）" }
+
+  # ---------- 播報：HomePod + 深夜音量 + 睡眠模式改推播 ----------
+  say:
+    alias: 播報（含深夜音量與睡眠保護）
+    icon: mdi:speaker-message
+    fields:
+      message: { selector: { text: {} } }
+      target:
+        description: living_homepod / master_mini / all
+        selector: { select: { options: [living_homepod, master_mini, all] } }
+      volume: { selector: { number: { min: 0, max: 100 } } }
+    variables:
+      tgt: "{{ target | default('living_homepod') }}"
+      quiet: "{{ now().hour >= 23 or now().hour < 7 }}"
+      sleep: "{{ is_state('input_boolean.sleep_mode', 'on') }}"
+      vol_pct: "{{ [ (volume | default(40)) | int, 20 ] | min if quiet else (volume | default(40)) | int }}"
+      players: >-
+        {% if sleep and tgt == 'master_mini' %}{{ [] }}
+        {% elif tgt == 'all' and not sleep %}{{ ['media_player.living_homepod', 'media_player.master_homepod_mini'] }}
+        {% elif tgt == 'master_mini' %}{{ ['media_player.master_homepod_mini'] }}
+        {% else %}{{ ['media_player.living_homepod'] }}{% endif %}
+    sequence:
+      - if: "{{ players | count == 0 }}"
+        then:
+          - action: notify.both
+            data: { message: "{{ message }}" }
+        else:
+          - action: media_player.volume_set
+            target: { entity_id: "{{ players }}" }
+            data: { volume_level: "{{ vol_pct / 100 }}" }
+          - action: tts.speak
+            target: { entity_id: tts.piper }
+            data:
+              media_player_entity_id: "{{ players }}"
+              message: "{{ message }}"
+              language: zh
+
+  # ---------- 警示燈效：閃爍 N 次後還原 ----------
+  flash_lights:
+    alias: 警示燈效（閃爍後還原）
+    icon: mdi:alarm-light
+    mode: queued
+    fields:
+      color: { selector: { select: { options: [red, blue] } } }
+      count: { selector: { number: { min: 1, max: 10 } } }
+      targets: { selector: { entity: { domain: light, multiple: true } } }
+    variables:
+      ents: "{{ targets | default(['light.living_all']) }}"
+    sequence:
+      - action: scene.create
+        data:
+          scene_id: flash_restore
+          snapshot_entities: "{{ ents }}"
+      - repeat:
+          count: "{{ count | default(3) }}"
+          sequence:
+            - action: light.turn_on
+              target: { entity_id: "{{ ents }}" }
+              data:
+                rgb_color: "{{ [255, 0, 0] if (color | default('red')) == 'red' else [0, 80, 255] }}"
+                brightness_pct: 100
+                transition: 0
+            - delay: { milliseconds: 500 }
+            - action: light.turn_off
+              target: { entity_id: "{{ ents }}" }
+              data: { transition: 0 }
+            - delay: { milliseconds: 400 }
+      - action: scene.turn_on
+        target: { entity_id: scene.flash_restore }
+
+  # ---------- 掃地機分區清掃（Roborock app_segment_clean） ----------
+  vacuum_rooms:
+    alias: 掃地機分區清掃
+    icon: mdi:robot-vacuum
+    fields:
+      rooms:
+        description: living / master / second / entry / bath（清單）
+        selector: { object: {} }
+    variables:
+      # ⚠️ 依 03 章 vacuum.qrevo 屬性裡的房間 ID 修改
+      room_ids: { living: 16, master: 17, second: 18, entry: 19, bath: 20 }
+      segments: "{{ rooms | map('extract', room_ids) | list }}"
+    sequence:
+      - action: vacuum.send_command
+        target: { entity_id: vacuum.qrevo }
+        data:
+          command: app_segment_clean
+          params: [{ segments: "{{ segments }}", repeat: 1 }]
+
+  # ---------- 緊急 SOS ----------
+  emergency_sos:
+    alias: 緊急 SOS
+    icon: mdi:alarm-light
+    fields:
+      reason: { selector: { text: {} } }
+      silent: { selector: { boolean: {} } }
+    sequence:
+      - action: notify.sms
+        continue_on_error: true
+        data:
+          message: "【SOS】Allen & Ann 家發出緊急求救（{{ reason | default('manual') }}）{{ now().strftime('%m/%d %H:%M') }}"
+      - action: notify.both
+        data:
+          message: "🆘 已發送 SOS 簡訊（{{ reason | default('manual') }}）"
+          data: { push: { interruption-level: critical, sound: { critical: 1, volume: 1.0 } } }
+      - if: "{{ not (silent | default(false)) }}"
+        then:
+          - action: script.flash_lights
+            data: { color: red, count: 10, targets: [light.all_lights] }
+          - action: media_player.volume_set
+            target: { entity_id: [media_player.living_homepod, media_player.master_homepod_mini] }
+            data: { volume_level: 1.0 }
+          - action: tts.speak
+            target: { entity_id: tts.piper }
+            data:
+              media_player_entity_id: [media_player.living_homepod, media_player.master_homepod_mini]
+              message: 已經發送緊急求救簡訊。
+      - action: logbook.log
+        data: { name: SOS, message: "觸發 reason={{ reason | default('manual') }}", entity_id: script.emergency_sos }
+
+  # ---------- Hermes 告警輸出（情境 33）----------
+  hermes_alert:
+    alias: Hermes 告警（燈效＋推播＋語音）
+    icon: mdi:chart-line
+    mode: queued
+    fields:
+      message: { selector: { text: {} } }
+      light: { selector: { select: { options: [pulse_red, pulse_blue, none] } } }
+      tts: { selector: { boolean: {} } }
+      priority: { selector: { select: { options: [normal, time_sensitive] } } }
+    variables:
+      quiet: "{{ now().hour >= 23 or now().hour < 7 }}"
+    sequence:
+      - action: notify.mobile_app_allen_iphone
+        data:
+          message: "{{ message }}"
+          data:
+            push:
+              interruption-level: "{{ 'time-sensitive' if priority == 'time_sensitive' else 'active' }}"
+      - if: "{{ not quiet and light in ['pulse_red', 'pulse_blue'] }}"
+        then:
+          - action: script.flash_lights
+            data:
+              color: "{{ 'red' if light == 'pulse_red' else 'blue' }}"
+              count: 3
+              targets: [light.living_all]
+      - if: "{{ not quiet and (tts | default(false)) }}"
+        then:
+          - action: script.say
+            data: { message: "{{ message }}", target: living_homepod }

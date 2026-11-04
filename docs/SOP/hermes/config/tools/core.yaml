@@ -1,0 +1,101 @@
+# 核心 10 個工具（精簡 schema 會注入 LLM system prompt）
+tools:
+  - name: light.set
+    scope: write.comfort
+    desc: 設定燈光亮度與色溫。area 與 entity 擇一。
+    compensate: light.restore_snapshot
+    retry: 3
+    params:
+      area: { type: string, enum: [living, master, second, entry, bath] }
+      entity: { type: string, pattern: "^light\\." }
+      brightness: { type: integer, min: 1, max: 100 }
+      kelvin: { type: integer, min: 2200, max: 6500 }
+      transition: { type: number, default: 1.0 }
+    any_of_required: [[area], [entity]]
+
+  - name: light.activate_scene
+    scope: write.comfort
+    desc: 啟動 Hue 既有場景（Welcome / Sunrise / Dinner / Movie / Nightlight / Focus）
+    compensate: light.restore_snapshot
+    retry: 3
+    params:
+      scene: { type: string, enum: [Welcome, Sunrise, Dinner, Movie, Nightlight, Focus] }
+      area: { type: string, enum: [living, master, second, entry] }
+    required: [scene]
+
+  - name: climate.set
+    scope: write.comfort
+    desc: 設定 Panasonic 空調溫度與模式（living/master/second）
+    compensate: climate.restore_snapshot
+    retry: 2
+    params:
+      entity: { type: string, enum: [living, master, second] }
+      temp: { type: number, min: 18, max: 30 }
+      mode: { type: string, enum: [cool, dry, fan_only, heat, auto, "off"] }
+      fan: { type: string, enum: [auto, low, medium, high] }
+    required: [entity]
+
+  - name: cover.set_position
+    scope: write.comfort
+    desc: Aqara 電動窗簾開合位置 0–100
+    compensate: cover.restore_snapshot
+    on_fail: skip
+    retry: 2
+    params:
+      entity: { type: string, enum: [living_curtain, bedroom_curtain] }
+      position: { type: integer, min: 0, max: 100 }
+    required: [entity, position]
+
+  - name: media.say
+    scope: write.comfort
+    confirm: false
+    desc: 透過 HomePod 播報文字
+    params:
+      text: { type: string, max_len: 200 }
+      target: { type: string, enum: [living_homepod, master_mini, all], default: living_homepod }
+      volume: { type: integer, min: 0, max: 100 }
+    required: [text]
+
+  - name: vacuum.control
+    scope: write.appliance
+    desc: Roborock 啟動／暫停／回充／指定房間清掃
+    compensate: vacuum.dock
+    params:
+      action: { type: string, enum: [start, pause, dock, spot] }
+      rooms: { type: array, items: string }
+    required: [action]
+
+  - name: home.get_state
+    scope: read
+    desc: 查詢任一 entity 或整區的即時狀態
+    params:
+      entity: { type: string }
+      area: { type: string, enum: [living, master, second, entry, bath] }
+      domain: { type: string, enum: [light, climate, cover, sensor, vacuum] }
+
+  - name: home.snapshot
+    scope: read
+    internal: true
+    desc: 執行前拍下狀態快照供回滾
+    params:
+      entities: { type: array, items: string }
+      ttl_min: { type: integer, default: 10 }
+    required: [entities]
+
+  - name: notify.push
+    scope: write.comfort
+    confirm: false
+    desc: HA Companion 推播給 Allen 或 Ann
+    params:
+      message: { type: string, max_len: 300 }
+      to: { type: string, enum: [allen, ann, both] }
+      priority: { type: string, enum: [normal, time_sensitive] }
+      image: { type: string }
+    required: [message, to]
+
+  - name: emergency.sos
+    scope: write.security
+    desc: 送出 SOS 簡訊並全屋紅光閃爍（語音觸發仍需確認）
+    params:
+      reason: { type: string }
+      silent: { type: boolean, default: false }

@@ -1,0 +1,41 @@
+# file: packages/s28_sos.yaml
+# 情境 28 緊急 SOS：主臥 Hue Dimmer「關」鍵長按約 5 秒（repeat 事件累計 5 次）→ 簡訊 + 全屋紅光 + 推播
+# 硬體長按直通，不經 Hermes 確認
+input_boolean:
+  s28_enabled: { name: "28 緊急 SOS", initial: on, icon: mdi:car-emergency }
+
+automation:
+  - id: s28_sos_hold_count
+    alias: 28 SOS（Dimmer 長按計數）
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_dimmer_master_button_4, type: repeat }   # ⚠️ 改 id（Dimmer 的 off 鍵）
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s28_enabled
+        state: "on"
+    actions:
+      - action: counter.increment
+        target: { entity_id: counter.dimmer_hold }
+      - if: "{{ states('counter.dimmer_hold') | int >= 5 }}"
+        then:
+          - action: counter.reset
+            target: { entity_id: counter.dimmer_hold }
+          - action: script.emergency_sos
+            data: { reason: dimmer_hold }
+
+  - id: s28_sos_hold_reset
+    alias: 28 SOS（放開重設）
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_dimmer_master_button_4, type: long_release }
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_dimmer_master_button_4, type: short_release }
+    actions:
+      - action: counter.reset
+        target: { entity_id: counter.dimmer_hold }

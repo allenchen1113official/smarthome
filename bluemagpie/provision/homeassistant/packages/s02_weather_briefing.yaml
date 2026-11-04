@@ -1,0 +1,47 @@
+# file: packages/s02_weather_briefing.yaml
+# 情境 02 天氣預報：喚醒後 5 分鐘 HomePod 播報今日天氣與空品
+input_boolean:
+  s02_enabled: { name: "02 天氣預報", initial: on, icon: mdi:weather-partly-cloudy }
+
+script:
+  weather_briefing:
+    alias: 天氣播報
+    fields:
+      target: { selector: { select: { options: [living_homepod, master_mini, all] } } }
+    sequence:
+      - action: weather.get_forecasts
+        target: { entity_id: weather.home }
+        data: { type: daily }
+        response_variable: fc
+      - variables:
+          today: "{{ fc['weather.home'].forecast[0] }}"
+          hi: "{{ today.temperature | round(0) | int }}"
+          lo: "{{ today.templow | round(0) | int }}"
+          rain: "{{ today.precipitation_probability | default(0) | int }}"
+          cond: >-
+            {{ {'sunny':'晴','clear-night':'晴','cloudy':'多雲','partlycloudy':'晴時多雲','rainy':'有雨','pouring':'大雨',
+                'lightning-rainy':'雷雨','fog':'有霧','windy':'有風','snowy':'下雪'}.get(today.condition, today.condition) }}
+          aqi: "{{ states('sensor.aqi_home') }}"
+          msg: >-
+            早安。今天{{ cond }}，最高 {{ hi }} 度，最低 {{ lo }} 度，降雨機率 {{ rain }} 百分比。
+            {% if rain >= 60 %}記得帶傘。{% endif %}{% if hi >= 34 %}今天很熱，注意防曬補水。{% endif %}
+            {% if aqi not in ['unknown','unavailable'] %}空氣品質指標 {{ aqi }}{% if aqi|int > 100 %}，外出建議戴口罩{% endif %}。{% endif %}
+      - action: script.say
+        data: { message: "{{ msg }}", target: "{{ target | default('living_homepod') }}" }
+
+automation:
+  - id: s02_weather_after_wakeup
+    alias: 02 天氣預報（喚醒後 5 分鐘）
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: allenann_wakeup
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s02_enabled
+        state: "on"
+    actions:
+      - delay: { minutes: 5 }
+      - action: script.weather_briefing
+        data:
+          target: "{{ 'master_mini' if trigger.event.data.person == 'ann' else 'living_homepod' }}"

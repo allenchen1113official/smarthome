@@ -1,0 +1,45 @@
+# file: packages/s25_night_motion_alert.yaml
+# 情境 25 運動偵測告警：00:00–05:00 走廊/玄關有動作且（睡眠模式中或無人在家）→ 擷取掃地機地圖/鏡頭快照 + 時效性推播
+input_boolean:
+  s25_enabled: { name: "25 運動偵測告警", initial: on, icon: mdi:motion-sensor }
+
+automation:
+  - id: s25_night_motion
+    alias: 25 運動偵測告警（凌晨）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.hallway_motion
+        to: "on"
+      - trigger: state
+        entity_id: binary_sensor.front_door
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s25_enabled
+        state: "on"
+      - condition: time
+        after: "00:00:00"
+        before: "05:00:00"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_boolean.sleep_mode
+            state: "on"
+          - condition: and
+            conditions:
+              - { condition: state, entity_id: person.allen, state: not_home }
+              - { condition: state, entity_id: person.ann, state: not_home }
+      - condition: template
+        value_template: "{{ (now() - this.attributes.last_triggered | default(as_datetime('2000-01-01'), true)).total_seconds() > 300 }}"
+    actions:
+      - action: camera.snapshot
+        target: { entity_id: camera.qrevo_map }          # Qrevo Edge C 無前鏡頭時以地圖替代
+        data: { filename: "/media/hermes/motion_{{ now().strftime('%Y%m%d_%H%M%S') }}.jpg" }
+        continue_on_error: true
+      - action: notify.both
+        data:
+          message: "⚠️ 凌晨 {{ now().strftime('%H:%M') }} {{ '大門開啟' if trigger.entity_id == 'binary_sensor.front_door' else '走廊偵測到動作' }}"
+          data:
+            push: { interruption-level: time-sensitive }
+            image: "/media/local/hermes/motion_{{ now().strftime('%Y%m%d_%H%M%S') }}.jpg"

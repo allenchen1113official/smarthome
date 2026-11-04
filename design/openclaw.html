@@ -294,7 +294,7 @@
   .ledger {
     margin-top: 28px;
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 10px;
   }
   .step {
@@ -424,13 +424,13 @@
 <header class="page-head">
   <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
   <h1>OpenClaw 本地 AI 語音家庭管家</h1>
-  <div class="subtitle">Faster-Whisper（語音轉文字） + Ollama Llama 3 8B（推理） + Hermes Agent（任務編排）+ Piper（文字轉語音），完整跑在 HA Black N100 的 Docker 中。100% 本地端，無雲端依賴。按下「啟動流程」可看完整七步語音流程動畫。</div>
+  <div class="subtitle">Faster-Whisper（語音轉文字） + Ollama Llama 3 8B（推理） + Hermes Agent（任務編排）+ Piper（文字轉語音），完整跑在 Mac mini M4 上（Ollama 原生 Metal 加速）。100% 本地端，無雲端依賴。按下「啟動流程」可看完整八步語音流程動畫。Hermes 的工具清單、權限模型、記憶層與股票分析模組，詳見 <a href="hermes.html" style="color:var(--c-secure);font-weight:500">Hermes Agent 實作規格 →</a></div>
 </header>
 
 <section class="stage-frame">
   <div class="control-row">
     <button class="play-btn" id="playBtn"><span class="ico">▶</span><span id="playLabel">啟動流程</span></button>
-    <span class="step-pill">Step <span class="live" id="stepN">0</span> / 7</span>
+    <span class="step-pill">Step <span class="live" id="stepN">0</span> / 8</span>
     <div class="scrub-track" id="scrub"><div class="fill" id="scrubFill"></div></div>
     <span class="step-pill" id="elapsed">00.0s</span>
   </div>
@@ -468,7 +468,7 @@
 
       <!-- OpenClaw Core (frame containing 3 modules) -->
       <div class="col">
-        <div class="col-title">OpenClaw 核心<small>Docker on HA Black N100</small></div>
+        <div class="col-title">OpenClaw 核心<small>macOS · Metal on Mac mini M4</small></div>
         <div class="col-frame openclaw">
           <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
           <div class="module openclaw-core" id="m-stt" data-id="stt">
@@ -489,7 +489,7 @@
                 <div class="m-en">Ollama · Llama 3 (8B)</div>
               </div>
             </div>
-            <div class="m-spec">CPU only · 8 GB RAM · ~600ms</div>
+            <div class="m-spec">Metal GPU · 16 GB 統一記憶體 · ~250ms</div>
           </div>
           <div class="module openclaw-core" id="m-hermes" data-id="hermes">
             <div class="m-row">
@@ -576,7 +576,7 @@
   <div class="advantages">
     <div class="adv">
       <div class="a-ico">🔒</div>
-      <div><h4>100% 本地端</h4><p>所有模型都跑在 HA Black，資料不出家門</p></div>
+      <div><h4>100% 本地端</h4><p>所有模型都跑在 Mac mini M4，資料不出家門</p></div>
     </div>
     <div class="adv">
       <div class="a-ico">⚡</div>
@@ -632,16 +632,17 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
   </div>
   <div class="detail-card">
     <h3>硬體規格與資源用量</h3>
-    <div class="muted">HA Black 跑滿載時的實測數據（推估）</div>
-    <div class="row"><div class="k">CPU</div><div class="v">Intel N100 · 4-core 6W</div></div>
-    <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.3G ≈ 6.3 GB / 8 GB</div></div>
+    <div class="muted">Mac mini M4 滿載時的實測數據（推估）</div>
+    <div class="row"><div class="k">CPU</div><div class="v">Apple M4 · 10 核 CPU / 10 核 GPU · 16 GB</div></div>
+    <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.4G + HAOS VM 2.0G + macOS 3.0G ≈ 11.6 GB / 16 GB</div></div>
     <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 GB / 256 GB</div></div>
     <div class="row"><div class="k">STT 延遲</div><div class="v">faster-whisper-small · ~150ms</div></div>
-    <div class="row"><div class="k">LLM 延遲</div><div class="v">Llama 3 8B Q4 · ~600ms</div></div>
-    <div class="row"><div class="k">Hermes 編排</div><div class="v">Tool routing · ~40ms</div></div>
+    <div class="row"><div class="k">LLM 延遲</div><div class="v">Llama 3 8B Q4 · Metal · ~250ms</div></div>
+    <div class="row"><div class="k">Hermes 編排</div><div class="v">14 tools · routing ~40ms</div></div>
     <div class="row"><div class="k">TTS 延遲</div><div class="v">Piper · ~80ms</div></div>
-    <div class="row"><div class="k">端到端</div><div class="v" style="color:var(--c-secure);font-weight:600">~870ms（語音→燈亮）</div></div>
-    <div class="row"><div class="k">月電費</div><div class="v">~NT$ 60（24/7 運行 · 6W）</div></div>
+    <div class="row"><div class="k">端到端</div><div class="v" style="color:var(--c-secure);font-weight:600">~520ms（語音→燈亮）</div></div>
+    <div class="row"><div class="k">月電費</div><div class="v">~NT$ 50（24/7 · 閒置約 4W）＋ 備援 HA Black 待命 ~NT$ 30</div></div>
+    <div class="row"><div class="k">備援</div><div class="v">HA Black (N100) 待命 · 每晚接收快照 · 失聯 5 分鐘通知接手（僅 HA，無本地 AI）</div></div>
   </div>
 </section>
 
@@ -728,7 +729,7 @@ let playing = false;
 let timer = null;
 let stepStart = 0;
 let totalElapsed = 0;
-const STEP_MS = [1200, 700, 1100, 1400, 1100, 900, 1200];
+const STEP_MS = [1200, 700, 1100, 1400, 1100, 900, 1000, 1200];
 
 function applyStep(i) {
   clearActive();

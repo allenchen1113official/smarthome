@@ -1,0 +1,61 @@
+# file: packages/s01_morning_wakeup.yaml
+# 情境 01 溫柔喚醒：Hue 主臥模擬日出 + 窗簾開 20%
+input_boolean:
+  s01_enabled: { name: "01 溫柔喚醒", initial: on, icon: mdi:weather-sunset-up }
+
+automation:
+  - id: s01_wakeup_allen
+    alias: 01 溫柔喚醒（Allen）
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.allen_wake
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s01_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_select.allen_shift
+        state: morning
+      - condition: state
+        entity_id: person.allen
+        state: home
+      - condition: time
+        weekday: [mon, tue, wed, thu, fri]
+    actions:
+      - action: scene.turn_on
+        target: { entity_id: scene.master_sunrise }   # Hue 場景 Sunrise（03 章建立）
+      - action: cover.set_cover_position
+        target: { entity_id: cover.bedroom_curtain }
+        data: { position: 20 }
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.sleep_mode }
+      - event: allenann_wakeup
+        event_data: { person: allen }
+
+  - id: s01_wakeup_ann
+    alias: 01 溫柔喚醒（Ann，依班別）
+    mode: single
+    triggers:
+      - trigger: time
+        at: input_datetime.ann_wake
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s01_enabled
+        state: "on"
+      - condition: state
+        entity_id: person.ann
+        state: home
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.ann_shift
+            state: "off"
+    actions:
+      - action: scene.turn_on
+        target: { entity_id: scene.master_sunrise }
+      - action: cover.set_cover_position
+        target: { entity_id: cover.bedroom_curtain }
+        data: { position: 20 }
+      - event: allenann_wakeup
+        event_data: { person: ann }

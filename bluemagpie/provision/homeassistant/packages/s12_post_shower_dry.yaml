@@ -1,0 +1,43 @@
+# file: packages/s12_post_shower_dry.yaml
+# 情境 12 洗完澡乾燥：主臥濕度 > 75% 持續 10 分鐘 → 主臥冷氣除濕；降回後還原
+input_boolean:
+  s12_enabled: { name: "12 洗完澡乾燥", initial: on, icon: mdi:water-percent }
+
+automation:
+  - id: s12_dry_on
+    alias: 12 洗完澡乾燥（啟動除濕）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.master_humidity
+        above: 75
+        for: { minutes: 10 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s12_enabled
+        state: "on"
+      - condition: time
+        after: "19:00:00"
+        before: "02:00:00"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.allen
+            state: home
+          - condition: state
+            entity_id: person.ann
+            state: home
+    actions:
+      - action: scene.create
+        data: { scene_id: before_dry, snapshot_entities: [climate.master] }
+      - action: script.ac_set
+        data: { room: master, hvac_mode: dry, temperature: 26 }
+      - wait_for_trigger:
+          - trigger: numeric_state
+            entity_id: sensor.master_humidity
+            below: 60
+            for: { minutes: 15 }
+        timeout: { hours: 2 }
+      - action: scene.turn_on
+        target: { entity_id: scene.before_dry }
+        continue_on_error: true

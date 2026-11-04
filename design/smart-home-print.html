@@ -372,7 +372,7 @@
   <div class="brand-strip"><div class="dot"></div>Allen &amp; Ann · Smart Home Plan</div>
   <div class="eyebrow">SMART HOME PLAN · v1.0 · APR 2026</div>
   <h1>為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
-  <p class="lede">以 Home Assistant Black（N100）為中樞，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本文件涵蓋三個面向：網路拓樸、30 個自動化場景、與 OpenClaw 語音流程。</p>
+  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為備援，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本文件涵蓋三個面向：網路拓樸、30 個自動化場景、與 OpenClaw 語音流程。</p>
 
   <div class="stats">
     <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
@@ -396,9 +396,9 @@
     </div>
     <div class="card" style="--accent: var(--c-evening); --tint: var(--c-evening-bg);">
       <div class="num">/ 02</div>
-      <h3>30 個自動化場景</h3>
+      <h3>35 個自動化場景</h3>
       <div class="en">Automation Scenes</div>
-      <p>晨間、下班、睡眠、家電、安全 AI 五大類別 × 6 場景。包含觸發條件與涉及設備。</p>
+      <p>晨間、下班、睡眠、家電、安全 AI 五大類別共 35 個場景（31–35 由 Hermes 主導）。含觸發條件與涉及設備。</p>
     </div>
     <div class="card" style="--accent: var(--c-secure); --tint: var(--c-secure-bg);">
       <div class="num">/ 03</div>
@@ -407,7 +407,7 @@
       <p>STT + LLM + TTS 完整本地端流程，七步語音管家從接收到播報。</p>
     </div>
   </div>
-  <div class="page-num">01 / 04</div>
+  <div class="page-num">01 / 05</div>
 </section>
 
 <!-- TOPOLOGY -->
@@ -435,7 +435,8 @@
     <div class="topo-row">
       <div class="label">智慧家庭中樞<small>Smart Hub</small></div>
       <div class="nodes">
-        <div class="topo-node" data-tone="primary"><div class="ni">🏠</div><div class="nl">Home Assistant Black</div><div class="nm">N100 · 8GB · 256GB SSD<br>HAOS + OpenClaw + Zigbee Stick</div></div>
+        <div class="topo-node" data-tone="primary"><div class="ni">🏠</div><div class="nl">Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD<br>HAOS VM + OpenClaw + Zigbee Stick</div></div>
+        <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="ni">🛟</div><div class="nl">HA Black (N100) · 備援</div><div class="nm">待命 · 每晚接收快照<br>主機失聯即接手</div></div>
       </div>
     </div>
     <div class="topo-row">
@@ -464,18 +465,18 @@
     </div>
   </div>
 
-  <div class="footer"><span>Allen &amp; Ann Smart Home · Topology</span><span>頁 02 / 04</span></div>
+  <div class="footer"><span>Allen &amp; Ann Smart Home · Topology</span><span>頁 02 / 05</span></div>
 </section>
 
 <!-- SCENES -->
 <section class="page" id="scenesPage">
   <div class="page-head">
     <div class="crumb">/ 02</div>
-    <h1>30 個 Home Assistant 自動化場景</h1>
-    <div class="sub">基於 HA Black (N100 Local AI) &amp; OpenClaw 控制核心 · 五大類 × 6 場景</div>
+    <h1>35 個 Home Assistant 自動化場景</h1>
+    <div class="sub">基於 Mac mini M4 (16GB Local AI) &amp; OpenClaw 控制核心 · 五大類 35 場景 · 31–35 為 Hermes 主導</div>
   </div>
   <div class="cat-grid" id="catGrid"></div>
-  <div class="footer"><span>Allen &amp; Ann Smart Home · Scenes</span><span>頁 03 / 04</span></div>
+  <div class="footer"><span>Allen &amp; Ann Smart Home · Scenes</span><span>頁 03 / 05</span></div>
 </section>
 
 <!-- OPENCLAW -->
@@ -483,7 +484,7 @@
   <div class="page-head">
     <div class="crumb">/ 03</div>
     <h1>OpenClaw 本地 AI 語音家庭管家</h1>
-    <div class="sub">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~870ms 端到端</div>
+    <div class="sub">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~520ms 端到端</div>
   </div>
 
   <div class="arch-grid">
@@ -499,7 +500,7 @@
       </div>
     </div>
     <div class="col">
-      <div class="col-title">OpenClaw 核心<small>Docker on N100</small></div>
+      <div class="col-title">OpenClaw 核心<small>macOS · Metal on M4</small></div>
       <div class="col-frame openclaw">
         <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
         <div class="module openclaw-core">
@@ -508,11 +509,11 @@
         </div>
         <div class="module openclaw-core">
           <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
-          <div class="m-spec">CPU only · 8 GB · ~600ms</div>
+          <div class="m-spec">Metal GPU · 16 GB · ~250ms</div>
         </div>
         <div class="module openclaw-core">
           <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
-          <div class="m-spec">Function Routing · ~40ms</div>
+          <div class="m-spec">14 tools · guard/retry/rollback · ~40ms</div>
         </div>
         <div class="module openclaw-core">
           <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">TTS — 文字轉語音</div><div class="m-en">Piper · 極速</div></div></div>
@@ -550,7 +551,7 @@
   <div class="ledger" id="ledgerBox"></div>
 
   <div class="advantages">
-    <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 HA Black，資料不出家門</p></div></div>
+    <div class="adv"><div class="ico">🔒</div><div><h4>100% 本地端</h4><p>所有模型跑在 Mac mini M4，資料不出家門</p></div></div>
     <div class="adv"><div class="ico">⚡</div><div><h4>低延遲控制</h4><p>STT + LLM + Hermes + TTS &lt; 1 秒</p></div></div>
     <div class="adv"><div class="ico">☁️</div><div><h4>無雲端依賴</h4><p>網路斷線時，家庭核心功能不受影響</p></div></div>
     <div class="adv"><div class="ico">🇹🇼</div><div><h4>中文原生</h4><p>Whisper + Piper 中文聲線</p></div></div>
@@ -575,16 +576,95 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
     </div>
     <div class="detail-card">
       <h3>硬體規格與資源用量</h3>
-      <div class="muted">HA Black 滿載實測（推估）</div>
-      <div class="row"><div class="k">CPU</div><div class="v">Intel N100 · 4-core 6W</div></div>
-      <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.3G ≈ 6.3/8 GB</div></div>
+      <div class="muted">Mac mini M4 滿載實測（推估）</div>
+      <div class="row"><div class="k">CPU</div><div class="v">Apple M4 · 10 核 CPU / 10 核 GPU · 16 GB</div></div>
+      <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.4G + HAOS VM 2G + macOS 3G ≈ 11.6/16 GB</div></div>
       <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 / 256 GB</div></div>
-      <div class="row"><div class="k">端到端延遲</div><div class="v" style="color:var(--c-secure);font-weight:600">~870ms</div></div>
-      <div class="row"><div class="k">月電費</div><div class="v">~NT$ 60（24/7 · 6W）</div></div>
+      <div class="row"><div class="k">端到端延遲</div><div class="v" style="color:var(--c-secure);font-weight:600">~520ms</div></div>
+      <div class="row"><div class="k">月電費</div><div class="v">~NT$ 50 ＋ 備援待命 ~NT$ 30</div></div>
+      <div class="row"><div class="k">備援</div><div class="v">HA Black (N100) 待命 · 每晚快照 · 失聯 5 分鐘接手</div></div>
     </div>
   </div>
 
-  <div class="footer"><span>Allen &amp; Ann Smart Home · OpenClaw</span><span>頁 04 / 04</span></div>
+  <div class="footer"><span>Allen &amp; Ann Smart Home · OpenClaw</span><span>頁 04 / 05</span></div>
+</section>
+
+
+<!-- HERMES AGENT -->
+<section class="page">
+  <div class="page-head">
+    <div class="crumb">/ 04</div>
+    <h1>Hermes Agent — 任務編排實作規格</h1>
+    <div class="sub">14 工具 · guard / confirm / retry / rollback · 6 種權限 scope · 三層本地記憶 · 股票分析模組（只分析不下單）</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
+    <div class="detail-card">
+      <h3>工具清單 Tool Registry</h3>
+      <div class="muted">精簡 schema ~1.1k tokens 注入 system prompt；未註冊工具一律拒絕</div>
+<pre>light.set              home.get_state
+light.activate_scene   home.snapshot
+climate.set            notify.push
+cover.set_position     emergency.sos
+media.say              market.quote
+vacuum.control         market.indicators
+market.screen          market.paper_order</pre>
+    </div>
+    <div class="detail-card">
+      <h3>權限 Scope 與確認策略</h3>
+      <div class="muted">autonomy: confirm_all — 改變實體狀態一律先覆誦</div>
+      <div class="row"><div class="k">read</div><div class="v">狀態／感測／報價 · 免確認</div></div>
+      <div class="row"><div class="k">write.comfort</div><div class="v">燈／空調／窗簾 · 需確認</div></div>
+      <div class="row"><div class="k">write.appliance</div><div class="v">掃地機／插座 · 睡眠模式拒絕</div></div>
+      <div class="row"><div class="k">write.security</div><div class="v">SOS · 僅 Allen / Ann 聲紋</div></div>
+      <div class="row"><div class="k">finance.sim</div><div class="v">模擬單 · 覆誦標的與股數</div></div>
+      <div class="row"><div class="k">net.egress</div><div class="v">白名單唯讀 · 5s 逾時降級</div></div>
+      <div class="row"><div class="k">深夜 23–07</div><div class="v">不出聲，改 App 推播確認</div></div>
+    </div>
+    <div class="detail-card">
+      <h3>介面契約與併發</h3>
+      <div class="row"><div class="k">HA REST</div><div class="v">主要下行 · 逾時 1.1s · 重試 3</div></div>
+      <div class="row"><div class="k">HA WebSocket</div><div class="v">狀態訂閱 → world model</div></div>
+      <div class="row"><div class="k">MQTT</div><div class="v">QoS 1 · msg_id 去重</div></div>
+      <div class="row"><div class="k">Matter</div><div class="v">經 HA Matter server（預留）</div></div>
+      <div class="row"><div class="k">LLM lane</div><div class="v">併發 1 · 佇列上限 3</div></div>
+      <div class="row"><div class="k">Fast lane</div><div class="v">併發 4 · 查詢免 LLM ~310ms</div></div>
+      <div class="row"><div class="k">Batch lane</div><div class="v">盤後掃描 · 喚醒詞即暫停</div></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:12px;">
+    <div class="detail-card">
+      <h3>編排、失敗與回滾</h3>
+      <div class="muted">「Allen 回家了」：s2 空調逾時 → 重試 2 次 → 反向補償 s1 → 人話回報</div>
+<pre>plan pln_2f7a  START intent=home_arrival
+guard s1  device_online ok · sleep false
+confirm → "要開歡迎燈並把冷氣設 24 度嗎？" ← "好"
+snap  s1  hue.living = { bri:0, off }
+exec  s1  light.activate_scene        OK 172ms
+exec  s2  climate.set                 TIMEOUT
+retry s2  1/2 (+400ms) · 2/2 (+1200ms) TIMEOUT
+ABORT s2  reason=device_unreachable
+compensate s1 → light.restore_snapshot OK
+tts  "客廳冷氣沒回應，已把燈光還原。
+      要我改開主臥冷氣嗎？"
+plan ROLLED_BACK  total 6.8s</pre>
+    </div>
+    <div class="detail-card">
+      <h3>記憶層與股票分析模組</h3>
+      <div class="muted">三層記憶存本地 SQLite hermes.db；股票只分析與模擬單</div>
+      <div class="row"><div class="k">短期</div><div class="v">最近 6 輪對話與指代 · TTL 10 min</div></div>
+      <div class="row"><div class="k">工作</div><div class="v">誰在家、Ann 班別、設備狀態、溫濕度</div></div>
+      <div class="row"><div class="k">長期</div><div class="v">常用溫度／亮度、別名、自選股與成本</div></div>
+      <div class="row"><div class="k">盤後 13:30</div><div class="v">掃描自選加權評分 · top 3 · 圖卡</div></div>
+      <div class="row"><div class="k">盤中</div><div class="v">突破／量增／停損 → 燈效＋推播</div></div>
+      <div class="row"><div class="k">語音問答</div><div class="v">「2330 現在怎樣？」~1.9s</div></div>
+      <div class="row"><div class="k">模擬單</div><div class="v">覆誦後記帳 · 不連券商</div></div>
+      <div class="row"><div class="k">封鎖</div><div class="v" style="color:var(--c-secure);font-weight:600">broker.place_order 永久停用</div></div>
+    </div>
+  </div>
+
+  <div class="footer"><span>Allen &amp; Ann Smart Home · Hermes Agent · 非投資建議</span><span>頁 05 / 05</span></div>
 </section>
 
 <script>
@@ -628,6 +708,11 @@ const SCENES = [
   {n:28,cat:"secure",t:"緊急 SOS",d:"長按 Dimmer → 傳送簡訊"},
   {n:29,cat:"secure",t:"OpenClaw 全屋情境",d:"語音「Allen 回家了」全屋觸發"},
   {n:30,cat:"secure",t:"OpenClaw 狀態查詢",d:"語音「Ann 還在睡嗎？」回應"},
+  {n:31,cat:"morning",t:"股票語音問答",d:"「2330 現在怎樣？」即時報價指標"},
+  {n:32,cat:"evening",t:"收盤圖卡推送",d:"13:30 掃描自選 → 圖卡上螢幕"},
+  {n:33,cat:"secure",t:"盤中停損告警",d:"跌破成本 8% → 紅光＋推播"},
+  {n:34,cat:"home",t:"模擬單與記帳",d:"覆誦確認後記錄，不下真實單"},
+  {n:35,cat:"sleep",t:"深夜確認改推播",d:"23:00–07:00 不出聲，只推播"},
 ];
 
 const grid = document.getElementById("catGrid");

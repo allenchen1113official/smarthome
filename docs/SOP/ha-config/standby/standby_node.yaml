@@ -1,0 +1,118 @@
+# file: standby/standby_node.yaml
+input_boolean:
+  auto_promote:
+    name: 自動接手（關閉＝失聯只推播，要你按鈕才接手）
+    initial: on
+    icon: mdi:swap-horizontal-bold
+  promoted:
+    name: 本機已接手為主節點
+    initial: off
+    icon: mdi:crown
+
+binary_sensor:
+  - platform: ping
+    name: macmini_ping
+    host: 192.168.0.11       # 主節點 HAOS VM
+    count: 2
+    scan_interval: 30
+  - platform: ping
+    name: macmini_host_ping
+    host: 192.168.0.10       # Mac mini 本體（用來分辨「VM 掛」還是「整台掛」）
+    count: 2
+    scan_interval: 30
+
+shell_command:
+  latest_backup_slug: "ls -t /backup/*.tar | head -1 | xargs -n1 basename | sed 's/\\.tar$//'"
+
+notify:
+  - name: both
+    platform: group
+    services:
+      - service: mobile_app_allen_iphone
+      - service: mobile_app_ann_iphone
+
+script:
+  promote_to_primary:
+    alias: 接手為主節點（還原最新備份並啟動）
+    mode: single
+    sequence:
+      - action: shell_command.latest_backup_slug
+        response_variable: r
+      - variables:
+          slug: "{{ r.stdout | trim }}"
+      - action: notify.both
+        data: { message: "🛟 備援機開始接手：還原備份 {{ slug }}，約 4 分鐘後恢復控制。" }
+      - action: input_boolean.turn_on
+        target: { entity_id: input_boolean.promoted }
+      # 還原 config + Z2M/Mosquitto 附加元件；還原後 HA 會自動重啟，之後由 s00_node 的「非主節點啟動」自動化接續
+      - action: hassio.restore_partial
+        data:
+          slug: "{{ slug }}"
+          homeassistant: true
+          addons: [45df7312_zigbee2mqtt, core_mosquitto]
+          password: !secret backup_password
+
+automation:
+  - id: standby_primary_lost
+    alias: 備援：主節點失聯 5 分鐘
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.macmini_ping
+        to: "off"
+        for: { minutes: 5 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.promoted
+        state: "off"
+    actions:
+      - action: notify.both
+        data:
+          message: >-
+            🛟 主節點失聯 5 分鐘（{{ 'Mac mini 整台離線' if is_state('binary_sensor.macmini_host_ping','off') else '只有 HAOS 虛擬機離線' }}）。
+            {{ '2 分鐘後自動接手，回覆「取消」可中止。' if is_state('input_boolean.auto_promote','on') else '按「接手」由備援機接管。' }}
+          data:
+            push: { interruption-level: time-sensitive }
+            actions:
+              - { action: STANDBY_PROMOTE, title: 接手 }
+              - { action: STANDBY_CANCEL, title: 取消 }
+      - if: "{{ is_state('input_boolean.auto_promote','on') }}"
+        then:
+          - wait_for_trigger:
+              - trigger: event
+                event_type: mobile_app_notification_action
+                event_data: { action: STANDBY_CANCEL }
+              - trigger: state
+                entity_id: binary_sensor.macmini_ping
+                to: "on"
+            timeout: { minutes: 2 }
+            continue_on_timeout: true
+          - if: "{{ not wait.trigger }}"
+            then:
+              - action: script.promote_to_primary
+
+  - id: standby_promote_button
+    alias: 備援：推播按鈕「接手」
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data: { action: STANDBY_PROMOTE }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.promoted
+        state: "off"
+    actions:
+      - action: script.promote_to_primary
+
+  - id: standby_primary_back
+    alias: 備援：主節點恢復（提醒回切）
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.macmini_ping
+        from: "off"
+        to: "on"
+        for: { minutes: 2 }
+    actions:
+      - action: notify.both
+        data:
+          message: "✅ 主節點 Mac mini 已恢復連線。{{ '備援機目前仍是主節點，請依 SOP 07 §7.6 手動回切。' if is_state('input_boolean.promoted','on') else '' }}"

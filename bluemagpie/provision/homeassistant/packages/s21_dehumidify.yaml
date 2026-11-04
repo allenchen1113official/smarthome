@@ -1,0 +1,56 @@
+# file: packages/s21_dehumidify.yaml
+# 情境 21 除濕自動化：客廳濕度 > 65% 持續 15 分鐘且冷氣關著（08–22 有人在家）→ 除濕 26°C；< 55% 15 分鐘 → 關
+input_boolean:
+  s21_enabled: { name: "21 除濕自動化", initial: on, icon: mdi:air-humidifier-off }
+
+automation:
+  - id: s21_dehumidify_on
+    alias: 21 除濕自動化（啟動）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.living_humidity
+        above: 65
+        for: { minutes: 15 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s21_enabled
+        state: "on"
+      - condition: state
+        entity_id: climate.living
+        state: "off"
+      - condition: time
+        after: "08:00:00"
+        before: "22:00:00"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.allen
+            state: home
+          - condition: state
+            entity_id: person.ann
+            state: home
+    actions:
+      - action: script.ac_set
+        data: { room: living, hvac_mode: dry, temperature: 26 }
+      - action: logbook.log
+        data: { name: 除濕, message: "客廳濕度 {{ states('sensor.living_humidity') }}%，啟動除濕" }
+
+  - id: s21_dehumidify_off
+    alias: 21 除濕自動化（停止）
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.living_humidity
+        below: 55
+        for: { minutes: 15 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s21_enabled
+        state: "on"
+      - condition: state
+        entity_id: climate.living
+        state: dry
+    actions:
+      - action: script.ac_set
+        data: { room: living, hvac_mode: "off" }

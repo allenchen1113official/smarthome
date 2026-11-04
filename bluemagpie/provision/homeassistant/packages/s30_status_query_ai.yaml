@@ -1,0 +1,29 @@
+# file: packages/s30_status_query_ai.yaml
+# 情境 30 OpenClaw 家電狀態查詢：「Ann 還在睡嗎？」→ Hermes fast lane 依窗簾/動作回答；離線時純 HA 版
+input_boolean:
+  s30_enabled: { name: "30 家電狀態查詢（AI）", initial: on, icon: mdi:comment-question }
+
+automation:
+  - id: s30_status_fallback
+    alias: 30 狀態查詢（Hermes 離線 fallback）
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: openclaw_fallback
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s30_enabled
+        state: "on"
+      - condition: template
+        value_template: "{{ '還在睡' in trigger.event.data.text or '幾度' in trigger.event.data.text }}"
+    actions:
+      - variables:
+          pos: "{{ state_attr('cover.bedroom_curtain', 'current_position') | int(100) }}"
+          msg: >-
+            {% if '還在睡' in trigger.event.data.text %}
+              {{ '主臥窗簾全閉，看起來還在補眠。' if pos <= 5 else '主臥窗簾是開的，應該起來了。' }}
+            {% else %}
+              客廳 {{ states('sensor.living_temperature') }} 度，主臥 {{ states('sensor.master_temperature') }} 度。
+            {% endif %}
+      - action: script.say
+        data: { message: "{{ msg }}", target: "{{ trigger.event.data.output }}" }

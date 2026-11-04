@@ -1,0 +1,43 @@
+flowchart TB
+  subgraph L1["第一層 · 外部網路"]
+    CHT["☁️ 中華電信光世代<br/>100M/40M · 固定 IP 122.117.5.107<br/>GPON 小烏龜（橋接模式）"]
+    DDNS["🦆 DuckDNS<br/>AllenandAnn.duckdns.org"]
+  end
+  subgraph L2["第二層 · 核心路由"]
+    RT["📡 TP-Link BE3600 · 192.168.0.1<br/>PPPoE · DHCP · 主 SSID + IoT SSID<br/>轉發 443→.11 (NGINX) · 51820/udp→.11 (WireGuard)"]
+  end
+  subgraph L3["第三層 · 智慧家庭中樞"]
+    MAC["🏠 Mac mini M4 · 192.168.0.10<br/>macOS · Ollama · Whisper · Piper · Hermes :8800"]
+    HAOS["🧠 HAOS VM (UTM 橋接) · 192.168.0.11 主節點<br/>:8123 · Mosquitto · Zigbee2MQTT · Tailscale"]
+    BK["🛟 HA Black N100 · 192.168.0.12 副節點 24/7<br/>最小 HAOS · 每小時收設定備份 · 失聯 5 分自動接手"]
+    MAC --- HAOS
+  end
+  subgraph L4["第四層 · 設備子系統"]
+    HUE["💡 Hue Bridge v2 · .20<br/>18 崁燈 · Tap · Dimmer ×2 · Motion ×2"]
+    SYNC["📺 Hue Sync Box · .21"]
+    AC["❄️ Panasonic ×3 · .50–.52（IoT SSID）<br/>+ Broadlink RM4 ×3 · .55–.57"]
+    ZB["🪟 SLZB-06 · .25（PoE Zigbee 協調器）<br/>Aqara 窗簾 ×2 · 門窗 · 溫濕度 · 插座"]
+    ROBO["🤖 Roborock Qrevo · .40（IoT SSID）"]
+    HP["🔊 HomePod .30 · HomePod mini .31"]
+  end
+  subgraph L5["第五層 · 使用者介面"]
+    APP["📱 HA Companion（Allen / Ann）"]
+    TAB["📟 壁掛平板 .60 / .61"]
+    VOICE["🎙️ Siri 捷徑 / Apple Watch Assist / HA Voice PE"]
+  end
+  CHT -->|光纖→PPPoE| RT
+  DDNS -.->|A 記錄指向固定 IP| CHT
+  RT ==>|LAN1 有線 2.5G| MAC
+  RT ==>|LAN2 有線| BK
+  RT ==>|LAN3 有線| HUE
+  RT ==>|LAN4 有線| TAB
+  HAOS -->|WiFi 2.4G IoT| AC
+  HAOS -->|tcp 6638| ZB
+  BK -.->|接手後 tcp 6638| ZB
+  HAOS -->|WiFi IoT| ROBO
+  HAOS -->|LAN · Hue API| HUE
+  HAOS -->|WiFi · AirPlay| HP
+  HAOS -.->|HACS huesyncbox| SYNC
+  HAOS -.->|每小時設定備份 · 03:00 全備 SMB| BK
+  APP -->|LAN 或 443 SSL| RT
+  VOICE -->|webhook / Assist| HAOS

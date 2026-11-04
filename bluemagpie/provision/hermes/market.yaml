@@ -1,0 +1,34 @@
+# hermes/market.yaml — 股票分析模組（只分析與模擬單，不連券商）
+universe: watchlist
+watchlist: ["2330", "2454", "3037", "2317", "2603"]   # 語音可增減，需確認
+
+source:
+  realtime: "https://mis.twse.com.tw/stock/api/getStockInfo.jsp"
+  daily: "https://www.twse.com.tw/exchangeReport/STOCK_DAY"
+  cache_min: 15
+  timeout_s: 5
+  daily_keep: 250
+
+screen:                       # 盤後掃描，加權評分
+  - { rule: "price > ma20 > ma60",            weight: 30 }
+  - { rule: "volume > ma_volume20 * 1.5",     weight: 25 }
+  - { rule: "40 < rsi14 < 70",                weight: 20 }
+  - { rule: "macd_hist crossed_above 0",      weight: 25 }
+top_n: 3
+min_score: 60                 # 不足就說「今天沒有符合條件的」
+
+alerts:                       # 盤中，每檔每日最多 2 次
+  max_per_symbol_per_day: 2
+  rules:
+    - { name: breakout,     when: "price > high_20d",            light: pulse_blue, push: true,  tts: false }
+    - { name: volume_spike, when: "volume_5m > avg_5m * 3",      light: null,       push: true,  tts: false }
+    - { name: stop_loss,    when: "price < holding.cost * 0.92", light: pulse_red,  push: true,  tts: true, priority: time_sensitive }
+  quiet_hours_push_only: true
+
+paper_trade:
+  enabled: true
+  confirm: repeat_back
+  ledger: paper_orders
+  broker: { enabled: false, note: "介面預留，policy.never 封鎖" }
+
+disclaimer: "以上為資料整理，非投資建議。"

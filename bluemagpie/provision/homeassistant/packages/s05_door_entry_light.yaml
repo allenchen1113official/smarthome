@@ -1,0 +1,33 @@
+# file: packages/s05_door_entry_light.yaml
+# 情境 05 門鎖連動：大門開啟且玄關暗 → 玄關燈亮；3 分鐘無動作關
+input_boolean:
+  s05_enabled: { name: "05 門鎖連動", initial: on, icon: mdi:door-open }
+
+automation:
+  - id: s05_door_open_light
+    alias: 05 門鎖連動（開門且暗 → 玄關燈）
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.front_door
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s05_enabled
+        state: "on"
+      - condition: numeric_state
+        entity_id: sensor.hallway_illuminance
+        below: 30
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.entry_1 }
+        data: { brightness_pct: "{{ 20 if is_state('input_boolean.sleep_mode','on') else 70 }}", color_temp_kelvin: 3000 }
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.hallway_motion
+            to: "off"
+            for: { minutes: 3 }
+        timeout: { minutes: 10 }
+      - action: light.turn_off
+        target: { entity_id: light.entry_1 }
+        data: { transition: 3 }

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>青鳥 · 台灣藍鵲 後台</title>
+<style>
+:root{--blue:#1B4F8F;--blue-2:#2E6DB4;--ink:#141413;--red:#C8322B;--bg:#F4F6F9;--card:#FFFFFF;--line:#DDE3EB;--muted:#5C6672;--ok:#1F7A4D;--warn:#B86E2C}
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+header{background:var(--ink);color:#fff;padding:0 24px;height:60px;display:flex;align-items:center;gap:14px}
+header .logo{width:30px;height:30px;border-radius:50%;background:var(--blue);position:relative;flex:none}
+header .logo::after{content:"";position:absolute;left:19px;top:13px;width:9px;height:5px;background:var(--red);border-radius:0 3px 3px 0}
+header b{font-size:17px}header small{color:#9aa4b1;margin-left:6px}
+header .sp{flex:1}header .role{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--blue)}
+.wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px)}
+nav{background:#fff;border-right:1px solid var(--line);padding:16px 10px;display:flex;flex-direction:column;gap:2px}
+nav button{text-align:left;border:0;background:none;padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer;color:var(--ink)}
+nav button.cur{background:#E8EFF8;color:var(--blue);font-weight:700}
+main{padding:24px 28px;min-width:0}
+h2{margin:0 0 14px;font-size:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.field{display:grid;grid-template-columns:220px 1fr;gap:6px 16px;align-items:center;padding:8px 0;border-top:1px solid #EEF1F5}
+.field:first-child{border-top:0}
+.field label{font-weight:600}.field .help{grid-column:2;font-size:12px;color:var(--muted)}
+input[type=text],input[type=password],input[type=number],select{width:100%;max-width:480px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;background:#fff}
+input:focus,select:focus{outline:2px solid var(--blue-2);border-color:transparent}
+.btn{font:inherit;padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn:disabled{opacity:.5;cursor:default}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.svc{border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.svc b{display:flex;justify-content:space-between;align-items:center}.dot{width:10px;height:10px;border-radius:50%;background:#C9CFD6}.dot.ok{background:var(--ok)}.dot.bad{background:var(--red)}.dot.warn{background:var(--warn)}
+.svc small{color:var(--muted)}.svc .acts{display:flex;gap:6px;margin-top:4px}.svc .acts button{font-size:12px;padding:4px 8px}
+pre{background:#0F172A;color:#E2E8F0;padding:14px;border-radius:10px;overflow:auto;max-height:420px;font-size:12px}
+table{width:100%;border-collapse:collapse}td,th{padding:8px 10px;border-bottom:1px solid #EEF1F5;text-align:left}th{color:var(--muted);font-weight:600;font-size:12px}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--ink);color:#fff;padding:12px 16px;border-radius:10px;max-width:420px;opacity:0;transition:.2s;white-space:pre-wrap}.toast.on{opacity:1}
+.muted{color:var(--muted);font-size:12px}
+.events{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px;max-height:220px;overflow:auto}
+@media (max-width:860px){.wrap{grid-template-columns:1fr}nav{flex-direction:row;overflow:auto;border-right:0;border-bottom:1px solid var(--line)}.field{grid-template-columns:1fr}.field .help{grid-column:1}}
+</style>
+</head>
+<body>
+<header><span class="logo" aria-hidden="true"></span><b>青鳥 · 台灣藍鵲</b><small>BlueMagpie Admin v0.1</small><span class="sp"></span><span class="role" id="role">—</span></header>
+<div class="wrap">
+  <nav id="nav">
+    <button data-v="health" class="cur">總覽與健康</button>
+  </nav>
+  <main>
+    <section id="v-health">
+      <h2>總覽與健康</h2>
+      <div class="card">
+        <div class="bar">
+          <button class="btn" onclick="loadHealth()">重新整理</button>
+          <button class="btn" onclick="containers('restart',['homeassistant','zigbee2mqtt','hermes','mosquitto'])">重啟核心服務</button>
+          <span class="muted" id="applied"></span>
+        </div>
+        <div class="grid" id="svcs"></div>
+      </div>
+      <div class="card"><h3 style="margin:0 0 8px">事件</h3><div class="events" id="events"></div></div>
+      <div class="card">
+        <h3 style="margin:0 0 8px">容器記錄</h3>
+        <div class="bar">
+          <select id="logkey" style="max-width:220px"><option>homeassistant</option><option>hermes</option><option>zigbee2mqtt</option><option>mosquitto</option><option>whisper</option><option>piper</option><option>ollama</option><option>admin</option></select>
+          <button class="btn" onclick="loadLogs()">讀取 200 行</button>
+        </div>
+        <pre id="logs">—</pre>
+      </div>
+    </section>
+    <section id="v-settings" hidden>
+      <h2 id="s-title"></h2>
+      <div class="card"><div id="fields"></div></div>
+      <div class="bar">
+        <button class="btn" onclick="saveSettings()">儲存（不套用）</button>
+        <button class="btn primary" onclick="applySettings()">套用並重啟相關服務</button>
+        <span class="muted">套用：產生 Mosquitto / Zigbee2MQTT / Hermes / HA secrets 與 packages、.env，並重啟容器</span>
+      </div>
+    </section>
+    <section id="v-openclaw" hidden>
+      <h2>OpenClaw 本地語音</h2>
+      <div class="card">
+        <p class="muted">OpenClaw = Whisper（語音轉文字）+ Ollama（Llama 3 推理）+ Piper（文字轉語音）+ Hermes（管家編排）。四個容器都在本機，資料不出家門。</p>
+        <div class="bar">
+          <button class="btn" onclick="ocStatus()">檢查狀態</button>
+          <button class="btn" onclick="ocPull()">下載 LLM 模型</button>
+          <button class="btn primary" onclick="ocSetup()">一鍵串接到 Home Assistant</button>
+        </div>
+        <div class="grid" id="ocgrid"></div>
+        <pre id="ocout" style="margin-top:12px">—</pre>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px">一鍵串接會做什麼</h3>
+        <ol class="muted" style="margin:0;padding-left:20px">
+          <li>在 HA 新增 Wyoming 整合 ×2（Whisper STT、Piper TTS）</li>
+          <li>在 HA 新增 Ollama 整合並指向 Hermes（Hermes 偽裝成 Ollama 端點，對話代理即 Hermes）</li>
+          <li>建立 Assist 語音助理管線「OpenClaw」（zh-TW / Whisper / Hermes / Piper）並設為預設</li>
+        </ol>
+        <p class="muted">之後：HA → 設定 → 語音助理 檢查；Ollama 整合的「控制 Home Assistant」請設為「不控制」（由 Hermes 覆誦確認後執行）。HomePod 進聲路徑（Siri 捷徑 webhook）見 SOP 04 章。</p>
+      </div>
+    </section>
+    <section id="v-backup" hidden>
+      <h2>備份與熱備</h2>
+      <div class="card">
+        <div class="bar">
+          <button class="btn primary" onclick="backupNow()">立即備份並推送</button>
+          <button class="btn" onclick="loadBackups()">重新整理</button>
+          <span class="muted" id="bstate"></span>
+        </div>
+        <table><thead><tr><th>檔案</th><th>大小</th><th>時間</th><th>來源</th><th></th></tr></thead><tbody id="blist"></tbody></table>
+      </div>
+      <div class="card">
+        <h3 style="margin:0 0 8px">節點角色</h3>
+        <p class="muted">副節點在主節點失聯 5 分鐘後會自動還原最新收到的備份並啟動 HA / Zigbee / Hermes。主節點修好後：主節點先還原副節點的最新備份，再在副節點按「回切」。</p>
+        <div class="bar">
+          <button class="btn danger" onclick="cluster('promote')">手動接手為主節點</button>
+          <button class="btn" onclick="cluster('demote')">回切為副節點</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let SCHEMA=[],SET={},cur='health';
+const $=s=>document.querySelector(s);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3500)}
+async function api(p,opt={}){const r=await fetch(p,{headers:{'Content-Type':'application/json'},...opt});if(!r.ok){throw new Error(await r.text())}const ct=r.headers.get('content-type')||'';return ct.includes('json')?r.json():r.text()}
+function show(v){cur=v;document.querySelectorAll('main section').forEach(s=>s.hidden=true);document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('cur',b.dataset.v===v));
+  if(v==='health'){$('#v-health').hidden=false;loadHealth()}else if(v==='backup'){$('#v-backup').hidden=false;loadBackups()}else if(v==='openclaw'){$('#v-openclaw').hidden=false;ocStatus()}else{renderSection(v);$('#v-settings').hidden=false}}
+async function init(){SCHEMA=await api('/api/schema');const nav=$('#nav');SCHEMA.forEach(s=>{const b=document.createElement('button');b.dataset.v=s.id;b.textContent=s.title;nav.appendChild(b)});
+  const ob=document.createElement('button');ob.dataset.v='openclaw';ob.textContent='OpenClaw 語音';nav.appendChild(ob);
+  const bb=document.createElement('button');bb.dataset.v='backup';bb.textContent='備份與熱備';nav.appendChild(bb);
+  nav.addEventListener('click',e=>{if(e.target.dataset.v)show(e.target.dataset.v)});await loadSettings();loadHealth()}
+async function loadSettings(){const r=await api('/api/settings');SET=r.settings;$('#role').textContent=r.role==='primary'?'主節點 primary':'副節點 standby';$('#applied').textContent=r.applied_at?'上次套用 '+r.applied_at:'尚未套用：請先到各設定頁填寫後按「套用」'}
+function renderSection(id){const s=SCHEMA.find(x=>x.id===id);$('#s-title').textContent=s.title;const f=$('#fields');f.innerHTML='';
+  s.fields.forEach(fd=>{const v=SET[id][fd.k];const row=document.createElement('div');row.className='field';
+    let input='';const nm=`${id}.${fd.k}`;
+    if(fd.type==='note'){input=`<span class="muted">${fd.help||''}</span>`}
+    else if(fd.type==='select'){input=`<select name="${nm}">${fd.options.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`}
+    else if(fd.type==='bool'){input=`<label><input type="checkbox" name="${nm}" ${v?'checked':''}> 啟用</label>`}
+    else if(fd.type==='int'){input=`<input type="number" name="${nm}" value="${v}">`}
+    else{input=`<input type="${fd.type==='password'?'password':'text'}" name="${nm}" value="${(v??'').toString().replace(/"/g,'&quot;')}" autocomplete="off">`}
+    row.innerHTML=`<label>${fd.label}</label><div>${input}</div>`+(fd.help&&fd.type!=='note'?`<div class="help">${fd.help}</div>`:'');f.appendChild(row)})}
+function collect(){const out={};document.querySelectorAll('#fields [name]').forEach(el=>{const [sec,k]=el.name.split('.');out[sec]=out[sec]||{};out[sec][k]=el.type==='checkbox'?el.checked:el.value});return out}
+async function saveSettings(){await api('/api/settings',{method:'PUT',body:JSON.stringify(collect())});await loadSettings();toast('已儲存')}
+async function applySettings(){const b=collect();b.restart=true;try{const r=await api('/api/apply',{method:'POST',body:JSON.stringify(b)});await loadSettings();
+  toast('已套用。'+(r.generated_secrets.length?'自動產生：'+r.generated_secrets.join('、')+'\n':'')+'重啟：'+JSON.stringify(r.restart||{})+'\n'+r.note)}catch(e){toast('套用失敗：'+e.message)}}
+async function loadHealth(){const h=await api('/api/health');const g=$('#svcs');g.innerHTML='';
+  const labels={admin:'後台',homeassistant:'Home Assistant',mosquitto:'MQTT',zigbee2mqtt:'Zigbee2MQTT',whisper:'Whisper STT',piper:'Piper TTS',ollama:'Ollama',hermes:'Hermes 管家'};
+  Object.entries(h.containers).forEach(([k,c])=>{const svc=h.services[k];let cls='warn';if(c.state==='running'&&(!svc||svc.ok))cls='ok';if(c.state!=='running'&&c.state!=='absent')cls='bad';if(c.state==='absent')cls='';
+    const d=document.createElement('div');d.className='svc';d.innerHTML=`<b>${labels[k]||k}<span class="dot ${cls}"></span></b><small>${c.state}${c.health?' · '+c.health:''}${svc?(' · HTTP '+(svc.code||svc.error)):''}</small><small>${c.image||''}</small>
+      <div class="acts"><button class="btn" onclick="containers('restart',['${k}'])">重啟</button><button class="btn" onclick="containers('stop',['${k}'])">停止</button><button class="btn" onclick="containers('start',['${k}'])">啟動</button></div>`;g.appendChild(d)});
+  if(h.services.peer){const d=document.createElement('div');d.className='svc';d.innerHTML=`<b>另一節點<span class="dot ${h.services.peer.ok?'ok':'bad'}"></span></b><small>${h.services.peer.ok?'可連線':'失聯'}</small>`;g.appendChild(d)}
+  $('#events').innerHTML=(h.events||[]).map(e=>`<span>${e}</span>`).join('')||'<span>—</span>'}
+async function loadLogs(){$('#logs').textContent=await api('/api/logs/'+$('#logkey').value)}
+async function containers(a,keys){const r=await api('/api/containers/'+a,{method:'POST',body:JSON.stringify({keys})});toast(JSON.stringify(r));setTimeout(loadHealth,1500)}
+async function loadBackups(){const r=await api('/api/backup');$('#bstate').textContent=`最近備份 ${r.state.last_backup||'—'} · 最近推送 ${r.state.last_push||'—'}`;
+  $('#blist').innerHTML=r.files.map(f=>`<tr><td>${f.name}</td><td>${f.size_kb} KB</td><td>${f.mtime}</td><td>${f.received?'主節點推送':'本機'}</td><td><button class="btn" onclick="restore('${f.name}')">還原</button></td></tr>`).join('')||'<tr><td colspan=5>尚無備份</td></tr>'}
+async function backupNow(){toast('備份中…');const r=await api('/api/backup/run',{method:'POST'});toast(`完成 ${r.name}，推送：${r.pushed}`);loadBackups()}
+async function restore(n){if(!confirmBox(`還原 ${n}？會停止並重啟 HA / Zigbee / Hermes。`))return;const r=await api('/api/backup/restore',{method:'POST',body:JSON.stringify({name:n})});toast(JSON.stringify(r))}
+async function cluster(a){if(!confirmBox(a==='promote'?'確定要讓本節點接手為主節點？':'確定回切為副節點？'))return;const r=await api('/api/cluster/'+a,{method:'POST'});toast(JSON.stringify(r));loadSettings()}
+async function ocStatus(){const r=await api('/api/openclaw/status');const g=$('#ocgrid');g.innerHTML='';
+  const items=[['Whisper STT',r.whisper,'tcp 10300'],['Piper TTS',r.piper,'tcp 10200'],['Ollama',r.ollama.ok&&r.ollama.has_model,r.ollama.ok?('模型：'+(r.ollama.models.join(', ')||'尚未下載')):('無法連線 '+r.ollama.error)],['Hermes',!!(r.hermes&&r.hermes.ok),r.hermes&&r.hermes.ok?('world '+r.hermes.world_entities+' entities'):'離線'],['HA 整合',r.ha.ok&&r.ha.stt.length&&r.ha.tts.length&&r.ha.conversation.length,r.ha.ok?('stt '+r.ha.stt.length+' · tts '+r.ha.tts.length+' · 對話 '+r.ha.conversation.length):r.ha.error]];
+  items.forEach(([n,ok,sub])=>{const d=document.createElement('div');d.className='svc';d.innerHTML=`<b>${n}<span class="dot ${ok?'ok':'bad'}"></span></b><small>${sub}</small>`;g.appendChild(d)});$('#ocout').textContent=JSON.stringify(r,null,2)}
+async function ocPull(){toast('下載模型中，依網速需 2–10 分鐘…');$('#ocout').textContent='下載中…';const r=await api('/api/openclaw/pull',{method:'POST'});$('#ocout').textContent=JSON.stringify(r,null,2);toast(r.ok?'模型就緒':'失敗');ocStatus()}
+async function ocSetup(){toast('串接中…');const r=await api('/api/openclaw/setup',{method:'POST'});$('#ocout').textContent=JSON.stringify(r,null,2);toast(r.next||r.error);ocStatus()}
+function confirmBox(m){return window.confirm(m)}
+init();
+</script>
+</body>
+</html>

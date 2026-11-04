@@ -1,0 +1,44 @@
+# file: packages/s00_node.yaml
+template:
+  - binary_sensor:
+      - name: is_primary_node
+        unique_id: is_primary_node
+        state: "{{ states('sensor.local_ip') == '192.168.0.11' }}"
+
+automation:
+  - id: s00_node_started_on_standby
+    alias: 節點：在副節點啟動（接手收尾）
+    mode: single
+    triggers:
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.is_primary_node
+        state: "off"
+    actions:
+      - delay: { seconds: 60 }                      # 等整合載入
+      - action: hassio.addon_start
+        data: { addon: 45df7312_zigbee2mqtt }
+        continue_on_error: true
+      - action: input_boolean.turn_off
+        target: { entity_id: input_boolean.s23_enabled }   # 副節點不再往自己備份
+      - action: notify.both
+        data:
+          message: "🛟 備援機已接手：Zigbee 已接管、35 個情境運作中。語音退回 HA 基本模式（Hermes 若仍在線會自動改連本機）。"
+          data: { push: { interruption-level: time-sensitive } }
+
+  - id: s00_node_started_on_primary
+    alias: 節點：在主節點啟動（確認 Z2M 運作）
+    triggers:
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.is_primary_node
+        state: "on"
+    actions:
+      - delay: { seconds: 60 }
+      - action: hassio.addon_start
+        data: { addon: 45df7312_zigbee2mqtt }
+        continue_on_error: true

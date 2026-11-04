@@ -1,0 +1,44 @@
+# file: packages/s17_arrival_greeting.yaml
+# 情境 17 早退晚回判斷：開門時依班別與時間決定語音回饋（夜班早上回家 → 準備補眠；深夜回家 → 只推播）
+input_boolean:
+  s17_enabled: { name: "17 早退晚回判斷", initial: on, icon: mdi:account-arrow-left }
+
+automation:
+  - id: s17_arrival_greeting
+    alias: 17 早退晚回判斷
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.front_door
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s17_enabled
+        state: "on"
+      - condition: template
+        value_template: "{{ (now() - this.attributes.last_triggered | default(as_datetime('2000-01-01'), true)).total_seconds() > 600 }}"
+    actions:
+      - variables:
+          h: "{{ now().hour }}"
+          ann_night: "{{ is_state('input_select.ann_shift', 'night') }}"
+          ann_away: "{{ is_state('person.ann', 'not_home') }}"
+      - choose:
+          # 大夜班 Ann 早上 07–11 回家：溫柔歡迎並準備補眠
+          - conditions: "{{ ann_night and ann_away and 7 <= h < 11 }}"
+            sequence:
+              - action: script.say
+                data: { message: Ann 辛苦了，主臥已經幫你準備好，窗簾會在你進房後關上。, target: living_homepod, volume: 30 }
+              - action: script.ac_set
+                data: { room: master, hvac_mode: cool, temperature: "{{ states('input_number.comfort_temp_ann') | float }}" }
+              - delay: { minutes: 3 }
+              - action: script.ann_nap
+          # 深夜 23–05 回家：不出聲，只推播並開玄關微光
+          - conditions: "{{ h >= 23 or h < 5 }}"
+            sequence:
+              - action: notify.both
+                data: { message: "🌙 深夜有人進門（{{ now().strftime('%H:%M') }}）。" }
+          # 白天一般回家
+          - conditions: "{{ 11 <= h < 23 }}"
+            sequence:
+              - action: script.say
+                data: { message: "歡迎回家。", target: living_homepod }

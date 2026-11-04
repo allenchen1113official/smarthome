@@ -1,0 +1,14 @@
+# file: packages/s34_paper_trading.yaml
+# 情境 34 模擬單與持股記帳：語音「幫我模擬買 2330 一張」→ Hermes 覆誦確認 → hermes.db；HA 端顯示持股
+input_boolean:
+  s34_enabled: { name: "34 模擬單記帳", initial: on, icon: mdi:receipt-text }
+
+rest:
+  - resource: http://192.168.0.10:8800/v1/holdings
+    scan_interval: 300
+    sensor:
+      - name: Hermes 模擬持股
+        unique_id: hermes_paper_holdings
+        value_template: "{{ value_json | count }}"
+        json_attributes_path: "$"
+        json_attributes: ["2330", "2454", "3037", "2317", "2603"]   # 與 market.yaml watchlist 同步

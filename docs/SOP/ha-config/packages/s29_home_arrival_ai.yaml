@@ -1,0 +1,44 @@
+# file: packages/s29_home_arrival_ai.yaml
+# 情境 29 OpenClaw 全屋情境切換：「Allen 回家了」→ Hermes 編排（Welcome 場景 + 冷氣 24 + 窗簾開）
+# Hermes 路徑由 s00_voice 處理；本檔提供 Hermes 離線時的純 HA 版（無 AI、無確認）
+input_boolean:
+  s29_enabled: { name: "29 全屋情境切換（AI）", initial: on, icon: mdi:robot-happy }
+
+script:
+  home_arrival:
+    alias: 回家情境（純 HA 版）
+    fields:
+      person: { selector: { select: { options: [allen, ann] } } }
+    variables:
+      temp: "{{ states('input_number.comfort_temp_' ~ person) | float(24) }}"
+    sequence:
+      - action: scene.turn_on
+        target: { entity_id: scene.living_welcome }
+        continue_on_error: true
+      - action: script.ac_set
+        continue_on_error: true
+        data: { room: living, hvac_mode: cool, temperature: "{{ temp }}" }
+      - if: "{{ state_attr('sun.sun', 'elevation') | float(0) > 0 }}"
+        then:
+          - action: cover.open_cover
+            target: { entity_id: cover.living_curtain }
+            continue_on_error: true
+      - action: script.say
+        data: { message: "{{ '歡迎回家，冷氣設為 ' ~ (temp | int) ~ ' 度' }}", target: living_homepod }
+
+automation:
+  - id: s29_home_arrival_fallback
+    alias: 29 全屋情境切換（Hermes 離線 fallback）
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: openclaw_fallback
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s29_enabled
+        state: "on"
+      - condition: template
+        value_template: "{{ '回家' in trigger.event.data.text }}"
+    actions:
+      - action: script.home_arrival
+        data: { person: "{{ 'ann' if 'Ann' in trigger.event.data.text or 'ann' in trigger.event.data.text else 'allen' }}" }

@@ -1,0 +1,32 @@
+# file: packages/s32_closing_card.yaml
+# 情境 32 收盤圖卡推送：平日 13:30 觸發 Hermes 盤後掃描（batch lane），圖卡寫入 /config/www/hermes/latest.png，推播給 Allen
+input_boolean:
+  s32_enabled: { name: "32 收盤圖卡推送", initial: on, icon: mdi:chart-box }
+
+automation:
+  - id: s32_closing_screen
+    alias: 32 收盤圖卡推送（13:30）
+    mode: single
+    triggers:
+      - trigger: time
+        at: "13:35:00"      # 收盤 13:30 後 5 分鐘讓行情整理
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s32_enabled
+        state: "on"
+      - condition: time
+        weekday: [mon, tue, wed, thu, fri]
+      - condition: state
+        entity_id: binary_sensor.hermes_online
+        state: "on"
+    actions:
+      - action: rest_command.hermes_screen
+        continue_on_error: true
+        response_variable: r
+      - if: "{{ r is defined and r.status == 200 and r.content.results | count > 0 }}"
+        then:
+          - action: script.say
+            data: { message: "{{ r.content.speech }}", target: living_homepod }
+        else:
+          - action: notify.mobile_app_allen_iphone
+            data: { message: "📊 今天盤後掃描沒有符合條件的標的。" }

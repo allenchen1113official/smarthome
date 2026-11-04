@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hermes Agent 實作規格 · Allen &amp; Ann</title>
+<link rel="stylesheet" href="shared/tokens.css">
+<link rel="stylesheet" href="shared/chrome.css">
+<style>
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.page-head{max-width:1320px;margin:0 auto;padding:48px 32px 8px}
+.page-head h1{font-size:40px;font-weight:600;letter-spacing:-.025em;margin:8px 0 6px}
+.page-head .subtitle{color:var(--ink-3);font-size:14px;max-width:760px;line-height:1.6}
+.crumb{font-family:var(--font-mono);font-size:11px;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:24px auto 0}
+.kpi{background:var(--bg-elev);border:1px solid var(--line-soft);border-radius:var(--radius-md);padding:14px 16px;box-shadow:var(--shadow-1)}
+.kpi .n{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.kpi .l{font-size:11px;color:var(--ink-3);margin-top:2px}
+section.blk{max-width:1320px;margin:44px auto 0;padding:0 32px}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.sec-head h2{font-size:22px;font-weight:600;letter-spacing:-.018em;margin:0}
+.sec-head .en{font-size:11px;font-family:var(--font-mono);color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase}
+.sec-lede{color:var(--ink-3);font-size:13px;line-height:1.6;max-width:820px;margin:6px 0 18px}
+.card{background:var(--bg-elev);border:1px solid var(--line-soft);border-radius:var(--radius-lg);padding:22px 24px;box-shadow:var(--shadow-1)}
+.card h3{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.card .muted{color:var(--ink-3);font-size:12px;line-height:1.5;margin-bottom:14px}
+pre{background:var(--bg);border:1px solid var(--line-soft);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--font-mono);font-size:11.5px;line-height:1.62;color:var(--ink-2);overflow-x:auto;margin:0;white-space:pre}
+pre .c{color:var(--c-sleep)}
+pre .k{color:var(--c-secure)}
+pre .s{color:var(--c-home)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.tool-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
+.tool-list{display:flex;flex-direction:column;gap:8px}
+.tool{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:11px 14px;background:var(--bg-elev);border:1.5px solid var(--line-soft);border-radius:var(--radius-md);cursor:pointer;transition:border-color 160ms ease,transform 160ms ease,box-shadow 160ms ease;text-align:left;font-family:inherit;color:inherit;width:100%}
+.tool:hover{border-color:var(--c-secure);transform:translateX(2px)}
+.tool[aria-selected="true"]{border-color:var(--c-secure);background:color-mix(in oklab,var(--c-secure) 7%,var(--bg-elev));box-shadow:0 0 0 3px oklch(74% .12 25/.13)}
+.tool>span:nth-child(2){display:block;min-width:0}
+.tool .ico{width:34px;height:34px;border-radius:9px;background:var(--bg-tint);display:flex;align-items:center;justify-content:center;font-size:16px}
+.tool .nm{display:block;font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:-.01em}
+.tool .ds{display:block;font-size:11px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.scope{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.04em;padding:3px 7px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);background:var(--bg-tint);white-space:nowrap}
+.scope.w{border-color:var(--c-evening);color:var(--c-evening);background:var(--c-evening-bg)}
+.scope.r{border-color:var(--c-home);color:oklch(42% .1 165);background:var(--c-home-bg)}
+.scope.x{border-color:var(--c-secure);color:oklch(46% .13 25);background:var(--c-secure-bg)}
+[data-theme="dark"] .scope.r{color:oklch(82% .1 165)}[data-theme="dark"] .scope.x{color:oklch(84% .12 25)}
+.schema-pane{position:sticky;top:76px}
+.schema-pane .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab{font-family:var(--font-mono);font-size:10.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--bg-tint);color:var(--ink-3);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:10.5px;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4);font-weight:500;padding:0 12px 8px 0;border-bottom:1px solid var(--line)}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.45}
+td.mono,th.mono{font-family:var(--font-mono);font-size:11.5px}
+tr:last-child td{border-bottom:0}
+.pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
+.pnode{padding:12px 13px;border:1.5px solid var(--line);border-radius:var(--radius-md);background:var(--bg-elev);position:relative}
+.pnode .pn{font-family:var(--font-mono);font-size:10px;color:var(--ink-4);letter-spacing:.06em}
+.pnode .pt{font-size:12.5px;font-weight:600;margin-top:4px;letter-spacing:-.005em}
+.pnode .pd{font-size:10.5px;color:var(--ink-3);margin-top:4px;line-height:1.4;font-family:var(--font-mono)}
+.pnode.guard{border-color:var(--c-secure);background:color-mix(in oklab,var(--c-secure) 6%,var(--bg-elev))}
+.pnode.ok{border-color:var(--c-home);background:color-mix(in oklab,var(--c-home) 6%,var(--bg-elev))}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.badge{font-size:10.5px;padding:4px 9px;border-radius:999px;background:var(--bg-tint);border:1px solid var(--line-soft);color:var(--ink-2)}
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.mem .m{padding:16px 18px;border-radius:var(--radius-md);border:1.5px solid var(--line);background:var(--bg-elev)}
+.mem .m .tt{font-size:13px;font-weight:600}
+.mem .m .en{font-size:10.5px;font-family:var(--font-mono);color:var(--ink-4);margin-top:1px}
+.mem .m ul{margin:10px 0 0;padding-left:16px;font-size:11.5px;color:var(--ink-2);line-height:1.6}
+.mem .m.short{border-color:var(--c-morning);background:color-mix(in oklab,var(--c-morning) 6%,var(--bg-elev))}
+.mem .m.work{border-color:var(--c-sleep);background:color-mix(in oklab,var(--c-sleep) 6%,var(--bg-elev))}
+.mem .m.long{border-color:var(--c-home);background:color-mix(in oklab,var(--c-home) 6%,var(--bg-elev))}
+.lanes{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.lane{display:grid;grid-template-columns:132px 1fr 92px;gap:12px;align-items:center}
+.lane .ln{font-size:12px;font-weight:600}
+.lane .ln small{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--ink-4);font-weight:400}
+.lane .bar{height:26px;border-radius:7px;background:var(--bg-tint);overflow:hidden;position:relative;border:1px solid var(--line-soft)}
+.lane .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;display:block}
+.lane .val{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);text-align:right}
+.warn{display:flex;gap:10px;padding:13px 16px;border-radius:var(--radius-md);background:var(--c-secure-bg);border:1px solid var(--c-secure);font-size:12.5px;line-height:1.55;color:var(--ink)}
+.warn b{font-weight:600}
+.stock-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.sf{padding:14px 15px;border:1.5px solid var(--line);border-radius:var(--radius-md);background:var(--bg-elev)}
+.sf .t{font-family:var(--font-mono);font-size:10px;color:var(--ink-4);letter-spacing:.06em}
+.sf h4{margin:5px 0 0;font-size:13px;font-weight:600;letter-spacing:-.005em}
+.sf p{margin:5px 0 0;font-size:11.5px;color:var(--ink-3);line-height:1.45}
+.foot-note{max-width:1320px;margin:40px auto 64px;padding:0 32px;font-size:12px;color:var(--ink-4);line-height:1.6}
+a{color:var(--c-evening)}a:hover{color:var(--c-secure)}
+@media(max-width:1080px){.kpis{grid-template-columns:repeat(2,1fr)}.tool-layout,.two{grid-template-columns:1fr}.schema-pane{position:static}.pipe,.stock-flow{grid-template-columns:1fr 1fr}.mem{grid-template-columns:1fr}.lane{grid-template-columns:110px 1fr 76px}}
+</style>
+</head>
+<body>
+<script src="shared/chrome.js"></script>
+
+<header class="page-head">
+  <div class="crumb">/ 04 · HERMES AGENT SPEC</div>
+  <h1>Hermes Agent — 任務編排實作規格</h1>
+  <p class="subtitle">Hermes 是 OpenClaw 管線中 Llama 3 與 Home Assistant 之間的那一層：把模型輸出的自然語意轉成「可驗證、可重試、可回滾」的工具呼叫序列。本頁為可直接實作的規格 — 工具清單與 function schema、編排與失敗處理、介面契約與權限模型、記憶與上下文、M4 併發策略，以及新增的股票分析模組。</p>
+  <div class="kpis wrap" style="padding:0">
+    <div class="kpi"><div class="n">14</div><div class="l">註冊工具 Tools</div></div>
+    <div class="kpi"><div class="n">~40ms</div><div class="l">編排延遲 (p50)</div></div>
+    <div class="kpi"><div class="n">3</div><div class="l">記憶層級</div></div>
+    <div class="kpi"><div class="n">2</div><div class="l">併發車道 + 佇列</div></div>
+    <div class="kpi"><div class="n">100%</div><div class="l">動作需人工確認</div></div>
+  </div>
+</header>
+
+<!-- ============ 1 TOOL REGISTRY ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>工具清單與 Function Schema</h2><span class="en">Tool Registry</span></div>
+  <p class="sec-lede">Hermes 啟動時從 <code>tools/*.yaml</code> 載入註冊表，並把精簡後的 schema（名稱＋參數＋一行描述，約 1.1k tokens）注入 Llama 3 的 system prompt。模型只能呼叫註冊表內的工具；未知工具名一律拒絕並回覆「這個我還不會」。點選任一工具看完整 JSON Schema。</p>
+  <div class="tool-layout">
+    <div class="tool-list" id="toolList"></div>
+    <div class="card schema-pane">
+      <div class="tabs" id="schemaTabs">
+        <button class="tab" data-view="schema" aria-selected="true">JSON Schema</button>
+        <button class="tab" data-view="call" aria-selected="false">呼叫範例</button>
+        <button class="tab" data-view="policy" aria-selected="false">權限與策略</button>
+      </div>
+      <h3 id="schemaName">—</h3>
+      <div class="muted" id="schemaDesc"></div>
+      <pre id="schemaBody"></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 ORCHESTRATION ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>多步驟編排：條件、重試、回滾</h2><span class="en">Orchestration</span></div>
+  <p class="sec-lede">每一次語音指令產生一個 <b>Plan</b>（有向步驟串），Hermes 逐步執行並把每步結果寫進 transaction log。任何一步失敗且不可重試時，依 log 反向執行補償動作（compensating action），確保不會留下「燈開了但冷氣沒開」的半套狀態。</p>
+  <div class="pipe">
+    <div class="pnode"><div class="pn">01 PARSE</div><div class="pt">解析計畫</div><div class="pd">LLM JSON → Plan 物件<br>schema 驗證失敗即重問</div></div>
+    <div class="pnode guard"><div class="pn">02 GUARD</div><div class="pt">前置條件</div><div class="pd">device_online · 時段<br>睡眠模式 · 權限 scope</div></div>
+    <div class="pnode guard"><div class="pn">03 CONFIRM</div><div class="pt">人工確認</div><div class="pd">語音覆誦 → 「好」<br>逾時 12s 取消</div></div>
+    <div class="pnode"><div class="pn">04 DISPATCH</div><div class="pt">分派執行</div><div class="pd">HA / MQTT / Matter<br>逐步寫入 tx log</div></div>
+    <div class="pnode"><div class="pn">05 RETRY</div><div class="pt">重試</div><div class="pd">指數退避 3 次<br>0.4s / 1.2s / 3.6s</div></div>
+    <div class="pnode ok"><div class="pn">06 SETTLE</div><div class="pt">收斂或回滾</div><div class="pd">全成功 → TTS 回報<br>失敗 → 反向補償</div></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>Plan 定義（YAML）</h3>
+      <div class="muted">「Allen 回家了」→ 3 個動作步驟，各自帶 guard、retry 與 compensate。</div>
+<pre><span class="c"># hermes/plan.yaml — 由 LLM 輸出後經 schema 驗證</span>
+<span class="k">plan_id</span>: pln_2f7a
+<span class="k">intent</span>: home_arrival
+<span class="k">confirm</span>: voice          <span class="c"># 全部動作皆需確認</span>
+<span class="k">timeout_ms</span>: 8000
+<span class="k">steps</span>:
+  - <span class="k">id</span>: s1
+    <span class="k">tool</span>: light.activate_scene
+    <span class="k">args</span>: { area: living, scene: <span class="s">"Welcome"</span> }
+    <span class="k">guard</span>: [ device_online, not_sleep_mode ]
+    <span class="k">retry</span>: { max: 3, backoff: exponential }
+    <span class="k">compensate</span>: light.restore_snapshot
+
+  - <span class="k">id</span>: s2
+    <span class="k">tool</span>: climate.set
+    <span class="k">args</span>: { entity: living, temp: 24, mode: cool }
+    <span class="k">guard</span>: [ device_online, temp_in_range(18,30) ]
+    <span class="k">depends_on</span>: [ s1 ]
+    <span class="k">retry</span>: { max: 2, backoff: exponential }
+    <span class="k">compensate</span>: climate.restore_snapshot
+
+  - <span class="k">id</span>: s3
+    <span class="k">tool</span>: cover.set_position
+    <span class="k">args</span>: { entity: living_curtain, position: 100 }
+    <span class="k">guard</span>: [ device_online, sun_above_horizon ]
+    <span class="k">on_fail</span>: skip        <span class="c"># 非關鍵，失敗不中止</span>
+
+<span class="k">on_success</span>: tts.say(<span class="s">"歡迎回家，冷氣設為 24 度"</span>)
+<span class="k">on_abort</span>:   tts.say(<span class="s">"客廳冷氣沒回應，已還原燈光"</span>)</pre>
+    </div>
+    <div class="card">
+      <h3>執行紀錄與回滾（實際跑一次）</h3>
+      <div class="muted">s2 連線逾時 → 重試 2 次仍失敗 → 反向補償 s1 → 回報人話原因。</div>
+<pre><span class="c"># hermes.tx.log</span>
+14:23:01.102  plan  pln_2f7a  START intent=home_arrival
+14:23:01.104  guard s1  device_online=<span class="s">ok</span> sleep=<span class="s">false</span>
+14:23:01.110  <span class="k">confirm</span> → tts <span class="s">"要開客廳歡迎燈並把冷氣設 24 度嗎？"</span>
+14:23:04.630  <span class="k">confirm</span> ← stt <span class="s">"好"</span>  (3.5s)
+14:23:04.640  snap  s1  hue.living = {bri:0, state:off}
+14:23:04.812  exec  s1  light.activate_scene   <span class="s">OK 172ms</span>
+14:23:04.815  snap  s2  climate.living = {off}
+14:23:05.9xx  exec  s2  climate.set  <span class="k">TIMEOUT 1100ms</span>
+14:23:06.3xx  retry s2  attempt 1/2 (+400ms)   <span class="k">TIMEOUT</span>
+14:23:07.5xx  retry s2  attempt 2/2 (+1200ms)  <span class="k">TIMEOUT</span>
+14:23:07.6xx  <span class="k">ABORT</span> s2 reason=device_unreachable
+14:23:07.6xx  <span class="k">compensate</span> s1 → light.restore_snapshot  <span class="s">OK</span>
+14:23:07.8xx  skip  s3  (plan aborted)
+14:23:07.9xx  tts   <span class="s">"客廳冷氣沒回應，已把燈光還原。要我改開主臥冷氣嗎？"</span>
+14:23:07.9xx  plan  pln_2f7a  ROLLED_BACK  total 6.8s</pre>
+      <div class="badges">
+        <span class="badge">冪等鍵 idempotency_key = plan_id + step_id</span>
+        <span class="badge">單一 plan 最長 8s</span>
+        <span class="badge">snapshot 保留 10 分鐘</span>
+        <span class="badge">失敗原因一律翻成人話</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 INTERFACE CONTRACT & PERMISSIONS ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>介面契約與權限模型</h2><span class="en">Interface Contract &amp; Permissions</span></div>
+  <p class="sec-lede">Hermes 不直接碰設備。三條下行通道各有明確契約、逾時與重試語意；上行狀態統一經 HA state machine 正規化後進 Hermes 的 world model，避免 Zigbee／Matter／WiFi 三套語彙混用。</p>
+  <div class="card" style="margin-bottom:22px">
+    <table>
+      <thead><tr><th>通道</th><th>契約</th><th class="mono">逾時 / 重試</th><th>冪等</th><th>覆蓋設備</th></tr></thead>
+      <tbody>
+        <tr><td><b>HA REST</b><br><span style="color:var(--ink-3);font-size:11.5px">主要路徑</span></td><td class="mono">POST /api/services/{domain}/{svc}<br>Bearer LLAT · JSON body</td><td class="mono">1.1s / 3 次<br>指數退避</td><td>是（key 帶入 context）</td><td>Hue 22 · 空調 5 · 窗簾 2 · Roborock</td></tr>
+        <tr><td><b>HA WebSocket</b><br><span style="color:var(--ink-3);font-size:11.5px">狀態訂閱</span></td><td class="mono">ws://ha:8123/api/websocket<br>subscribe_events: state_changed</td><td class="mono">心跳 20s<br>斷線自動重連</td><td>—（唯讀）</td><td>全部 entity 狀態進 world model</td></tr>
+        <tr><td><b>MQTT</b><br><span style="color:var(--ink-3);font-size:11.5px">感測與告警</span></td><td class="mono">hermes/cmd/#（下行）<br>hermes/evt/#（上行）· QoS 1</td><td class="mono">QoS1 保證送達<br>retained 僅狀態主題</td><td>是（msg_id 去重）</td><td>Aqara 溫濕度 · 門窗 · 自訂告警</td></tr>
+        <tr><td><b>Matter / Thread</b><br><span style="color:var(--ink-3);font-size:11.5px">未來設備</span></td><td class="mono">經 HA Matter server<br>不直連 fabric</td><td class="mono">依 HA 預設<br>2 次</td><td>由 HA 保證</td><td>預留（新購 Matter 燈具／插座）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>權限 Scope 矩陣</h3>
+      <div class="muted">每個工具標註 scope；Hermes 在 dispatch 前比對 caller 身分（語音者辨識或 App session）與時段策略。</div>
+      <table>
+        <thead><tr><th>Scope</th><th>允許</th><th>確認</th><th>限制</th></tr></thead>
+        <tbody>
+          <tr><td class="mono"><span class="scope r">read</span></td><td>狀態查詢、感測讀值、股價</td><td>不需</td><td>無</td></tr>
+          <tr><td class="mono"><span class="scope w">write.comfort</span></td><td>燈光、空調、窗簾、音量</td><td><b>需口頭確認</b></td><td>23:00–07:00 主臥音量鎖 20%</td></tr>
+          <tr><td class="mono"><span class="scope w">write.appliance</span></td><td>掃地機、除濕、插座</td><td><b>需口頭確認</b></td><td>睡眠模式下拒絕</td></tr>
+          <tr><td class="mono"><span class="scope x">write.security</span></td><td>SOS 簡訊、警示燈效</td><td><b>需確認</b>（SOS 例外：長按硬體鍵直通）</td><td>僅 Allen / Ann 聲紋</td></tr>
+          <tr><td class="mono"><span class="scope x">finance.sim</span></td><td>模擬單、持股記帳</td><td><b>需確認</b>＋覆誦標的與股數</td><td>不連券商、不下真實單</td></tr>
+          <tr><td class="mono"><span class="scope x">net.egress</span></td><td>外部 API（股價、天氣、行事曆）</td><td>不需（唯讀）</td><td>白名單網域 · 5s 逾時 · 失敗降級</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>確認策略（自主程度：全部要確認）</h3>
+      <div class="muted">任何會改變家中實體狀態的動作，Hermes 都先覆誦再執行。只有唯讀查詢與既有 HA 自動化（30+ 場景）可無聲執行。</div>
+<pre><span class="c"># hermes/policy.yaml</span>
+<span class="k">autonomy</span>: confirm_all
+<span class="k">confirm</span>:
+  <span class="k">channel</span>: [ voice, ha_companion_push ]
+  <span class="k">phrase</span>: <span class="s">"要我{動作摘要}嗎？"</span>
+  <span class="k">accept</span>: [ <span class="s">"好"</span>, <span class="s">"可以"</span>, <span class="s">"執行"</span>, <span class="s">"yes"</span> ]
+  <span class="k">reject</span>: [ <span class="s">"不用"</span>, <span class="s">"取消"</span>, <span class="s">"算了"</span> ]
+  <span class="k">timeout_s</span>: 12        <span class="c"># 逾時視為取消</span>
+  <span class="k">quiet_hours</span>:          <span class="c"># 23:00-07:00 改推播確認</span>
+    <span class="k">window</span>: [ <span class="s">"23:00"</span>, <span class="s">"07:00"</span> ]
+    <span class="k">channel</span>: [ ha_companion_push ]
+
+<span class="k">exempt</span>:                 <span class="c"># 免確認白名單</span>
+  - scope: read
+  - tool: emergency.sos   <span class="c"># 硬體長按，不可再攔</span>
+  - source: ha_automation <span class="c"># 既有 30+ 場景照舊</span>
+
+<span class="k">never</span>:                  <span class="c"># 永不允許</span>
+  - broker.place_order    <span class="c"># 真實下單：介面預留但停用</span>
+  - lock.unlock_remote</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 MEMORY ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>記憶與上下文</h2><span class="en">Memory &amp; Context</span></div>
+  <p class="sec-lede">三層記憶，全部存在 Mac mini M4 本地的 SQLite（<code>hermes.db</code>），不出家門。每次推理只把「摘要後」的上下文塞進 prompt，控制在 600 tokens 內以維持 N100 的延遲預算。</p>
+  <div class="mem">
+    <div class="m short"><div class="tt">短期 · 對話窗</div><div class="en">session · TTL 10 min</div>
+      <ul><li>最近 6 輪對話與指代（「再暗一點」「那間房」）</li><li>上一個 plan 與其結果，供「還原剛剛那個」</li><li>待確認的 pending plan</li></ul></div>
+    <div class="m work"><div class="tt">工作 · 世界模型</div><div class="en">world model · live</div>
+      <ul><li>誰在家：person.allen / person.ann + 手機藍牙</li><li>Ann 班別（input_select.ann_shift）與睡眠模式</li><li>全設備線上狀態、室溫濕度、窗簾位置</li></ul></div>
+    <div class="m long"><div class="tt">長期 · 偏好學習</div><div class="en">preferences · 累積</div>
+      <ul><li>常用溫度：Allen 24°C / Ann 26°C（近 30 天眾數）</li><li>常用亮度與色溫、慣用叫法別名</li><li>自選股清單與成本、被駁回的建議類型</li></ul></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>資料表結構</h3>
+      <div class="muted">SQLite · WAL 模式 · 每晚 03:00 隨 HA 備份一起打包。</div>
+<pre><span class="c">-- hermes.db</span>
+<span class="k">CREATE TABLE</span> session (
+  id TEXT PK, started_at INT, speaker TEXT,
+  turns JSON,            <span class="c">-- 最近 6 輪</span>
+  last_plan_id TEXT, expires_at INT );
+
+<span class="k">CREATE TABLE</span> world (
+  entity TEXT PK, domain TEXT, state TEXT,
+  attrs JSON, updated_at INT, online INT );
+
+<span class="k">CREATE TABLE</span> pref (
+  key TEXT PK,           <span class="c">-- allen.climate.temp</span>
+  value JSON, n INT,     <span class="c">-- 樣本數</span>
+  confidence REAL,       <span class="c">-- 0-1，&lt;0.6 不主動套用</span>
+  updated_at INT );
+
+<span class="k">CREATE TABLE</span> alias (
+  phrase TEXT PK,        <span class="c">-- "小房間"</span>
+  entity TEXT,           <span class="c">-- light.second_bedroom</span>
+  learned_from TEXT );
+
+<span class="k">CREATE TABLE</span> holding (
+  symbol TEXT PK, shares INT, cost REAL,
+  note TEXT, updated_at INT );</pre>
+    </div>
+    <div class="card">
+      <h3>上下文注入（每次推理）</h3>
+      <div class="muted">Hermes 組裝的 context block — 這段直接接在 system prompt 之後。</div>
+<pre><span class="c"># context injected into Llama 3</span>
+<span class="k">now</span>: 2026-04-18 17:23 (週六)
+<span class="k">presence</span>: { allen: home, ann: away_work }
+<span class="k">ann_shift</span>: night        <span class="c"># 大夜班 → 白天勿擾</span>
+<span class="k">sleep_mode</span>: false
+<span class="k">env</span>: { living: 28.4°C/62%, master: 27.1°C/58% }
+<span class="k">devices_offline</span>: []
+<span class="k">recent</span>:
+  - user: <span class="s">"客廳冷氣 24 度"</span> → done 2 min ago
+<span class="k">prefs</span>:
+  - allen.climate.temp: 24  (n=47, conf 0.91)
+  - allen.light.evening: 2700K 65%  (conf 0.84)
+<span class="k">pending_confirm</span>: null
+
+<span class="c"># 指代解析範例</span>
+user: <span class="s">"再暗一點"</span>
+  → 上一個 plan 目標 = light.living
+  → light.set(brightness: 65% → 45%)   <span class="c">[需確認]</span></pre>
+      <div class="badges"><span class="badge">偏好 confidence &lt; 0.6 只建議不套用</span><span class="badge">連續 3 次駁回即降權</span><span class="badge">可語音說「忘記這個偏好」</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 STOCK MODULE ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>股票分析模組</h2><span class="en">Market Analyst · analysis + paper trading only</span></div>
+  <p class="sec-lede">新增能力：Hermes 可在盤後掃描自選股、盤中條件告警、即時語音問答、收盤產出圖卡，並追蹤持股損益。<b>只分析與模擬單，不連券商、不下真實單</b> — broker 介面在 registry 中保留但預設停用（<code>never</code> 清單）。</p>
+  <div class="stock-flow" style="margin-bottom:20px">
+    <div class="sf"><div class="t">13:30 收盤後</div><h4>掃描自選</h4><p>抓日線 → 計算指標 → 依規則評分排序，結果寫入 <span style="font-family:var(--font-mono)">watch_score</span></p></div>
+    <div class="sf"><div class="t">14:00</div><h4>產出圖卡</h4><p>熱力圖／前十清單 PNG，推到客廳螢幕與雲端備份</p></div>
+    <div class="sf"><div class="t">06:35 隔日</div><h4>語音播報</h4><p>HomePod 播報前 3 檔與一句話理由（場景 06 延伸）</p></div>
+    <div class="sf"><div class="t">09:00–13:30</div><h4>盤中告警</h4><p>突破／量增／停損觸發 → Hue 紅或藍脈衝 3 次＋手機推播</p></div>
+    <div class="sf"><div class="t">隨時</div><h4>語音問答</h4><p>「2330 現在怎樣？」→ 報價＋均線位置＋量能，8 秒內回覆</p></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <h3>選股規則與告警條件</h3>
+      <div class="muted">規則寫在 <code>hermes/market.yaml</code>，語音可調參數但需確認。資料源為公開行情 API，快取 15 分鐘，失敗時明說「拿不到報價」而非猜測。</div>
+<pre><span class="c"># hermes/market.yaml</span>
+<span class="k">universe</span>: watchlist        <span class="c"># 自選股，不掃全市場</span>
+<span class="k">source</span>: { api: twse_public, cache_min: 15, timeout_s: 5 }
+
+<span class="k">screen</span>:                    <span class="c"># 盤後掃描，加權評分</span>
+  - rule: price &gt; ma20 &gt; ma60        weight: 30
+  - rule: volume &gt; ma_volume20 * 1.5 weight: 25
+  - rule: 40 &lt; rsi14 &lt; 70            weight: 20
+  - rule: macd_hist crossed_above 0  weight: 25
+  <span class="k">top_n</span>: 3
+  <span class="k">min_score</span>: 60           <span class="c"># 不足就說「今天沒有符合的」</span>
+
+<span class="k">alerts</span>:                    <span class="c"># 盤中，每檔每日最多 2 次</span>
+  - name: breakout
+    when: price &gt; high_20d
+    notify: { light: pulse_blue x3, push: true }
+  - name: volume_spike
+    when: volume_5m &gt; avg_5m * 3
+    notify: { push: true }
+  - name: stop_loss
+    when: price &lt; holding.cost * 0.92
+    notify: { light: pulse_red x3, push: true, tts: true }
+
+<span class="k">paper_trade</span>:
+  <span class="k">enabled</span>: true
+  <span class="k">confirm</span>: repeat_back      <span class="c"># 覆誦標的＋股數＋價格</span>
+  <span class="k">ledger</span>: hermes.db/paper_orders
+<span class="k">broker</span>: { enabled: <span class="k">false</span>, note: <span class="s">"介面預留，policy.never 封鎖"</span> }
+
+<span class="k">disclaimer</span>: <span class="s">"以上為資料整理，非投資建議。"</span>   <span class="c"># 每次播報結尾</span></pre>
+    </div>
+    <div class="card">
+      <h3>語音問答與模擬單</h3>
+      <div class="muted">兩段實際對話：唯讀查詢直接回，模擬單則覆誦後才記帳。</div>
+<pre><span class="c"># A. 唯讀查詢 — 免確認</span>
+user: <span class="s">"2330 現在怎樣？"</span>
+hermes:
+  tool: market.quote { symbol: <span class="s">"2330"</span> }
+  tool: market.indicators { symbol: <span class="s">"2330"</span>, set: [ma20,ma60,rsi14,vol] }
+  latency: 1.9s  (API 1.4s + LLM 0.5s)
+tts: <span class="s">"台積電 1085 元，漲 1.2%。站上 20 日均，
+      量能是均量的 1.4 倍，RSI 58。非投資建議。"</span>
+
+<span class="c"># B. 模擬單 — 覆誦確認</span>
+user: <span class="s">"幫我模擬買 2330 一張"</span>
+hermes:
+  guard: scope=finance.sim <span class="s">ok</span> · broker=disabled <span class="s">ok</span>
+  confirm: <span class="s">"模擬買進台積電 1000 股，
+            以現價 1085 記錄，確認嗎？"</span>
+user: <span class="s">"好"</span>
+  tool: market.paper_order
+    { symbol: 2330, side: buy, shares: 1000, price: 1085 }
+  → paper_orders #17 recorded
+tts: <span class="s">"已記錄模擬買進。目前模擬組合 4 檔，帳面 +3.2%。"</span>
+
+<span class="c"># C. 失敗降級</span>
+api: twse_public TIMEOUT 5s → retry 1 → fail
+tts: <span class="s">"現在拿不到報價，網路或交易所那邊有狀況，
+      要我五分鐘後再試一次嗎？"</span>       <span class="c"># 不編造數字</span></pre>
+    </div>
+  </div>
+  <div class="warn" style="margin-top:18px">
+    <span>⚠️</span>
+    <div><b>邊界：</b>Hermes 的股票能力是「資料整理與提醒」，不是投資建議，也不具備下單能力。<code>broker.place_order</code> 永遠在 <code>policy.never</code> 清單內；若未來要開啟，需同時改 policy、換用有 scope 限制的券商憑證，並保留第二道人工確認。每次播報與圖卡都附免責聲明。</div>
+  </div>
+</section>
+
+<!-- ============ 6 PERFORMANCE ============ -->
+<section class="blk">
+  <div class="sec-head"><h2>Mac mini M4 上的併發與佇列策略</h2><span class="en">Concurrency &amp; Resource Budget</span></div>
+  <p class="sec-lede">Mac mini M4（10 核 CPU／10 核 GPU／16 GB 統一記憶體）上，Ollama 與 whisper.cpp 原生跑在 macOS 並用 Metal GPU 加速；Home Assistant 以 HAOS 虛擬機（UTM）運行，Zigbee Stick 以 USB 直通。LLM 改由 GPU 推理後不再吃滿 CPU，Hermes 仍保留「LLM 車道 + 快速通道」設計 — 查狀態、抓報價、告警走 fast lane，永遠不排在 LLM 後面。</p>
+  <div class="two" style="grid-template-columns:1.15fr 1fr">
+    <div class="card">
+      <h3>統一記憶體預算</h3>
+      <div class="muted">滿載推估 · 16 GB 統一記憶體（CPU 與 GPU 共用）。</div>
+      <div class="lanes">
+        <div class="lane"><div class="ln">Ollama Llama 3 8B<small>llm lane</small></div><div class="bar"><i style="width:33.75%;background:var(--c-evening)"></i></div><div class="val">5.4 GB</div></div>
+        <div class="lane"><div class="ln">Faster-Whisper<small>stt</small></div><div class="bar"><i style="width:3.75%;background:var(--c-sleep)"></i></div><div class="val">0.6 GB</div></div>
+        <div class="lane"><div class="ln">Hermes Agent<small>orchestrator</small></div><div class="bar"><i style="width:2.5%;background:var(--c-secure)"></i></div><div class="val">0.4 GB</div></div>
+        <div class="lane"><div class="ln">Piper TTS<small>tts</small></div><div class="bar"><i style="width:1.25%;background:var(--c-home)"></i></div><div class="val">0.2 GB</div></div>
+        <div class="lane"><div class="ln">HAOS VM<small>utm · 2 GB</small></div><div class="bar"><i style="width:12.5%;background:var(--ink-4)"></i></div><div class="val">2.0 GB</div></div>
+        <div class="lane"><div class="ln">macOS 系統<small>host</small></div><div class="bar"><i style="width:18.75%;background:var(--ink-4);opacity:.6"></i></div><div class="val">3.0 GB</div></div>
+        <div class="lane"><div class="ln" style="color:var(--c-home)">合計<small>of 16 GB</small></div><div class="bar"><i style="width:72.5%;background:linear-gradient(90deg,var(--c-sleep),var(--c-evening),var(--c-secure))"></i></div><div class="val" style="color:var(--c-home);font-weight:600">11.6 GB</div></div>
+      </div>
+      <div class="badges" style="margin-top:14px"><span class="badge">餘量 ~4.4 GB</span><span class="badge">Ollama keep_alive: -1 常駐，免首句冷啟動</span><span class="badge">可升級 Llama 3.1 8B Q6 或加開 embedding 模型</span></div>
+    </div>
+    <div class="card">
+      <h3>車道與佇列</h3>
+      <div class="muted">三條車道，各自 worker 數與佇列上限。</div>
+      <table>
+        <thead><tr><th>車道</th><th class="mono">併發</th><th>工作</th><th class="mono">佇列策略</th></tr></thead>
+        <tbody>
+          <tr><td><b>LLM lane</b></td><td class="mono">1</td><td>意圖解析、摘要、自然語言回覆</td><td class="mono">FIFO · 上限 3<br>滿載回「等我一下」</td></tr>
+          <tr><td><b>Fast lane</b></td><td class="mono">4</td><td>狀態查詢、HA 服務呼叫、MQTT、股價 API</td><td class="mono">無排隊<br>直接並行</td></tr>
+          <tr><td><b>Batch lane</b></td><td class="mono">1 · nice 10</td><td>盤後掃描、圖卡算圖、備份、偏好統計</td><td class="mono">僅 13:30–06:00<br>偵測到語音即暫停</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px">
+        <table>
+          <thead><tr><th>情境</th><th class="mono">路徑</th><th class="mono">延遲</th></tr></thead>
+          <tbody>
+            <tr><td>「開客廳燈」</td><td class="mono">STT→LLM→Hermes→HA→TTS</td><td class="mono">~520ms</td></tr>
+            <tr><td>「冷氣幾度？」</td><td class="mono">STT→Hermes(fast)→TTS<br><span style="color:var(--ink-4)">樣板句免 LLM</span></td><td class="mono" style="color:var(--c-home)">~310ms</td></tr>
+            <tr><td>「2330 現在怎樣？」</td><td class="mono">＋外部 API 1.4s</td><td class="mono">~1.9s</td></tr>
+            <tr><td>盤後全自選掃描</td><td class="mono">batch lane · 背景</td><td class="mono">~40s</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="badges"><span class="badge">語音優先：batch 偵測喚醒詞即暫停</span><span class="badge">LLM 佇列滿 → 降級樣板回覆</span><span class="badge">macOS 停用睡眠、斷電自動開機</span><span class="badge">備援 HA Black 無 Hermes：接手時語音降級為 Siri</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="foot-note">相關頁面：<a href="openclaw.html">OpenClaw 八步語音流程</a> · <a href="scenes.html">35 個自動化場景</a>（31–35 為 Hermes 主導）· <a href="topology.html">網路拓樸</a>。本頁規格對應 Hermes Agent v0.3，與 policy.yaml / market.yaml / tools/*.yaml 同步。</div>
+
+<script>
+const TOOLS = [
+  { id:"light.set", ico:"💡", scope:"write.comfort", sc:"w", desc:"設定單一區域或燈具的亮度與色溫",
+    schema:`{
+  "name": "light.set",
+  "description": "設定燈光亮度與色溫。area 與 entity 擇一。",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "area":       { "type": "string", "enum": ["living","master","second","entry","bath"] },
+      "entity":     { "type": "string", "pattern": "^light\\\\." },
+      "brightness": { "type": "integer", "minimum": 1, "maximum": 100 },
+      "kelvin":     { "type": "integer", "minimum": 2200, "maximum": 6500 },
+      "transition": { "type": "number", "default": 1.0 }
+    },
+    "anyOf": [{ "required": ["area"] }, { "required": ["entity"] }]
+  },
+  "returns": { "ok": "boolean", "applied": "object" }
+}`,
+    call:`# 「客廳暗一點，暖一點」
+light.set { area: "living", brightness: 45, kelvin: 2700 }
+→ guard: device_online ok · not_sleep_mode ok
+→ confirm: "要把客廳調到 45% 暖白嗎？"  ← "好"
+→ snapshot: { bri: 65, kelvin: 4000 }
+→ HA: POST /api/services/light/turn_on  (172ms)
+→ { ok: true, applied: { lights: 10, bri: 45 } }`,
+    policy:`scope:       write.comfort
+confirm:     必要（語音覆誦 / 深夜改推播）
+retry:       3 次指數退避 0.4s → 1.2s → 3.6s
+compensate:  light.restore_snapshot
+rate_limit:  10 次 / 分鐘
+夜間限制:     23:00-07:00 主臥最高 20% 亮度` },
+
+  { id:"light.activate_scene", ico:"🎬", scope:"write.comfort", sc:"w", desc:"啟動 Hue 既有場景（Welcome / Sunrise / 影音…）",
+    schema:`{
+  "name": "light.activate_scene",
+  "parameters": {
+    "type": "object",
+    "required": ["scene"],
+    "properties": {
+      "scene": { "type": "string",
+                 "enum": ["Welcome","Sunrise","Dinner","Movie","Nightlight","Focus"] },
+      "area":  { "type": "string" }
+    }
+  }
+}`,
+    call:`light.activate_scene { scene: "Welcome", area: "living" }
+→ 對應 HA: scene.turn_on / hue.activate_scene
+→ 22 盞燈中 10 盞受影響，耗時 172ms`,
+    policy:`scope:       write.comfort
+confirm:     必要
+compensate:  light.restore_snapshot
+備註:         場景清單由 HA 同步，模型不得自創名稱` },
+
+  { id:"climate.set", ico:"❄️", scope:"write.comfort", sc:"w", desc:"設定 5 台 Panasonic 空調的溫度與模式",
+    schema:`{
+  "name": "climate.set",
+  "parameters": {
+    "type": "object",
+    "required": ["entity"],
+    "properties": {
+      "entity": { "type": "string",
+                  "enum": ["living","master","second","study","guest"] },
+      "temp":   { "type": "number", "minimum": 18, "maximum": 30 },
+      "mode":   { "type": "string",
+                  "enum": ["cool","dry","fan","heat","auto","off"] },
+      "fan":    { "type": "string", "enum": ["auto","low","mid","high"] }
+    }
+  }
+}`,
+    call:`# 「主臥冷氣 26 度除濕」
+climate.set { entity: "master", temp: 26, mode: "dry" }
+→ 機型 CS-UX28BA2（主臥）/ CS-UX22BA2（次臥）
+→ guard: temp_in_range(18,30) ok
+→ confirm → HA Panasonic WiFi integration`,
+    policy:`scope:       write.comfort
+confirm:     必要
+retry:       2 次（WiFi 模組回應較慢，逾時 1.1s）
+compensate:  climate.restore_snapshot
+安全上下限:   18–30°C，超出直接拒絕並說明` },
+
+  { id:"cover.set_position", ico:"🪟", scope:"write.comfort", sc:"w", desc:"Aqara 電動窗簾開合位置 0–100",
+    schema:`{
+  "name": "cover.set_position",
+  "parameters": {
+    "type": "object",
+    "required": ["entity","position"],
+    "properties": {
+      "entity":   { "type": "string", "enum": ["living_curtain","bedroom_curtain"] },
+      "position": { "type": "integer", "minimum": 0, "maximum": 100 }
+    }
+  }
+}`,
+    call:`cover.set_position { entity: "bedroom_curtain", position: 0 }
+# Ann 補眠場景 13 的語音版本
+→ guard: 若 ann_shift=night 且白天 → 允許全閉`,
+    policy:`scope:       write.comfort
+confirm:     必要
+on_fail:     skip（非關鍵步驟，不中止整個 plan）
+compensate:  還原原位置` },
+
+  { id:"media.say", ico:"📣", scope:"write.comfort", sc:"w", desc:"透過 HomePod / mini 播報文字（Piper TTS）",
+    schema:`{
+  "name": "media.say",
+  "parameters": {
+    "type": "object",
+    "required": ["text"],
+    "properties": {
+      "text":   { "type": "string", "maxLength": 200 },
+      "target": { "type": "string",
+                  "enum": ["living_homepod","master_mini","all"], "default": "living_homepod" },
+      "volume": { "type": "integer", "minimum": 0, "maximum": 100 }
+    }
+  }
+}`,
+    call:`media.say { text: "Allen 回家了，冷氣設為 24 度",
+            target: "living_homepod" }
+→ Piper zh_CN-huayan · 生成 78ms · AirPlay 2 播出`,
+    policy:`scope:       write.comfort
+confirm:     不需（本身即為回覆通道）
+夜間限制:     23:00 後音量上限 20%；主臥 Ann 睡眠時改用推播` },
+
+  { id:"vacuum.control", ico:"🤖", scope:"write.appliance", sc:"w", desc:"Roborock Qrevo 啟動／回充／指定區域清掃",
+    schema:`{
+  "name": "vacuum.control",
+  "parameters": {
+    "type": "object",
+    "required": ["action"],
+    "properties": {
+      "action": { "type": "string", "enum": ["start","pause","dock","spot"] },
+      "rooms":  { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}`,
+    call:`vacuum.control { action: "spot", rooms: ["living"] }
+→ guard: not_sleep_mode · 有人在沙發則改「稍後清掃」
+→ confirm → Miio integration`,
+    policy:`scope:       write.appliance
+confirm:     必要
+拒絕條件:     sleep_mode = true，或 23:00–07:00
+compensate:  vacuum.control { action: "dock" }` },
+
+  { id:"home.get_state", ico:"🔍", scope:"read", sc:"r", desc:"查詢任一 entity 或整區的即時狀態",
+    schema:`{
+  "name": "home.get_state",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "entity": { "type": "string" },
+      "area":   { "type": "string" },
+      "domain": { "type": "string", "enum": ["light","climate","cover","sensor","vacuum"] }
+    }
+  },
+  "returns": { "states": "array", "stale_s": "integer" }
+}`,
+    call:`# 「Ann 還在睡嗎？」（場景 30）
+home.get_state { area: "master" }
+→ { curtain: closed, motion: idle 92min, temp: 27.1 }
+→ 走 fast lane，不經 LLM 重推理 → ~310ms
+tts: "主臥窗簾全閉、九十分鐘沒動靜，看起來還在補眠。"`,
+    policy:`scope:       read
+confirm:     不需
+資料新鮮度:   > 60s 視為 stale，主動說「這是 N 分鐘前的數字」
+來源:         HA WebSocket 訂閱的 world model` },
+
+  { id:"home.snapshot", ico:"📸", scope:"read", sc:"r", desc:"執行前拍下狀態快照，供回滾使用",
+    schema:`{
+  "name": "home.snapshot",
+  "parameters": {
+    "type": "object",
+    "required": ["entities"],
+    "properties": {
+      "entities": { "type": "array", "items": { "type": "string" } },
+      "ttl_min":  { "type": "integer", "default": 10 }
+    }
+  },
+  "returns": { "snapshot_id": "string" }
+}`,
+    call:`# 由 Hermes 自動呼叫，模型不需要主動使用
+home.snapshot { entities: ["light.living","climate.living"] }
+→ snap_9c21 (TTL 10 min) → 存於 hermes.db`,
+    policy:`scope:       read（內部）
+confirm:     不需
+保留:         10 分鐘後自動清除
+用途:         compensate 步驟的還原來源` },
+
+  { id:"notify.push", ico:"📱", scope:"write.comfort", sc:"w", desc:"HA Companion App 推播給 Allen 或 Ann",
+    schema:`{
+  "name": "notify.push",
+  "parameters": {
+    "type": "object",
+    "required": ["message","to"],
+    "properties": {
+      "message":  { "type": "string", "maxLength": 300 },
+      "to":       { "type": "string", "enum": ["allen","ann","both"] },
+      "priority": { "type": "string", "enum": ["normal","time_sensitive"] },
+      "image":    { "type": "string", "description": "本地圖檔路徑（如股票圖卡）" }
+    }
+  }
+}`,
+    call:`notify.push { to: "allen", priority: "time_sensitive",
+             message: "⚠️ 2330 跌破停損 992（成本 1078 −8.0%）" }`,
+    policy:`scope:       write.comfort
+confirm:     不需（唯出不改變實體狀態）
+深夜:         23:00-07:00 僅 time_sensitive 可響鈴` },
+
+  { id:"emergency.sos", ico:"🆘", scope:"write.security", sc:"x", desc:"送出 SOS 簡訊並全屋紅光閃爍",
+    schema:`{
+  "name": "emergency.sos",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "reason": { "type": "string" },
+      "silent": { "type": "boolean", "default": false }
+    }
+  }
+}`,
+    call:`# 硬體路徑：Hue Dimmer 長按 5s（場景 28）
+emergency.sos { reason: "manual_hold" }
+→ SMS gateway → 緊急聯絡人
+→ 全屋 Hue 紅光閃爍 · HomePod 最大音量`,
+    policy:`scope:       write.security
+confirm:     硬體長按觸發時「不再確認」（exempt 白名單）
+             語音觸發時仍需確認，防誤觸
+聲紋:         僅 Allen / Ann
+日誌:         永久保留，不受 log 輪替` },
+
+  { id:"market.quote", ico:"📈", scope:"read + net.egress", sc:"r", desc:"即時／延遲報價與基本量價資訊",
+    schema:`{
+  "name": "market.quote",
+  "parameters": {
+    "type": "object",
+    "required": ["symbol"],
+    "properties": {
+      "symbol": { "type": "string", "pattern": "^[0-9]{4}[A-Z]?$" }
+    }
+  },
+  "returns": {
+    "symbol": "string", "name": "string", "price": "number",
+    "change_pct": "number", "volume": "integer",
+    "as_of": "string", "delayed_min": "integer"
+  }
+}`,
+    call:`market.quote { symbol: "2330" }
+→ { name: "台積電", price: 1085, change_pct: 1.2,
+    volume: 34821, as_of: "13:30", delayed_min: 0 }
+→ 快取 15 分鐘 · 逾時 5s → 失敗即明說，不猜數字`,
+    policy:`scope:       read + net.egress
+confirm:     不需
+白名單:       twse / tpex 公開行情端點
+降級:         抓不到就回「現在拿不到報價」
+免責:         播報結尾固定加「非投資建議」` },
+
+  { id:"market.indicators", ico:"📊", scope:"read + net.egress", sc:"r", desc:"均線、RSI、MACD、量能等技術指標",
+    schema:`{
+  "name": "market.indicators",
+  "parameters": {
+    "type": "object",
+    "required": ["symbol"],
+    "properties": {
+      "symbol": { "type": "string" },
+      "set":    { "type": "array",
+                  "items": { "enum": ["ma5","ma20","ma60","rsi14","macd","vol_ratio","high_20d"] } }
+    }
+  }
+}`,
+    call:`market.indicators { symbol: "2330",
+                   set: ["ma20","ma60","rsi14","vol_ratio"] }
+→ { ma20: 1042, ma60: 998, rsi14: 58, vol_ratio: 1.4 }
+→ 由日線快取本地計算，不打第三方指標 API`,
+    policy:`scope:       read + net.egress
+confirm:     不需
+計算:         本地 pandas-lite · batch lane 預算
+資料:         日線保留 250 根，存 hermes.db` },
+
+  { id:"market.screen", ico:"🔎", scope:"read", sc:"r", desc:"依 market.yaml 規則對自選股評分排序",
+    schema:`{
+  "name": "market.screen",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "top_n":     { "type": "integer", "default": 3, "maximum": 10 },
+      "min_score": { "type": "integer", "default": 60 }
+    }
+  },
+  "returns": { "results": "array", "generated_at": "string", "card_path": "string" }
+}`,
+    call:`# 13:30 收盤後自動觸發（batch lane，~40s）
+market.screen { top_n: 3 }
+→ [ { 2330 台積電 score 82 "站上均線＋量增 1.4 倍" },
+    { 2454 聯發科 score 74 "MACD 翻正" },
+    { 3037 欣興  score 61 "突破 20 日高" } ]
+→ card_path: /media/hermes/screen_0418.png
+→ 隔日 06:35 由場景 06 播報`,
+    policy:`scope:       read
+confirm:     不需（唯讀分析）
+排程:         13:30 盤後 · batch lane · 語音進來即暫停
+不足門檻:     回「今天沒有符合條件的」而非硬湊` },
+
+  { id:"market.paper_order", ico:"🧾", scope:"finance.sim", sc:"x", desc:"記錄模擬買賣與持股成本（不連券商）",
+    schema:`{
+  "name": "market.paper_order",
+  "parameters": {
+    "type": "object",
+    "required": ["symbol","side","shares"],
+    "properties": {
+      "symbol": { "type": "string" },
+      "side":   { "type": "string", "enum": ["buy","sell"] },
+      "shares": { "type": "integer", "minimum": 1 },
+      "price":  { "type": "number", "description": "省略則用現價" }
+    }
+  },
+  "returns": { "order_id": "string", "portfolio_pnl_pct": "number" }
+}`,
+    call:`market.paper_order { symbol: "2330", side: "buy", shares: 1000 }
+→ confirm（覆誦）: "模擬買進台積電 1000 股，以 1085 記錄，確認嗎？"
+→ "好" → paper_orders #17
+→ { order_id: "po_17", portfolio_pnl_pct: 3.2 }`,
+    policy:`scope:       finance.sim
+confirm:     必要，且需覆誦標的／股數／價格
+真實下單:     broker.place_order 在 policy.never，永遠拒絕
+帳本:         hermes.db/paper_orders，可語音查詢與清空
+停損提醒:     依 holding.cost 觸發 alerts.stop_loss` },
+];
+
+const list = document.getElementById("toolList");
+TOOLS.forEach((t, i) => {
+  const b = document.createElement("button");
+  b.className = "tool";
+  b.type = "button";
+  b.setAttribute("aria-selected", i === 0 ? "true" : "false");
+  b.dataset.idx = i;
+  b.innerHTML = `<span class="ico">${t.ico}</span><span><span class="nm">${t.id}</span><span class="ds">${t.desc}</span></span><span class="scope ${t.sc}">${t.scope}</span>`;
+  b.addEventListener("click", () => select(i));
+  list.appendChild(b);
+});
+
+let cur = 0, view = "schema";
+function render() {
+  const t = TOOLS[cur];
+  document.getElementById("schemaName").textContent = t.id;
+  document.getElementById("schemaDesc").textContent = t.desc;
+  document.getElementById("schemaBody").textContent = t[view];
+}
+function select(i) {
+  cur = i;
+  document.querySelectorAll(".tool").forEach(el => el.setAttribute("aria-selected", String(+el.dataset.idx === i)));
+  render();
+}
+document.querySelectorAll("#schemaTabs .tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    view = tab.dataset.view;
+    document.querySelectorAll("#schemaTabs .tab").forEach(t => t.setAttribute("aria-selected", String(t === tab)));
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>

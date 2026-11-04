@@ -1,0 +1,34 @@
+# file: packages/s09_dinner_ambience.yaml
+# 情境 09 晚餐氛圍：平日 19:00 或 Tap 鍵 3 → 客餐廳 2700K 65%
+input_boolean:
+  s09_enabled: { name: "09 晚餐氛圍", initial: on, icon: mdi:silverware-fork-knife }
+
+automation:
+  - id: s09_dinner
+    alias: 09 晚餐氛圍
+    mode: single
+    triggers:
+      - trigger: time
+        at: "19:00:00"
+      - trigger: event
+        event_type: hue_event
+        event_data: { id: hue_tap_button_3, type: short_release }   # ⚠️ 改 id
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s09_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.movie_mode
+        state: "off"
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.allen
+            state: home
+          - condition: state
+            entity_id: person.ann
+            state: home
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.living_all }
+        data: { brightness_pct: 65, color_temp_kelvin: 2700, transition: 10 }

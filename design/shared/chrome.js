@@ -3,9 +3,10 @@
   const PAGES = [
     { href: "index.html", label: "總覽 Overview" },
     { href: "topology.html", label: "網路拓樸 Topology" },
-    { href: "scenes.html", label: "30 場景 Scenes" },
+    { href: "scenes.html", label: "35 場景 Scenes" },
     { href: "openclaw.html", label: "OpenClaw 架構" },
-    { href: "sop.html", label: "建置 SOP" },
+    { href: "hermes.html", label: "Hermes Agent" },
+    { href: "sop.html", label: "建置手冊 SOP" },
   ];
 
   function getTheme() {
@@ -30,7 +31,7 @@
         }).join("")}
       </nav>
       <div class="spacer"></div>
-      <span class="pill"><span class="live"></span>HA Black · N100 · 在線</span>
+      <span class="pill"><span class="live"></span>Mac mini M4 · 在線</span>
       <button class="theme-toggle" aria-label="切換主題">
         <span class="sun">☀</span><span class="moon">☾</span>
       </button>

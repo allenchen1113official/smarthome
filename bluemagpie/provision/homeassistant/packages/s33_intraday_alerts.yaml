@@ -1,0 +1,26 @@
+# file: packages/s33_intraday_alerts.yaml
+# 情境 33 盤中停損告警：平日 09:00–13:35 每 5 分鐘呼叫 Hermes 告警檢查；觸發時 Hermes 回呼 script.hermes_alert
+input_boolean:
+  s33_enabled: { name: "33 盤中停損告警", initial: on, icon: mdi:alert-decagram }
+
+automation:
+  - id: s33_intraday_poll
+    alias: 33 盤中告警輪詢
+    mode: single
+    triggers:
+      - trigger: time_pattern
+        minutes: "/5"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s33_enabled
+        state: "on"
+      - condition: time
+        after: "09:00:00"
+        before: "13:35:00"
+        weekday: [mon, tue, wed, thu, fri]
+      - condition: state
+        entity_id: binary_sensor.hermes_online
+        state: "on"
+    actions:
+      - action: rest_command.hermes_alerts
+        continue_on_error: true

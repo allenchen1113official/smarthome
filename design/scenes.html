@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>30 個自動化場景 · Allen & Ann</title>
+<title>35 個自動化場景 · Allen & Ann</title>
 <link rel="stylesheet" href="shared/tokens.css">
 <link rel="stylesheet" href="shared/chrome.css">
 <style>
@@ -307,14 +307,14 @@
 
 <header class="page-head">
   <div class="crumb">/ 02 · AUTOMATION SCENES</div>
-  <h1>30 個 Home Assistant 自動化場景</h1>
-  <div class="subtitle">基於 HA Black (N100 Local AI) &amp; OpenClaw 控制核心 — 點擊任一場景查看觸發條件與 YAML 樣本。</div>
+  <h1>35 個 Home Assistant 自動化場景</h1>
+  <div class="subtitle">基於 Mac mini M4 (16GB Local AI) &amp; OpenClaw 控制核心 — 點擊任一場景查看觸發條件與 YAML 樣本。場景 31–35 由 <a href="hermes.html" style="color:var(--c-secure)">Hermes Agent</a> 主導（含股票分析與深夜確認策略）。</div>
 </header>
 
 <div class="filter-bar">
   <span style="font-size:12px;color:var(--ink-3);">分類：</span>
   <div class="seg-ctrl" id="catSeg">
-    <button aria-pressed="true" data-cat="all">全部 30</button>
+    <button aria-pressed="true" data-cat="all">全部 35</button>
     <button data-cat="morning">晨間</button>
     <button data-cat="evening">下班</button>
     <button data-cat="sleep">睡眠</button>
@@ -405,8 +405,9 @@ const SCENES = [
     trigger:"濕度感測", devices:["Panasonic","Aqara 濕度"], tags:["濕度","HVAC"], hour: 13, who:"both" },
   { n:22, cat:"home", icons:"💧", title:"Qrevo 水箱提醒", desc:"Roborock Water Alert — 清潔完成後語音提醒補水 (New)",
     trigger:"vacuum.completed", devices:["Roborock","HomePod"], tags:["NEW","維護"], hour: 12, who:"both", isNew: true },
-  { n:23, cat:"home", icons:"💾", title:"HA 備份提醒", desc:"每週自動備份，並確認 DuckDNS 連線穩定",
-    trigger:"週日 03:00", devices:["HAOS","DuckDNS"], tags:["備份","系統"], hour: 3, who:"both" },
+  { n:23, cat:"home", icons:"💾", title:"HA 快照同步備援", desc:"每晚快照並同步到備援 HA Black，確認 DuckDNS 連線穩定",
+    trigger:"每日 03:00", devices:["Mac mini M4","HA Black (備援)","DuckDNS"], tags:["備份","備援","系統"], hour: 3, who:"both",
+    yaml:`trigger:\n  - platform: time\n    at: "03:00:00"\naction:\n  - service: hassio.backup_full\n    data: { name: "nightly_{{ now().strftime('%m%d') }}" }\n  - service: shell_command.sync_to_standby   # rsync → HA Black\n  - service: notify.allen\n    data: { message: "快照已同步到備援機" }` },
   { n:24, cat:"home", icons:"🛠️", title:"耗材更換提醒", desc:"依時間或次數提醒更換濾網 (New)",
     trigger:"計數器", devices:["Panasonic","Roborock"], tags:["NEW","維護"], hour: 10, who:"both", isNew: true },
 
@@ -417,8 +418,9 @@ const SCENES = [
     tags:["緊急","推播"], hour: 2, who:"both" },
   { n:26, cat:"secure", icons:"📡", title:"網路警告", desc:"PPPoE 斷線，燈光閃爍紅光警示",
     trigger:"binary_sensor.wan", devices:["tp-link","Hue × 4"], tags:["網路","警示"], hour: 14, who:"both" },
-  { n:27, cat:"secure", icons:"📱", title:"設備離線偵測", desc:"Hue Bridge 或 Zigbee 設備離線即時推播",
-    trigger:"unavailable", devices:["全設備"], tags:["監測","推播"], hour: 16, who:"both" },
+  { n:27, cat:"secure", icons:"📱", title:"設備離線與主機失聯偵測", desc:"Hue Bridge 或 Zigbee 設備離線即時推播；Mac mini 失聯 > 5 分鐘通知切換備援",
+    trigger:"unavailable / ping 逾時", devices:["全設備","HA Black (備援)"], tags:["監測","備援","推播"], hour: 16, who:"both",
+    yaml:`# 在備援 HA Black 上執行\ntrigger:\n  - platform: state\n    entity_id: binary_sensor.macmini_ping\n    to: 'off'\n    for: { minutes: 5 }\naction:\n  - service: notify.both\n    data:\n      message: "主中樞 Mac mini 失聯 5 分鐘，請把 Zigbee Stick 插到備援機並還原快照"\n      data: { priority: time_sensitive }` },
   { n:28, cat:"secure", icons:"🆘", title:"緊急 SOS", desc:"長按 Hue Dimmer 特殊按鍵，傳送簡訊",
     trigger:"Dimmer 長按 5s", devices:["Hue Dimmer","SMS Gateway"], tags:["緊急","SOS"], hour: 18, who:"both" },
   { n:29, cat:"secure", icons:"🤖", title:"OpenClaw 全屋情境切換", desc:"語音說「Allen 回家了」觸發客廳/主臥多情境 (AI Scene Control)",
@@ -429,6 +431,28 @@ const SCENES = [
     trigger:"語音查詢", devices:["OpenClaw","Hermes Agent","Aqara","TTS"],
     yaml:`# Allen 問："Ann 還在睡嗎？"\nflow:\n  - whisper.transcribe → '{question}'\n  - ollama.infer → intent: status_query\n  - hermes.fetch_state: { curtain_bedroom: closed, motion_bedroom: idle }\n  - piper.tts: 'Ann 主臥窗簾全閉，看起來還在補眠喔。'`,
     tags:["AI","語音","狀態"], hour: 11, who:"both", isOC: true },
+
+  // Hermes-led 31-35
+  { n:31, cat:"morning", icons:"📈 🗣️", title:"股票語音問答", desc:"問「2330 現在怎樣？」即時回報價與技術指標 (Hermes)",
+    trigger:"語音查詢（唯讀，免確認）", devices:["OpenClaw","Hermes Agent","HomePod"],
+    yaml:`# Hermes fast lane — 不經 LLM 重推理\nuser: "2330 現在怎樣？"\nsteps:\n  - market.quote: { symbol: '2330' }\n  - market.indicators: { set: [ma20, ma60, rsi14, vol_ratio] }\n  - piper.tts: '台積電 1085 元，漲 1.2%，站上 20 日均，量能 1.4 倍。非投資建議。'\nscope: read + net.egress\nlatency: ~1.9s（API 1.4s）`,
+    tags:["Hermes","股票","NEW"], hour: 10, who:"allen", isOC: true, isNew: true },
+  { n:32, cat:"evening", icons:"📊 🖥️", title:"收盤圖卡推送", desc:"13:30 盤後掃描自選股，產出熱力圖卡推到客廳螢幕與雲端 (Hermes)",
+    trigger:"13:30 收盤後 · batch lane", devices:["Hermes Agent","客廳螢幕","雲端備份"],
+    yaml:`# batch lane · nice 10 · 偵測到語音即暫停\ntrigger:\n  - platform: time\n    at: "13:30:00"\naction:\n  - hermes.market_screen: { top_n: 3, min_score: 60 }\n  - hermes.render_card: /media/hermes/screen_{date}.png\n  - notify.push: { to: allen, image: card_path }\n# 不足門檻就回「今天沒有符合條件的」`,
+    tags:["Hermes","股票","圖卡","NEW"], hour: 14, who:"allen", isOC: true, isNew: true },
+  { n:33, cat:"secure", icons:"🚨 📉", title:"盤中停損告警", desc:"跌破成本 8% 或突破 20 日高，Hue 紅/藍脈衝 3 次＋推播 (Hermes)",
+    trigger:"盤中條件觸發（每檔每日最多 2 次）", devices:["Hermes Agent","Hue × 4","HA Companion"],
+    yaml:`alerts:\n  - name: stop_loss\n    when: price < holding.cost * 0.92\n    notify: { light: pulse_red x3, push: time_sensitive, tts: true }\n  - name: breakout\n    when: price > high_20d\n    notify: { light: pulse_blue x3, push: true }\nquiet_hours: 深夜僅推播，不亮燈不出聲`,
+    tags:["Hermes","股票","告警","NEW"], hour: 11, who:"allen", isOC: true, isNew: true },
+  { n:34, cat:"home", icons:"🧾", title:"模擬單與持股記帳", desc:"語音下模擬單，覆誦確認後記帳；不連券商、不下真實單 (Hermes)",
+    trigger:"語音 + 覆誦確認", devices:["Hermes Agent","hermes.db"],
+    yaml:`user: "幫我模擬買 2330 一張"\nguard: { scope: finance.sim, broker: disabled }\nconfirm: "模擬買進台積電 1000 股，以現價 1085 記錄，確認嗎？"\naction:\n  - market.paper_order: { symbol: 2330, side: buy, shares: 1000 }\n  - piper.tts: '已記錄。目前模擬組合 4 檔，帳面 +3.2%。'\nnever: broker.place_order   # 永遠封鎖`,
+    tags:["Hermes","模擬單","NEW"], hour: 20, who:"allen", isOC: true, isNew: true },
+  { n:35, cat:"sleep", icons:"🤫 📱", title:"深夜確認改推播", desc:"23:00–07:00 Hermes 不出聲確認，改用手機推播；Ann 睡眠時全靜音 (Hermes)",
+    trigger:"quiet_hours 政策", devices:["Hermes Agent","HA Companion","HomePod mini (主臥)"],
+    yaml:`confirm:\n  channel: [ voice, ha_companion_push ]\n  timeout_s: 12          # 逾時視為取消\n  quiet_hours:\n    window: [ "23:00", "07:00" ]\n    channel: [ ha_companion_push ]   # 只推播\nexempt: [ scope: read, emergency.sos ]\n# autonomy: confirm_all — 任何改變實體狀態的動作都先問`,
+    tags:["Hermes","防擾","權限","NEW"], hour: 23.8, who:"both", isOC: true, isNew: true },
 ];
 
 // Render category grid

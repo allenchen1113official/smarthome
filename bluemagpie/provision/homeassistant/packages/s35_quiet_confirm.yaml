@@ -1,0 +1,18 @@
+# file: packages/s35_quiet_confirm.yaml
+# 情境 35 深夜確認改推播：23:00–07:00 Hermes 不出聲確認，改推播附「好 / 取消」按鈕（按鈕回傳在 s00_voice）
+# 本檔：Hermes 離線 10 分鐘提醒
+input_boolean:
+  s35_enabled: { name: "35 深夜確認改推播", initial: on, icon: mdi:bell-sleep }
+
+automation:
+  - id: s35_hermes_offline
+    alias: 35 Hermes 離線提醒
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.hermes_online
+        to: "off"
+        for: { minutes: 10 }
+    actions:
+      - action: notify.mobile_app_allen_iphone
+        data: { message: "🤖 Hermes 已離線 10 分鐘；語音退回 HA 基本模式。到 Mac mini 執行 launchctl kickstart -k gui/$(id -u)/com.allenann.hermes" }

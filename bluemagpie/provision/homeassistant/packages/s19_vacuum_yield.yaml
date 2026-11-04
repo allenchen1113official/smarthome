@@ -1,0 +1,34 @@
+# file: packages/s19_vacuum_yield.yaml
+# 情境 19 掃地避讓：清掃中客廳沙發有人（感應持續 3 分鐘）→ 暫停 10 分鐘再續掃
+input_boolean:
+  s19_enabled: { name: "19 掃地避讓", initial: on, icon: mdi:robot-vacuum-variant }
+
+automation:
+  - id: s19_vacuum_yield
+    alias: 19 掃地避讓
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.living_motion
+        to: "on"
+        for: { minutes: 3 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s19_enabled
+        state: "on"
+      - condition: state
+        entity_id: vacuum.qrevo
+        state: cleaning
+    actions:
+      - action: vacuum.pause
+        target: { entity_id: vacuum.qrevo }
+      - action: notify.both
+        data: { message: "🤖 客廳有人，掃地機暫停 10 分鐘。" }
+      - delay: { minutes: 10 }
+      - if:
+          - condition: state
+            entity_id: vacuum.qrevo
+            state: paused
+        then:
+          - action: vacuum.start
+            target: { entity_id: vacuum.qrevo }

@@ -1,0 +1,63 @@
+# file: packages/s20_energy_watch.yaml
+# 情境 20 節能監控：任一冷氣連續運轉 > 12 小時，或主臥冷氣開著且窗戶開 5 分鐘 → 推播
+input_boolean:
+  s20_enabled: { name: "20 節能監控", initial: on, icon: mdi:leaf }
+
+automation:
+  - id: s20_ac_12h
+    alias: 20 節能監控（冷氣 > 12 小時）
+    mode: parallel
+    triggers:
+      - trigger: state
+        entity_id: [climate.living, climate.master, climate.second]
+        to: cool
+        for: { hours: 12 }
+      - trigger: state
+        entity_id: [climate.living, climate.master, climate.second]
+        to: dry
+        for: { hours: 12 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s20_enabled
+        state: "on"
+    actions:
+      - action: notify.both
+        data:
+          message: "🌿 {{ trigger.to_state.name }} 已連續運轉 12 小時，要不要休息一下？"
+          data:
+            actions:
+              - { action: "AC_OFF_{{ trigger.entity_id.split('.')[1] | upper }}", title: 關閉 }
+
+  - id: s20_window_open_ac
+    alias: 20 節能監控（開窗吹冷氣）
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.master_window
+        to: "on"
+        for: { minutes: 5 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s20_enabled
+        state: "on"
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: climate.master
+            state: "off"
+    actions:
+      - action: notify.both
+        data: { message: "🪟 主臥窗戶開著但冷氣在運轉，記得關窗。" }
+
+  - id: s20_ac_off_action
+    alias: 20 節能監控（推播按鈕關冷氣）
+    mode: queued
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+    conditions:
+      - condition: template
+        value_template: "{{ trigger.event.data.action.startswith('AC_OFF_') }}"
+    actions:
+      - action: script.ac_set
+        data: { room: "{{ trigger.event.data.action.replace('AC_OFF_', '') | lower }}", hvac_mode: "off" }

@@ -1,0 +1,26 @@
+# file: packages/s00_node.yaml（青鳥版）
+# 節點感知：由青鳥後台以 secrets.yaml 的 magpie_role 寫入；接手後台會自行啟動 Zigbee2MQTT 容器
+template:
+  - binary_sensor:
+      - name: is_primary_node
+        unique_id: is_primary_node
+        state: "{{ states('input_text.magpie_role') == 'primary' }}"
+
+input_text:
+  magpie_role:
+    name: 青鳥節點角色（由後台維護）
+    initial: primary
+
+automation:
+  - id: s00_node_started
+    alias: 節點：啟動通知
+    mode: single
+    triggers:
+      - trigger: homeassistant
+        event: start
+    actions:
+      - delay: { seconds: 60 }
+      - action: notify.both
+        continue_on_error: true
+        data:
+          message: "🐦 青鳥 Home Assistant 已啟動（{{ '主節點' if is_state('binary_sensor.is_primary_node','on') else '副節點接手中' }}）。"

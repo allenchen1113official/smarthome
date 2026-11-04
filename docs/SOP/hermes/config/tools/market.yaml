@@ -1,0 +1,35 @@
+# 股票 4 個工具
+tools:
+  - name: market.quote
+    scope: read
+    egress: true
+    desc: 即時／延遲報價與量價（台股四位數代碼）
+    params:
+      symbol: { type: string, pattern: "^[0-9]{4}[A-Z]?$" }
+    required: [symbol]
+
+  - name: market.indicators
+    scope: read
+    egress: true
+    desc: 均線、RSI、MACD、量能等技術指標
+    params:
+      symbol: { type: string }
+      set: { type: array, items: string, enum: [ma5, ma20, ma60, rsi14, macd, vol_ratio, high_20d] }
+    required: [symbol]
+
+  - name: market.screen
+    scope: read
+    desc: 依 market.yaml 規則對自選股評分排序並產出圖卡
+    params:
+      top_n: { type: integer, default: 3, max: 10 }
+      min_score: { type: integer, default: 60 }
+
+  - name: market.paper_order
+    scope: finance.sim
+    desc: 記錄模擬買賣與持股成本（不連券商）
+    params:
+      symbol: { type: string }
+      side: { type: string, enum: [buy, sell] }
+      shares: { type: integer, min: 1 }
+      price: { type: number }
+    required: [symbol, side, shares]

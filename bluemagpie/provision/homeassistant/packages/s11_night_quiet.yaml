@@ -1,0 +1,38 @@
+# file: packages/s11_night_quiet.yaml
+# 情境 11 深夜靜音：23:00 HomePod 音量 20%；07:00 回 40%
+input_boolean:
+  s11_enabled: { name: "11 深夜靜音", initial: on, icon: mdi:volume-low }
+
+automation:
+  - id: s11_quiet_on
+    alias: 11 深夜靜音（23:00）
+    triggers:
+      - trigger: time
+        at: "23:00:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s11_enabled
+        state: "on"
+    actions:
+      - action: media_player.volume_set
+        target: { entity_id: [media_player.living_homepod, media_player.master_homepod_mini] }
+        data: { volume_level: 0.2 }
+        continue_on_error: true
+
+  - id: s11_quiet_off
+    alias: 11 深夜靜音（07:00 恢復）
+    triggers:
+      - trigger: time
+        at: "07:00:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.s11_enabled
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.sleep_mode
+        state: "off"
+    actions:
+      - action: media_player.volume_set
+        target: { entity_id: [media_player.living_homepod, media_player.master_homepod_mini] }
+        data: { volume_level: 0.4 }
+        continue_on_error: true

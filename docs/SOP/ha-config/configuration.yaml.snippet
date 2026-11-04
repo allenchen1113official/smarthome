@@ -1,0 +1,104 @@
+# ===== 加進 /config/configuration.yaml 的片段（02/03/05 章）=====
+default_config:
+
+homeassistant:
+  packages: !include_dir_named packages      # docs/SOP/ha-config/packages/*.yaml → /config/packages/
+  customize: !include customize.yaml
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.33.0/24
+    - 127.0.0.1
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.automation: info
+
+# ---- 通知群組（03 章）----
+notify:
+  - name: both
+    platform: group
+    services:
+      - service: mobile_app_allen_iphone
+      - service: mobile_app_ann_iphone
+  # 情境 28 SOS 簡訊（Twilio；選配）
+  - name: sms
+    platform: twilio_sms
+    from_number: !secret twilio_from
+    to:
+      - !secret sos_contact_1
+      - !secret sos_contact_2
+twilio:
+  account_sid: !secret twilio_sid
+  auth_token: !secret twilio_token
+
+# ---- 地理距離（情境 07）----
+proximity:
+  home_allen:
+    zone: home
+    devices: [device_tracker.allen_iphone]
+    tolerance: 50
+    unit_of_measurement: m
+  home_ann:
+    zone: home
+    devices: [device_tracker.ann_iphone]
+    tolerance: 50
+    unit_of_measurement: m
+
+# ---- 網路監測（情境 26）----
+binary_sensor:
+  - platform: ping
+    name: wan_ping
+    host: 1.1.1.1
+    count: 2
+    scan_interval: 30
+
+# ---- SmartIR 本地紅外線空調（03 章，Broadlink RM4 mini）----
+climate:
+  - platform: smartir
+    name: Living AC IR
+    unique_id: living_ac_ir
+    device_code: 1000
+    controller_data: remote.rm4_living
+    temperature_sensor: sensor.living_temperature
+    humidity_sensor: sensor.living_humidity
+  - platform: smartir
+    name: Master AC IR
+    unique_id: master_ac_ir
+    device_code: 1000
+    controller_data: remote.rm4_master
+    temperature_sensor: sensor.master_temperature
+    humidity_sensor: sensor.master_humidity
+  - platform: smartir
+    name: Second AC IR
+    unique_id: second_ac_ir
+    device_code: 1000
+    controller_data: remote.rm4_second
+
+# ---- Hermes（05 章）----
+rest_command:
+  hermes_command:
+    url: http://192.168.0.10:8800/v1/command
+    method: POST
+    content_type: application/json
+    payload: '{"text": "{{ text }}", "speaker": "{{ speaker }}", "output": "{{ output | default(''living_homepod'') }}", "say": {{ say | default(true) | lower }}}'
+    timeout: 20
+  hermes_screen:
+    url: http://192.168.0.10:8800/v1/jobs/screen
+    method: POST
+    content_type: application/json
+    payload: '{}'
+    timeout: 90
+  hermes_alerts:
+    url: http://192.168.0.10:8800/v1/alerts/check
+    method: POST
+    timeout: 30
+
+# ===== /config/secrets.yaml 需要的鍵 =====
+# openclaw_webhook_id: openclaw_voice_<32 位隨機字串>
+# white_noise_webhook_id: white_noise_<32 位隨機字串>
+# twilio_sid / twilio_token / twilio_from / sos_contact_1 / sos_contact_2
+# duckdns_token
+# mqtt_password
