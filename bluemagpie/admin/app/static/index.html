@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse}td,th{padding:8px 10px;border-bottom:1
       <div class="card">
         <h3 style="margin:0 0 8px">容器記錄</h3>
         <div class="bar">
-          <select id="logkey" style="max-width:220px"><option>homeassistant</option><option>hermes</option><option>zigbee2mqtt</option><option>mosquitto</option><option>whisper</option><option>piper</option><option>ollama</option><option>admin</option></select>
+          <select id="logkey" style="max-width:220px"><option>homeassistant</option><option>hermes</option><option>zigbee2mqtt</option><option>mosquitto</option><option>whisper</option><option>piper</option><option>ollama</option><option>bot</option><option>admin</option></select>
           <button class="btn" onclick="loadLogs()">讀取 200 行</button>
         </div>
         <pre id="logs">—</pre>
@@ -146,7 +146,7 @@ async function saveSettings(){await api('/api/settings',{method:'PUT',body:JSON.
 async function applySettings(){const b=collect();b.restart=true;try{const r=await api('/api/apply',{method:'POST',body:JSON.stringify(b)});await loadSettings();
   toast('已套用。'+(r.generated_secrets.length?'自動產生：'+r.generated_secrets.join('、')+'\n':'')+'重啟：'+JSON.stringify(r.restart||{})+'\n'+r.note)}catch(e){toast('套用失敗：'+e.message)}}
 async function loadHealth(){const h=await api('/api/health');const g=$('#svcs');g.innerHTML='';
-  const labels={admin:'後台',homeassistant:'Home Assistant',mosquitto:'MQTT',zigbee2mqtt:'Zigbee2MQTT',whisper:'Whisper STT',piper:'Piper TTS',ollama:'Ollama',hermes:'Hermes 管家'};
+  const labels={admin:'後台',homeassistant:'Home Assistant',mosquitto:'MQTT',zigbee2mqtt:'Zigbee2MQTT',whisper:'Whisper STT',piper:'Piper TTS',ollama:'Ollama',hermes:'Hermes 管家',bot:'LINE / Telegram 機器人'};
   Object.entries(h.containers).forEach(([k,c])=>{const svc=h.services[k];let cls='warn';if(c.state==='running'&&(!svc||svc.ok))cls='ok';if(c.state!=='running'&&c.state!=='absent')cls='bad';if(c.state==='absent')cls='';
     const d=document.createElement('div');d.className='svc';d.innerHTML=`<b>${labels[k]||k}<span class="dot ${cls}"></span></b><small>${c.state}${c.health?' · '+c.health:''}${svc?(' · HTTP '+(svc.code||svc.error)):''}</small><small>${c.image||''}</small>
       <div class="acts"><button class="btn" onclick="containers('restart',['${k}'])">重啟</button><button class="btn" onclick="containers('stop',['${k}'])">停止</button><button class="btn" onclick="containers('start',['${k}'])">啟動</button></div>`;g.appendChild(d)});

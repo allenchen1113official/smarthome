@@ -91,14 +91,14 @@ def restore(name: str, restart: bool = True) -> dict:
     path = BACKUPS / Path(name).name
     if not path.exists():
         raise FileNotFoundError(name)
-    D.stop(["homeassistant", "zigbee2mqtt", "hermes"])
+    D.stop(["homeassistant", "zigbee2mqtt", "hermes", "bot"])
     with tarfile.open(path, "r:gz") as tf:
         for m in tf.getmembers():
             if m.name.startswith("/") or ".." in m.name:
                 raise ValueError("不安全的備份內容")
         tf.extractall(S.PROJECT)
     event(f"已還原 {name}")
-    res = D.start(["homeassistant", "zigbee2mqtt", "hermes"]) if restart else {}
+    res = D.start(["homeassistant", "zigbee2mqtt", "hermes", "bot"]) if restart else {}
     return {"restored": name, "containers": res}
 
 
@@ -119,7 +119,7 @@ async def _promote():
             p.write_text(p.read_text(encoding="utf-8").replace("initial: primary", "initial: standby_promoted"), encoding="utf-8")
     except Exception:
         pass
-    res = D.start(["homeassistant", "zigbee2mqtt", "hermes"])
+    res = D.start(["homeassistant", "zigbee2mqtt", "hermes", "bot"])
     STATE["promoted"] = True
     event(f"🛟 已自動接手為主節點：{res}")
     await _notify_both("🛟 青鳥副節點已自動接手：Home Assistant、Zigbee、Hermes 已在副節點啟動。主節點修好後請在後台按「回切」。")

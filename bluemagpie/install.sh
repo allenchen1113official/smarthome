@@ -33,7 +33,7 @@ elif [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 # 3) 目錄與初始設定（後台「套用」會重新產生）
-mkdir -p config/homeassistant/packages config/homeassistant/www/hermes config/mosquitto config/zigbee2mqtt config/hermes data backups
+mkdir -p config/bot data/bot config/homeassistant/packages config/homeassistant/www/hermes config/mosquitto config/zigbee2mqtt config/hermes data backups
 [ -f config/mosquitto/mosquitto.conf ] || cp provision/mosquitto/mosquitto.conf config/mosquitto/
 [ -f config/mosquitto/passwd ] || touch config/mosquitto/passwd
 [ -f config/hermes/hermes.yaml ] || cp -R provision/hermes/. config/hermes/
@@ -43,7 +43,7 @@ COMPOSE_FILES="-f docker-compose.yml"
 [ "$(uname -s)" = "Linux" ] && COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.host.yml"
 docker compose $COMPOSE_FILES --profile primary --profile ollama up -d --build
 if [ "$ROLE" = "standby" ]; then
-  docker compose $COMPOSE_FILES stop homeassistant zigbee2mqtt hermes ollama   # 副節點：容器存在但停止，接手時由後台啟動
+  docker compose $COMPOSE_FILES stop homeassistant zigbee2mqtt hermes bot ollama   # 副節點：容器存在但停止，接手時由後台啟動
 elif [ "$(uname -s)" = "Darwin" ]; then
   docker compose $COMPOSE_FILES stop ollama                                    # macOS 用主機原生 Ollama
 fi

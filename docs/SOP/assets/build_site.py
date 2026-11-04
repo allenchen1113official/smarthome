@@ -16,6 +16,7 @@ CH = [
     ("07-備援備份與遠端存取.md", "07 備援與遠端", "🛟"),
     ("08-驗收測試與故障排除.md", "08 驗收與排除", "✅"),
     ("09-青鳥一鍵部署.md", "09 青鳥一鍵部署", "🐦"),
+    ("10-LINE-Telegram-遠端控制介面.md", "10 LINE / Telegram 遠端控制", "💬"),
 ]
 SCENE_CAT = {}
 for n in range(1, 7): SCENE_CAT[n] = "morning"
@@ -202,7 +203,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
       <h1>從無到有：Mac mini M4 × Home Assistant × OpenClaw × Hermes</h1>
       <p>依 <code>design/</code> 規劃文件逐章實作的新手建置手冊：網路拓樸、HAOS 虛擬機、設備整合、本地語音管線、Hermes 管家，以及 35 個自動化情境的完整 YAML 與驗收步驟。</p>
       <div class="stats">
-        <div class="stat"><b>10</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
+        <div class="stat"><b>11</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
       </div>
       <div class="scenes">
         <h2>情境索引</h2>

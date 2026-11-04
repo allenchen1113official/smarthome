@@ -100,6 +100,23 @@ services:
       OLLAMA_KEEP_ALIVE: "-1"
     profiles: [ollama]                      # macOS 用主機原生 Ollama（Metal）時不啟動此容器
 
+  # ---------- 通訊機器人：LINE + Telegram 遠端控制 ----------
+  bot:
+    <<: *common
+    build: ./bot
+    image: bluemagpie/bot:0.1
+    container_name: magpie-bot
+    ports: ["${BOT_PORT:-8900}:8900"]
+    environment:
+      TZ: ${TZ:-Asia/Taipei}
+      MAGPIE_BOT_CONFIG: /config/bot.yaml
+      MAGPIE_BOT_AUDIT: /data/audit.log
+    volumes:
+      - ./config/bot:/config
+      - ./data/bot:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    profiles: [primary]
+
   # ---------- Hermes Agent ----------
   hermes:
     <<: *common

@@ -36,7 +36,7 @@ async def _startup():
     S.DATA.mkdir(parents=True, exist_ok=True)
     d = S.load()
     if d["site"]["role"] == "standby" and not B.STATE["promoted"]:
-        await asyncio.to_thread(D.stop, ["homeassistant", "zigbee2mqtt", "hermes"])   # 副節點平時不跑這三個
+        await asyncio.to_thread(D.stop, ["homeassistant", "zigbee2mqtt", "hermes", "bot"])   # 副節點平時不跑這三個
     asyncio.create_task(B.scheduler())
     log.info("青鳥 Magpie Admin 就緒，專案目錄 %s", S.PROJECT)
 
@@ -73,7 +73,7 @@ async def apply(body: dict | None = None, _=Depends(auth)):
     res = await asyncio.to_thread(S.apply, d)
     restart = (body or {}).get("restart", True)
     if restart:
-        keys = ["mosquitto"] + (["zigbee2mqtt", "hermes", "homeassistant"] if d["site"]["role"] == "primary" else [])
+        keys = ["mosquitto"] + (["zigbee2mqtt", "hermes", "bot", "homeassistant"] if d["site"]["role"] == "primary" else [])
         res["restart"] = await asyncio.to_thread(D.restart, keys)
     res["note"] = "埠號 / 模型 / profile 變更需在主機執行：docker compose up -d（後台無法自行重建容器）"
     return res
@@ -103,6 +103,7 @@ async def health(_=Depends(auth)):
         "homeassistant": await _probe(f"http://{host or 'homeassistant'}:8123/api/", {"Authorization": f"Bearer {tok}"} if tok else None),
         "hermes": await _probe(f"http://{host or 'hermes'}:8800/v1/health"),
         "zigbee2mqtt": await _probe(f"http://{host or 'zigbee2mqtt'}:8080/"),
+        "bot": await _probe(f"http://{host or 'bot'}:8900/v1/health"),
         "ollama": await _probe((d["voice"]["ollama_url"] if d["voice"]["ollama_source"] == "host" else "http://ollama:11434") + "/api/tags"),
     }
     if d["cluster"]["peer_url"]:
@@ -169,7 +170,7 @@ async def promote(_=Depends(auth)):
 async def demote(_=Depends(auth)):
     """回切：本節點退回副節點（先確認主節點已還原最新備份並正常）"""
     d = S.load(); d["site"]["role"] = "standby"; S.apply(d)
-    res = D.stop(["homeassistant", "zigbee2mqtt", "hermes"])
+    res = D.stop(["homeassistant", "zigbee2mqtt", "hermes", "bot"])
     B.STATE["promoted"] = False; B.STATE["peer_down_since"] = None
     B.event("已回切為副節點")
     return {"ok": True, "containers": res}

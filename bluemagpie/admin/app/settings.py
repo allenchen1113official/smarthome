@@ -56,6 +56,14 @@ SCHEMA: list[dict] = [
         {"k": "allen", "label": "Allen 的 notify 服務", "type": "text", "default": "notify.mobile_app_allen_iphone"},
         {"k": "ann", "label": "Ann 的 notify 服務", "type": "text", "default": "notify.mobile_app_ann_iphone"},
     ]},
+    {"id": "bots", "title": "LINE / Telegram 機器人", "fields": [
+        {"k": "telegram_token", "label": "Telegram Bot Token", "type": "password", "default": "", "secret": True, "help": "向 @BotFather 建立；用 long polling，不需開埠"},
+        {"k": "line_channel_secret", "label": "LINE Channel Secret", "type": "password", "default": "", "secret": True},
+        {"k": "line_access_token", "label": "LINE Channel Access Token", "type": "password", "default": "", "secret": True, "help": "Messaging API；Webhook URL = <外部 https 網址>/line/webhook（需反向代理到 :8900）"},
+        {"k": "members", "label": "家庭成員白名單", "type": "text", "default": "", "help": "格式：名字:平台:ID:角色，逗號分隔。例 allen:telegram:123456789:admin, ann:line:Uxxxxxxxx:member；角色 admin / member / viewer（viewer 只能查詢）。成員第一次傳訊息時機器人會回覆自己的 ID"},
+        {"k": "quick", "label": "快捷選單（標籤=指令，逗號分隔）", "type": "text", "default": "狀態=/狀態, 睡眠=/情境 睡眠 開, 影音=/情境 影音 開, 離家=/情境 離家, 客廳燈開=/燈 客廳 開, 客廳燈關=/燈 客廳 關, 主臥26度=/冷氣 主臥 26"},
+        {"k": "notify_via_bot", "label": "HA 推播同時送到機器人", "type": "bool", "default": True},
+    ]},
     {"id": "remote", "title": "遠端存取", "fields": [
         {"k": "duckdns_domain", "label": "DuckDNS 網域", "type": "text", "default": ""},
         {"k": "duckdns_token", "label": "DuckDNS token", "type": "password", "default": "", "secret": True},
@@ -141,7 +149,7 @@ def _ensure_secrets(d: dict) -> list[str]:
 def apply(d: dict) -> dict:
     gen = _ensure_secrets(d)
     save(d)
-    changed = {"mosquitto": [], "zigbee2mqtt": [], "hermes": [], "homeassistant": [], "env": []}
+    changed = {"mosquitto": [], "zigbee2mqtt": [], "hermes": [], "bot": [], "homeassistant": [], "env": []}
     role = d["site"]["role"]
     ha_host = "host.docker.internal" if d["site"]["network_mode"] == "host" else "homeassistant"
     ha_url_internal = f"http://{ha_host}:8123"
@@ -204,6 +212,29 @@ def apply(d: dict) -> dict:
     (hdir / "market.yaml").write_text(yaml.safe_dump(mk, allow_unicode=True, sort_keys=False), encoding="utf-8")
     changed["hermes"] += ["hermes.yaml", "policy.yaml", "market.yaml"]
 
+    # Bot（LINE / Telegram）
+    bdir = CONFIG / "bot"; bdir.mkdir(parents=True, exist_ok=True)
+    members = []
+    for item in d["bots"]["members"].split(","):
+        parts = [x.strip() for x in item.split(":")]
+        if len(parts) >= 3:
+            members.append({"name": parts[0], "platform": parts[1].lower(), "id": parts[2], "role": parts[3] if len(parts) > 3 else "member"})
+    quick = []
+    for item in d["bots"]["quick"].split(","):
+        if "=" in item:
+            l, t = item.split("=", 1); quick.append([l.strip(), t.strip()])
+    bot_cfg = {
+        "ha_url": ha_url_internal, "ha_token": d["ha"]["token"],
+        "hermes_url": "http://host.docker.internal:8800" if d["site"]["network_mode"] == "host" else "http://hermes:8800",
+        "shared_secret": d["cluster"]["shared_secret"],
+        "telegram": {"bot_token": d["bots"]["telegram_token"]},
+        "line": {"channel_secret": d["bots"]["line_channel_secret"], "access_token": d["bots"]["line_access_token"]},
+        "members": members, "quick": quick,
+        "areas": {k: {kk: vv for kk, vv in v.items() if kk in ("light", "cover", "climate")} for k, v in hcfg.get("areas", {}).items()},
+    }
+    (bdir / "bot.yaml").write_text(yaml.safe_dump(bot_cfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    changed["bot"] = ["bot.yaml"]
+
     # Home Assistant：configuration.yaml（只在不存在時建立）、secrets.yaml、packages、magpie 專用片段
     hac = CONFIG / "homeassistant"; (hac / "packages").mkdir(parents=True, exist_ok=True); (hac / "www" / "hermes").mkdir(parents=True, exist_ok=True)
     lan = d["site"]["lan_ip"] or "127.0.0.1"
@@ -246,6 +277,13 @@ rest_command:
     method: POST
     headers: {{ "X-Magpie-Secret": "{d['cluster']['shared_secret']}" }}
     timeout: 120
+  magpie_bot_notify:
+    url: http://{'host.docker.internal' if d['site']['network_mode'] == 'host' else 'bot'}:8900/v1/notify
+    method: POST
+    content_type: application/json
+    headers: {{ "X-Magpie-Secret": "{d['cluster']['shared_secret']}" }}
+    payload: '{{"to": "{{{{ to | default(''all'') }}}}", "message": "{{{{ message }}}}"}}'
+    timeout: 15
 notify:
   - name: both
     platform: group

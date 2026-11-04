@@ -7,9 +7,9 @@ log = logging.getLogger("magpie.docker")
 NAMES = {
     "admin": "magpie-admin", "homeassistant": "magpie-homeassistant", "mosquitto": "magpie-mosquitto",
     "zigbee2mqtt": "magpie-zigbee2mqtt", "whisper": "magpie-whisper", "piper": "magpie-piper",
-    "ollama": "magpie-ollama", "hermes": "magpie-hermes",
+    "ollama": "magpie-ollama", "hermes": "magpie-hermes", "bot": "magpie-bot",
 }
-PRIMARY_ONLY = ["homeassistant", "zigbee2mqtt", "hermes"]
+PRIMARY_ONLY = ["homeassistant", "zigbee2mqtt", "hermes", "bot"]
 
 _client = None
 

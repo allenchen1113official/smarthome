@@ -17,6 +17,7 @@
 | 07 | [07-備援備份與遠端存取.md](07-備援備份與遠端存取.md) | 熱備雙節點（主 Mac mini／副 HA Black 24/7）、SLZB-06、每小時設定備份、失聯自動接手與回切、DuckDNS+SSL、Tailscale | 1 天 |
 | 08 | [08-驗收測試與故障排除.md](08-驗收測試與故障排除.md) | 全系統驗收清單、常見故障與處置 | 持續 |
 | 09 | [09-青鳥一鍵部署.md](09-青鳥一鍵部署.md) | **青鳥 · 台灣藍鵲 BlueMagpie**：一個資料夾 + Docker 一鍵部署 + 後台設定（`SmartHome/bluemagpie/`），跨 Linux / macOS / Windows，熱備由後台負責 | 1 小時 |
+| 10 | [10-LINE-Telegram-遠端控制介面.md](10-LINE-Telegram-遠端控制介面.md) | 家庭成員用 LINE / Telegram 遠端控制裝置與情境：指令文法、介面、安全、`magpie-bot` 建置 | 1 小時 |
 
 ## 附帶的可直接使用檔案
 
