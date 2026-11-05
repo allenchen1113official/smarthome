@@ -45,7 +45,7 @@ for i, (fn, label, ico) in enumerate(CH):
     for j, (fn2, _, _) in enumerate(CH):
         src = src.replace(f"]({fn2})", f"](#ch{j})")
     # mermaid 區塊 → 已渲染圖 + 可展開原始碼
-    src = re.sub(r"```mermaid\n(.*?)```", lambda m: f'<figure class="topo"><img src="{TOPO}" alt="五層網路拓樸圖"><figcaption>五層網路拓樸（assets/topology.png）</figcaption></figure>\n<details><summary>Mermaid 原始碼</summary>\n\n```text\n{m.group(1)}```\n</details>', src, flags=re.S)
+    src = re.sub(r"```mermaid\n(.*?)```", lambda m: f'<figure class="topo"><img src="{TOPO}" alt="五層網路拓樸圖" style="cursor:zoom-in" title="點圖另開放大" onclick="window.open(this.src)"><figcaption>五層網路拓樸（assets/topology-canvas.html → topology.png，3600×2480）— 點圖放大</figcaption></figure>\n<details><summary>Mermaid 原始碼</summary>\n\n```text\n{m.group(1)}```\n</details>', src, flags=re.S)
     # Siri 捷徑截圖：assets/siri/siri-NN.png 存在時，把表格內的 siri-NN 代碼換成縮圖
     SIRI_DIR = os.path.join(ROOT, "assets", "siri")
     def siri_img(m):
@@ -206,7 +206,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
 <style>{CSS}</style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.6.1 · 2026-11-06</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.6.2 · 2026-11-06</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<title>五層網路拓樸 · canvas</title>
+<style>
+  html,body{margin:0;background:#f6f4ee}
+  canvas{display:block}
+</style></head>
+<body>
+<canvas id="c" width="1800" height="1240"></canvas>
+<script>
+// ===== 五層網路拓樸（Allen & Ann 智慧家庭 · as-built v1.6.1）=====
+// 純 canvas 2D 繪製；以 deviceScaleFactor 2 截圖輸出 topology.png
+const W = 1800, H = 1240;
+const cv = document.getElementById('c');
+const dpr = window.devicePixelRatio || 1;
+cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+const g = cv.getContext('2d'); g.scale(dpr, dpr);
+
+const F_SANS = '"Inter", "Noto Sans CJK TC", "Noto Sans CJK JP", sans-serif';
+const F_MONO = '"JetBrains Mono", "IBM Plex Mono", "Noto Sans CJK TC", monospace';
+
+// ---- 配色：紙感底、墨色字、五層各一個低飽和主色 ----
+const C = {
+  paper: '#f6f4ee', ink: '#1d2430', ink2: '#4c5665', ink3: '#8a93a1', line: '#d9d4c7',
+  layers: [
+    { tint: '#eef0f7', edge: '#aab3cf', label: '#5b6686' },   // 外部
+    { tint: '#eaf1f3', edge: '#9fbac2', label: '#4d7480' },   // 核心
+    { tint: '#f4efe4', edge: '#d2bf93', label: '#8a6a2a' },   // 中樞
+    { tint: '#eef3ea', edge: '#afc5a3', label: '#4f6d3f' },   // 設備
+    { tint: '#f4ecee', edge: '#d0aab3', label: '#8a4a5c' },   // 介面
+  ],
+  wire: '#2f4a7a', wifi: '#1f7a86', zig: '#b4761c', logic: '#8a93a1', vip: '#8a4a5c',
+};
+
+// ---- 版面：五個水平層 ----
+const LX = 176, RX = 1760;                 // 內容左右界（帶狀底 156–1760）
+const LAYERS = [
+  { n: '第一層', t: '外部網路', en: 'EXTERNAL', y: 96,  h: 150 },
+  { n: '第二層', t: '核心路由', en: 'CORE',     y: 276, h: 160 },
+  { n: '第三層', t: '智慧家庭中樞', en: 'HUB', y: 466, h: 270 },
+  { n: '第四層', t: '設備子系統', en: 'DEVICES', y: 786, h: 190 },
+  { n: '第五層', t: '使用者介面', en: 'INTERFACE', y: 1006, h: 140 },
+];
+
+// ---- 節點：cx 中心 x；y 可指定絕對 y（否則置中於該層）----
+const NW = 236, NH = 96;
+const N = {};
+function node(id, layer, cx, icon, title, addr, sub, opt = {}) {
+  const L = LAYERS[layer];
+  const h = opt.h || NH, w = opt.w || NW;
+  const y = opt.y !== undefined ? opt.y : L.y + (L.h - h) / 2;
+  N[id] = { id, layer, x: cx - w / 2, y, w, h, icon, title, addr, sub, tone: opt.tone || null };
+}
+// 第一層
+node('cht', 0, 760,  '☁', '中華電信光世代', '固定 IP 122.117.5.107', ['100M/40M · GPON 小烏龜橋接模式', 'PPPoE 由 BE3600 撥號']);
+node('ddns', 0, 1120, '🦆', 'DuckDNS', 'AllenandAnn.duckdns.org', ['A 記錄 → 固定 IP', "Let's Encrypt 憑證（07 章）"]);
+node('ts', 0, 1420,  '🔗', 'Tailscale（選配）', '出站打洞 · 41641/udp', ['主副節點皆裝，手機同時登兩台', '不需開任何入站埠']);
+// 第二層
+node('rt', 1, 720,  '📡', 'TP-Link BE3600', '192.168.0.1', ['PPPoE · DHCP 保留 · 動態池 .101–.199', '主 SSID ／ IoT SSID（2.4G）隔離', '轉發 443、51820/udp → .88'], { h: 112 });
+node('vip', 1, 1100, '◎', 'VIP（keepalived）', '192.168.0.100', ['LB-A .13（Mac mini 上 Alpine VM）', 'LB-B 原生於 HA Black；HAProxy 主從'], { h: 112, tone: 'vip' });
+// 第三層
+node('mac', 2, 470,  '🏠', 'Mac mini M4 · allenchaldeMini', '192.168.0.8', ['macOS 原生：MLX-Whisper :10300', 'Ollama Qwen3 8B :11434 · Piper :10200', 'Hermes 管家 :8800（節能守門）'], { h: 118, y: 482 });
+node('ha', 2, 470,  '🧠', 'Home Assistant（HAOS VM · 主節點）', '192.168.0.88', ['UTM 橋接 · :8123 · Mosquitto :1883', 'Zigbee2MQTT → SLZB-06 · Tailscale'], { h: 96, y: 626 });
+node('black', 2, 1195, '🛟', 'HA Black N100（副節點）', '192.168.0.12', ['24/7 熱備 · :8123 · 青鳥後台 :9000', '每小時收設定備份 · 失聯 5 分自動接手', 'LB-B：HAProxy + keepalived'], { h: 118, y: 615 });
+node('slzb', 2, 1530, '⬢', 'SLZB-06 Zigbee 協調器', '192.168.0.25 · tcp 6638', ['PoE · 同時只接受一個 Z2M 連線', '主→副接手時自動切換'], { h: 100, y: 624 });
+// 第四層
+node('hue', 3, 260,  '💡', 'Philips Hue Bridge v2', '192.168.0.20 · Hue API :443', ['18 崁燈 · Tap · Dimmer ×2 · Motion ×2', 'Sync Box .21（HACS huesyncbox）']);
+node('ac', 3, 560,  '❄', 'Panasonic 空調 ×3', '.50 / .51 / .52（IoT SSID）', ['客廳 ／ 主臥 ／ 次臥，1 對 2 室外機', 'Broadlink RM4 ×3 .55–.57 本地 IR 備援']);
+node('aq', 3, 860,  '🪟', 'Aqara Zigbee 設備', 'via SLZB-06', ['窗簾 ×2 · 門窗 · 溫濕度 · 人體', '計量插座（電視／音響／書桌）']);
+node('vac', 3, 1160, '🤖', 'Roborock Qrevo Edge C', '192.168.0.40（IoT SSID）', ['本地 Miio 協定', '離峰／離家時清掃（情境 19）']);
+node('hp', 3, 1460,  '🔊', 'HomePod ／ HomePod mini', '.30 / .31（主 SSID）', ['AirPlay TTS 輸出（Piper）', '麥克風不開放第三方']);
+node('em', 3, 1676, '⚡', 'Shelly EM', '192.168.0.26', ['全屋用電量測 · CT 夾', '雲端關閉（13 章）'], { w: 160 });
+// 第五層
+node('app', 4, 360,  '📱', 'HA Companion（Allen ／ Ann）', 'LAN 或 443 SSL', ['Assist 自由句 · 推播確認「好／取消」', 'Apple Watch Assist']);
+node('siri', 4, 760, '🎙', 'Siri 捷徑 ／ HA Voice PE', 'webhook · Voice PE .70', ['「嘿 Siri，Allen 回家了」→ /api/webhook', 'Voice PE：唯一免手喚醒詞麥克風']);
+node('tab', 4, 1160, '📟', '壁掛平板 玄關 ／ 客廳', '.60 / .61', ['Sections 儀表板（12 章）', '夜間自動熄屏']);
+node('bot', 4, 1560, '💬', 'LINE ／ Telegram 機器人', 'magpie-bot :8900', ['家人遠端下指令 · 用電日報', 'LINE webhook 經 443 反代']);
+
+// ---- 連線：明確折線（pts），kind 樣式，lbl 標籤放 at ----
+function P(id, where, off = 0) {
+  const n = N[id], cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+  return { top: [cx + off, n.y], bottom: [cx + off, n.y + n.h], left: [n.x, cy + off], right: [n.x + n.w, cy + off] }[where];
+}
+const E = [];
+function edge(kind, pts, lbl, at, arrows = 'end') { E.push({ kind, pts, lbl, at, arrows }); }
+// 第一層 ↔ 第二層
+edge('logic', [P('ddns', 'left'), P('cht', 'right')], 'A 記錄', [940, P('cht', 'right')[1]], 'both');
+edge('wire',  [P('cht', 'bottom'), [760, 261], [720, 261], P('rt', 'top')], '光纖 → PPPoE', [740, 261]);
+edge('logic', [P('ts', 'bottom'), [1420, 261], [1290, 261], [1290, N.black.y]], 'Tailscale 直連', [1290, 480]);
+edge('vip',   [P('rt', 'right'), P('vip', 'left')], '統一入口', [910, P('rt', 'right')[1]], 'both');
+// LAN 匯流排（路由器 → 中樞）
+edge('wire',  [P('rt', 'bottom'), [720, 451], [260, 451], [260, N.hue.y]], 'LAN3 有線', [260, 640]);
+edge('wire',  [[720, 451], [1530, 451], [1530, N.slzb.y]], 'PoE 有線', [1530, 537]);
+edge('wire',  [[470, 451], [470, N.mac.y]], 'LAN1 有線 2.5G', [470, 451]);
+edge('wire',  [[1230, 451], [1230, N.black.y]], 'LAN2 有線', [1230, 537]);
+edge('vip',   [P('vip', 'bottom', 30), [1130, N.black.y]], 'LB 主從 → 活著的 HA', [1130, 572]);
+// 中樞內部
+edge('wire',  [P('mac', 'bottom'), P('ha', 'top')], 'UTM 橋接 · 獨立 MAC', [600, 612]);
+edge('logic', [P('ha', 'right'), P('black', 'left')], '每小時設定備份 · 03:00 全備 · 失聯 5 分自動接手', [832, P('ha', 'right')[1]], 'both');
+edge('logic', [P('black', 'right', -22), P('slzb', 'left', -22)], '接手後 6638', [1362, P('black', 'right', -22)[1]]);
+edge('wire',  [P('ha', 'bottom', 60), [530, 754], [1530, 754], P('slzb', 'bottom')], 'tcp 6638', [1000, 754]);
+// 中樞 → 設備（WiFi 匯流排 y 778、Zigbee y 766）
+edge('wifi',  [P('ha', 'bottom'), [470, 778], [1676, 778], P('em', 'top')], 'WiFi', [1676, 808]);
+edge('wifi',  [[560, 778], P('ac', 'top')], 'WiFi 2.4G IoT', [560, 808]);
+edge('wifi',  [[1160, 778], P('vac', 'top')], 'WiFi IoT', [1160, 808]);
+edge('wifi',  [[1460, 778], P('hp', 'top')], 'WiFi · AirPlay', [1460, 808]);
+edge('zig',   [P('slzb', 'bottom', -30), [1500, 766], [860, 766], P('aq', 'top')], 'Zigbee 3.0 · ch 15', [860, 808]);
+// 介面層
+edge('wifi',  [P('app', 'top'), [360, 991], [150, 991], [150, P('rt', 'left')[1]], P('rt', 'left')], 'LAN 或 443 SSL', [372, P('rt', 'left')[1]]);
+edge('logic', [P('siri', 'top'), [760, 991], [710, 991], [710, 742], [530, 742], [530, N.ha.y + N.ha.h]], 'webhook → HA', [760, 991]);
+edge('wire',  [P('tab', 'top'), [1160, 983], [1778, 983], [1778, P('vip', 'right')[1]], P('vip', 'right')], 'LAN4 有線 → VIP', [1500, P('vip', 'right')[1]]);
+edge('logic', [P('bot', 'top'), [1560, 999], [1300, 999], [1300, N.black.y + N.black.h]], 'magpie-bot（主節點執行）', [1440, 999]);
+
+// ================= 繪製 =================
+function rr(x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function text(s, x, y, { size = 13, weight = 400, color = C.ink, font = F_SANS, align = 'left', base = 'alphabetic', ls = 0 } = {}) {
+  g.font = `${weight} ${size}px ${font}`; g.fillStyle = color; g.textAlign = align; g.textBaseline = base;
+  g.letterSpacing = (ls || 0) + 'px';
+  g.fillText(s, x, y);
+}
+
+// 背景與細格
+g.fillStyle = C.paper; g.fillRect(0, 0, W, H);
+g.strokeStyle = 'rgba(29,36,48,0.045)'; g.lineWidth = 1;
+for (let x = 0; x <= W; x += 40) { g.beginPath(); g.moveTo(x + .5, 0); g.lineTo(x + .5, H); g.stroke(); }
+for (let y = 0; y <= H; y += 40) { g.beginPath(); g.moveTo(0, y + .5); g.lineTo(W, y + .5); g.stroke(); }
+
+// 標題
+text('Allen & Ann 智慧家庭', 40, 44, { size: 22, weight: 600 });
+text('五層網路拓樸 · as-built 2026-11-06 · SOP v1.6.1', 40, 66, { size: 12.5, color: C.ink3 });
+text('FIVE-LAYER NETWORK TOPOLOGY', RX, 44, { size: 11, color: C.ink3, align: 'right', ls: 2.5 });
+text('192.168.0.0/24 · 主節點 .88 · 副節點 .12 · VIP .100', RX, 66, { size: 12, color: C.ink3, align: 'right', font: F_MONO });
+
+// 層帶
+LAYERS.forEach((L, i) => {
+  const t = C.layers[i];
+  g.fillStyle = t.tint; rr(LX - 20, L.y, RX - LX + 20, L.h, 14); g.fill();
+  g.strokeStyle = t.edge; g.lineWidth = 1; g.setLineDash([]); rr(LX - 20, L.y, RX - LX + 20, L.h, 14); g.stroke();
+  text(L.n, 40, L.y + 26, { size: 11, color: t.label, ls: 1.5 });
+  text(L.t, 40, L.y + 50, { size: 15.5, weight: 600, color: t.label });
+  text(L.en, 40, L.y + 68, { size: 10, color: C.ink3, ls: 2 });
+});
+
+// ---- 連線 ----
+function style(kind) {
+  if (kind === 'wire') { g.strokeStyle = C.wire; g.lineWidth = 2; g.setLineDash([]); }
+  if (kind === 'wifi') { g.strokeStyle = C.wifi; g.lineWidth = 2; g.setLineDash([7, 5]); }
+  if (kind === 'zig') { g.strokeStyle = C.zig; g.lineWidth = 2; g.setLineDash([2, 5]); }
+  if (kind === 'logic') { g.strokeStyle = C.logic; g.lineWidth = 1.5; g.setLineDash([10, 6]); }
+  if (kind === 'vip') { g.strokeStyle = C.vip; g.lineWidth = 2; g.setLineDash([]); }
+}
+function colorOf(kind) { return { wire: C.wire, wifi: C.wifi, zig: C.zig, logic: C.logic, vip: C.vip }[kind]; }
+function arrowAt(p, q, color) {            // 箭頭在 q，方向 p→q
+  const dx = q[0] - p[0], dy = q[1] - p[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, s = 6;
+  g.fillStyle = color; g.beginPath();
+  g.moveTo(q[0], q[1]);
+  g.lineTo(q[0] - ux * s * 1.7 - uy * s, q[1] - uy * s * 1.7 + ux * s);
+  g.lineTo(q[0] - ux * s * 1.7 + uy * s, q[1] - uy * s * 1.7 - ux * s);
+  g.closePath(); g.fill();
+}
+const labels = [];
+E.forEach(e => {
+  style(e.kind); const col = colorOf(e.kind); const p = e.pts;
+  g.beginPath(); g.moveTo(p[0][0], p[0][1]); for (let i = 1; i < p.length; i++) g.lineTo(p[i][0], p[i][1]); g.stroke(); g.setLineDash([]);
+  arrowAt(p[p.length - 2], p[p.length - 1], col);
+  if (e.arrows === 'both') arrowAt(p[1], p[0], col);
+  if (e.lbl) labels.push({ s: e.lbl, x: e.at[0], y: e.at[1], color: col });
+});
+
+// ---- 節點 ----
+Object.values(N).forEach(n => {
+  const t = C.layers[n.layer];
+  g.save();
+  g.shadowColor = 'rgba(29,36,48,0.10)'; g.shadowBlur = 14; g.shadowOffsetY = 4;
+  g.fillStyle = '#ffffff'; rr(n.x, n.y, n.w, n.h, 12); g.fill();
+  g.restore();
+  g.strokeStyle = n.tone === 'vip' ? C.vip : t.edge; g.lineWidth = n.tone === 'vip' ? 1.6 : 1.2; rr(n.x, n.y, n.w, n.h, 12); g.stroke();
+  // 左色條
+  g.fillStyle = n.tone === 'vip' ? C.vip : t.label; rr(n.x, n.y + 14, 4, n.h - 28, 2); g.fill();
+  // 圖示
+  g.fillStyle = t.tint; g.beginPath(); g.arc(n.x + 30, n.y + 30, 15, 0, Math.PI * 2); g.fill();
+  text(n.icon, n.x + 30, n.y + 31, { size: 15, align: 'center', base: 'middle', color: t.label });
+  // 文字
+  text(n.title, n.x + 54, n.y + 26, { size: 13.5, weight: 600 });
+  text(n.addr, n.x + 54, n.y + 44, { size: 11.5, font: F_MONO, color: t.label });
+  n.sub.forEach((s, i) => text(s, n.x + 54, n.y + 62 + i * 15, { size: 11, color: C.ink2 }));
+});
+
+// ---- 連線標籤（最後畫，白底膠囊）----
+labels.forEach(l => {
+  g.font = `500 10.5px ${F_SANS}`; const w = g.measureText(l.s).width + 14, h = 18;
+  g.fillStyle = 'rgba(255,255,255,0.96)'; rr(l.x - w / 2, l.y - h / 2, w, h, 9); g.fill();
+  g.strokeStyle = l.color; g.lineWidth = 1; rr(l.x - w / 2, l.y - h / 2, w, h, 9); g.stroke();
+  text(l.s, l.x, l.y + .5, { size: 10.5, weight: 500, color: l.color, align: 'center', base: 'middle' });
+});
+
+// ---- 圖例 ----
+const LEG = [['wire', '有線 / 橋接'], ['wifi', 'WiFi'], ['zig', 'Zigbee'], ['vip', 'VIP / 負載均衡'], ['logic', '邏輯 · 備份 · 接手']];
+let lx = 150; const ly = H - 44;
+text('連線類型', 40, ly + 4, { size: 11, color: C.ink3, ls: 1.5 });
+LEG.forEach(([k, name]) => {
+  style(k); g.beginPath(); g.moveTo(lx, ly); g.lineTo(lx + 44, ly); g.stroke(); g.setLineDash([]);
+  text(name, lx + 52, ly + 4, { size: 12, color: C.ink2 });
+  lx += 52 + g.measureText(name).width + 40;
+});
+text('docs/SOP/assets/topology-canvas.html → topology.png @2x', RX, ly + 4, { size: 10.5, color: C.ink3, align: 'right', font: F_MONO });
+</script>
+</body></html>

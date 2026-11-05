@@ -128,3 +128,4 @@
 | 2026-11-05 | 1.5 | 三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（`s00_energy.yaml`、Hermes v0.4 `energy.py` 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；`tools/check_secrets.py` + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁 |
 | 2026-11-05 | 1.6 | 架構評估後選型升級：STT 改 `wyoming-mlx-whisper large-v3-turbo`（Metal）、LLM 改 `qwen3:8b`（關 thinking，`llm.py` 帶 `think:false` 並清 `<think>`）；青鳥後台新增「STT 引擎來源 host/container」、compose whisper 改 profile；04/08/09 章同步 |
 | 2026-11-06 | 1.6.1 | 依實機更新 IP：Mac mini `allenchaldeMini` 改 192.168.0.8（原 .10）、Home Assistant 改 192.168.0.88（原 .11）；全手冊、packages、Hermes 設定、青鳥後台範例、LB 腳本、拓樸圖、安裝表試算表同步 |
+| 2026-11-06 | 1.6.2 | 五層拓樸圖改以 canvas 重繪（`assets/topology-canvas.html` → 3600×2480 PNG）：紙感配色、Inter + Noto Sans CJK + JetBrains Mono、正交路線、as-built 節點與 IP |
