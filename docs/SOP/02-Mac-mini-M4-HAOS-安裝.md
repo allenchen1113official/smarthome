@@ -1,13 +1,14 @@
 # 02 · Mac mini M4 整備與 HAOS 安裝
 
-> 目標：Mac mini 24/7 不睡、斷電自動開機；HAOS 以 UTM 虛擬機跑在上面，拿到 `192.168.0.11`，Zigbee Stick 直通進 VM；HA 完成初始化並裝好基礎附加元件。
+> 目標：Mac mini 24/7 不睡、斷電自動開機；HAOS 以 UTM 虛擬機跑在上面，拿到 `192.168.0.88`，Zigbee Stick 直通進 VM；HA 完成初始化並裝好基礎附加元件。
 > 完成判準：§2.9 檢查全部通過。
 
 ## 2.1 macOS 初始設定（約 30 分鐘）
 
 1. 全新開機 → Apple ID 登入（與 HomePod 同一組）→ 使用者名稱 `allen`，**開啟自動登入**（系統設定 → 使用者與群組 → 自動登入 → allen；FileVault 必須關閉才能自動登入，Mac mini 放在家裡可接受）。
-2. 系統設定 → 一般 → 共享：開 **螢幕共享**、**遠端登入（SSH）**、**檔案共享**（之後 Hermes 要掛 HAOS 的 Samba，反向不需要）。
-3. 電源與睡眠（終端機執行）：
+2. 系統設定 → 一般 → 關於 → 名稱改 `allenchaldeMini`（終端機 `sudo scutil --set ComputerName allenchaldeMini && sudo scutil --set LocalHostName allenchaldeMini && sudo scutil --set HostName allenchaldeMini`），之後區網可用 `allenchaldeMini.local` 找到它。
+3. 系統設定 → 一般 → 共享：開 **螢幕共享**、**遠端登入（SSH）**、**檔案共享**（之後 Hermes 要掛 HAOS 的 Samba，反向不需要）。
+4. 電源與睡眠（終端機執行）：
 
 ```bash
 sudo pmset -a sleep 0 disksleep 0 displaysleep 10
@@ -17,10 +18,10 @@ sudo pmset -a womp 1                  # 網路喚醒
 pmset -g | grep -E "sleep|autorestart"
 ```
 
-4. 系統設定 → 一般 → 軟體更新 → **關閉「自動安裝 macOS 更新」**（保留安全性回應）。更新時間由你決定，避免半夜重開。
-5. 系統設定 → 一般 → 登入項目：之後會把 UTM 與 Hermes 加進來。
-6. 時區 `台北`，24 小時制。
-7. 安裝 Homebrew 與基本工具：
+5. 系統設定 → 一般 → 軟體更新 → **關閉「自動安裝 macOS 更新」**（保留安全性回應）。更新時間由你決定，避免半夜重開。
+6. 系統設定 → 一般 → 登入項目：之後會把 UTM 與 Hermes 加進來。
+7. 時區 `台北`，24 小時制。
+8. 安裝 Homebrew 與基本工具：
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -61,7 +62,7 @@ ls -lh ~/VM          # 應看到約 1.5 GB 的 .qcow2
    - Save。
 8. 按 ▶ 啟動。畫面跑完 HAOS 開機後會停在 `homeassistant login:` 或 `ha >` 提示字元。
 9. 在 VM 主控台輸入 `ha network info`（若是 `login:` 先打 `root` 無密碼）→ 記下 VM 拿到的 IP（動態池 .1xx）。
-10. 回路由器 DHCP 保留：把這個 MAC 保留成 `192.168.0.11`，然後在 VM 主控台 `ha host reboot`。重開後 `ha network info` 應顯示 `192.168.0.11`。
+10. 回路由器 DHCP 保留：把這個 MAC 保留成 `192.168.0.88`，然後在 VM 主控台 `ha host reboot`。重開後 `ha network info` 應顯示 `192.168.0.88`。
 
 ### 讓 UTM 開機自動啟動 HAOS
 
@@ -102,7 +103,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.utm-haos.plist
 
 ## 2.5 Home Assistant 初始化（約 15 分鐘）
 
-1. 瀏覽器開 `http://192.168.0.11:8123`（第一次要等 10–20 分鐘下載容器，看到「準備中」正常）。
+1. 瀏覽器開 `http://192.168.0.88:8123`（第一次要等 10–20 分鐘下載容器，看到「準備中」正常）。
 2. 建立擁有者帳號：`allen`（強密碼，存密碼管理器）。
 3. 家的名稱 `Allen & Ann`、地點（地圖點到家，這決定日出日落與天氣）、時區 `Asia/Taipei`、單位公制。
 4. 分析資料：全部關閉（憲章 III）。
@@ -125,7 +126,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.utm-haos.plist
 
 ### 在 Mac mini 掛載 HAOS 分享（Hermes 寫圖卡用）
 
-Finder → 前往 → 連接伺服器 → `smb://ha@192.168.0.11/config` 與 `smb://ha@192.168.0.11/media`，勾「記住密碼」。掛載後路徑為 `/Volumes/config`、`/Volumes/media`。要開機自動掛載：系統設定 → 登入項目 → 把這兩個磁碟拖進去。
+Finder → 前往 → 連接伺服器 → `smb://ha@192.168.0.88/config` 與 `smb://ha@192.168.0.88/media`，勾「記住密碼」。掛載後路徑為 `/Volumes/config`、`/Volumes/media`。要開機自動掛載：系統設定 → 登入項目 → 把這兩個磁碟拖進去。
 
 ## 2.7 Zigbee2MQTT 設定
 
@@ -196,8 +197,8 @@ touch /config/customize.yaml /config/secrets.yaml
 
 | # | 檢查 | 指令 / 位置 | 預期 |
 |---|---|---|---|
-| 1 | VM 固定 IP | VM 主控台 `ha network info` | `192.168.0.11` |
-| 2 | 自動啟動 | 重開 Mac mini，等 5 分鐘 | `http://192.168.0.11:8123` 可開 |
+| 1 | VM 固定 IP | VM 主控台 `ha network info` | `192.168.0.88` |
+| 2 | 自動啟動 | 重開 Mac mini，等 5 分鐘 | `http://192.168.0.88:8123` 可開 |
 | 3 | 不睡 | `pmset -g` | `sleep 0`、`autorestart 1` |
 | 4 | Zigbee（SLZB-06） | Z2M 記錄；SLZB-06 網頁 | `Zigbee2MQTT started!`；SLZB-06 顯示 1 個 client |
 | 5 | MQTT | Mosquitto 記錄 | `New client connected from ... as zigbee2mqtt` |

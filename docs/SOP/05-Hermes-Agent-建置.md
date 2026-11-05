@@ -9,7 +9,7 @@
 ## 5.1 Hermes 在管線中的位置與串接方式
 
 ```
-HA Assist 管線 ── 對話代理 = 「Ollama」整合 ──► http://192.168.0.10:8800  (Hermes 偽裝成 Ollama 端點)
+HA Assist 管線 ── 對話代理 = 「Ollama」整合 ──► http://192.168.0.8:8800  (Hermes 偽裝成 Ollama 端點)
                                                       │
                                    ┌──────────────────┼──────────────────┐
                                    ▼                  ▼                  ▼
@@ -45,7 +45,7 @@ curl -s localhost:8800/api/tags | jq '.models[0].name'   # hermes:latest
 
 | 檔案 | 要改的地方 |
 |---|---|
-| `config/hermes.yaml` | `ha.urls`（主 `.11` → 副 `.12`，07 章熱備）、`areas.*` 的 entity_id 要與 03 章命名一致、`paths.cards_dir` 指向已掛載的 `/Volumes/config/www/hermes` |
+| `config/hermes.yaml` | `ha.urls`（主 `.88` → 副 `.12`，07 章熱備）、`areas.*` 的 entity_id 要與 03 章命名一致、`paths.cards_dir` 指向已掛載的 `/Volumes/config/www/hermes` |
 | `config/policy.yaml` | 預設即設計值：`confirm_all`、12 秒逾時、23:00–07:00 推播、`never` 含 `broker.place_order` |
 | `config/market.yaml` | `watchlist` 填自選股；`alerts.rules` 停損 8%（`cost * 0.92`） |
 | `config/tools/*.yaml` | 工具 schema，一般不用改。新增工具 = 加一段 YAML + 在 `tools.py` 加一個分支 |
@@ -53,7 +53,7 @@ curl -s localhost:8800/api/tags | jq '.models[0].name'   # hermes:latest
 
 ## 5.4 HA 端把對話代理切到 Hermes
 
-1. 設定 → 整合 → **Ollama** → 新增第二個項目：URL `http://192.168.0.10:8800`，模型選 `hermes:latest`（Hermes 的 `/api/tags` 提供）。
+1. 設定 → 整合 → **Ollama** → 新增第二個項目：URL `http://192.168.0.8:8800`，模型選 `hermes:latest`（Hermes 的 `/api/tags` 提供）。
 2. 該項目的選項：「控制 Home Assistant」選 **不控制**（由 Hermes 決定與確認，不要讓 HA 自己執行）。對話代理名稱改 `Hermes`。
 3. 設定 → 語音助理 → `OpenClaw` → 對話代理改 **Hermes**。
 4. Assist 打字「客廳燈調到百分之五十」→ 回覆「要我把客廳燈調到50%嗎？」→ 打「好」→ 燈變、回覆「好了」。
@@ -78,19 +78,19 @@ Hermes 不直接碰設備；下列 HA 腳本是它的「手」：
 ```yaml
 rest_command:
   hermes_command:
-    url: http://192.168.0.10:8800/v1/command
+    url: http://192.168.0.8:8800/v1/command
     method: POST
     content_type: application/json
     payload: '{"text": "{{ text }}", "speaker": "{{ speaker }}", "output": "{{ output | default(''living_homepod'') }}", "say": {{ say | default(true) | lower }}}'
     timeout: 20
   hermes_screen:
-    url: http://192.168.0.10:8800/v1/jobs/screen
+    url: http://192.168.0.8:8800/v1/jobs/screen
     method: POST
     content_type: application/json
     payload: '{}'
     timeout: 90
   hermes_alerts:
-    url: http://192.168.0.10:8800/v1/alerts/check
+    url: http://192.168.0.8:8800/v1/alerts/check
     method: POST
     timeout: 30
 ```
@@ -185,7 +185,7 @@ launchctl kickstart -k gui/$(id -u)/com.allenann.hermes
 | # | 測試 | 預期 |
 |---|---|---|
 | 1 | `launchctl list \| grep hermes` | 存在，PID 非 0 |
-| 2 | 重開 Mac mini 後 `curl .10:8800/v1/health` | `ok: true` |
+| 2 | 重開 Mac mini 後 `curl .8:8800/v1/health` | `ok: true` |
 | 3 | Assist：「客廳燈調到百分之五十」 | 回「要我把客廳燈調到50%嗎？」 |
 | 4 | 接著說「好」 | 燈 50%，回「好了」；tx log 有 `exec s1 light.set OK` |
 | 5 | 接著說「再暗一點」→「好」 | 亮度降（指代解析） |

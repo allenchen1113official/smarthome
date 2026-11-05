@@ -12,12 +12,12 @@ input_boolean:
 binary_sensor:
   - platform: ping
     name: macmini_ping
-    host: 192.168.0.11       # 主節點 HAOS VM
+    host: 192.168.0.88       # 主節點 HAOS VM
     count: 2
     scan_interval: 30
   - platform: ping
     name: macmini_host_ping
-    host: 192.168.0.10       # Mac mini 本體（用來分辨「VM 掛」還是「整台掛」）
+    host: 192.168.0.8       # Mac mini 本體（用來分辨「VM 掛」還是「整台掛」）
     count: 2
     scan_interval: 30
 

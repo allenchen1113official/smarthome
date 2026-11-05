@@ -4,7 +4,7 @@ input_boolean:
   s34_enabled: { name: "34 模擬單記帳", initial: on, icon: mdi:receipt-text }
 
 rest:
-  - resource: http://192.168.0.10:8800/v1/holdings
+  - resource: http://192.168.0.8:8800/v1/holdings
     scan_interval: 300
     sensor:
       - name: Hermes 模擬持股

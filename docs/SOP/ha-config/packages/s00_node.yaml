@@ -3,7 +3,7 @@ template:
   - binary_sensor:
       - name: is_primary_node
         unique_id: is_primary_node
-        state: "{{ states('sensor.local_ip') == '192.168.0.11' }}"
+        state: "{{ states('sensor.local_ip') == '192.168.0.88' }}"
 
 automation:
   - id: s00_node_started_on_standby

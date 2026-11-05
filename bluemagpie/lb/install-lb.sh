@@ -1,8 +1,8 @@
 #!/bin/sh
 # 青鳥 Magpie LB — HAProxy + keepalived 一鍵安裝（Alpine 或 Debian/Ubuntu）
 # 用法（兩台 LB 節點各跑一次，只有 PRIORITY 不同）：
-#   VIP=192.168.0.100 NODE_A=192.168.0.11 NODE_B=192.168.0.12 PRIORITY=150 IFACE=eth0 sh install-lb.sh   # Mac mini 側 LB VM
-#   VIP=192.168.0.100 NODE_A=192.168.0.11 NODE_B=192.168.0.12 PRIORITY=100 IFACE=enp1s0 sh install-lb.sh # HA Black
+#   VIP=192.168.0.100 NODE_A=192.168.0.88 NODE_B=192.168.0.12 PRIORITY=150 IFACE=eth0 sh install-lb.sh   # Mac mini 側 LB VM
+#   VIP=192.168.0.100 NODE_A=192.168.0.88 NODE_B=192.168.0.12 PRIORITY=100 IFACE=enp1s0 sh install-lb.sh # HA Black
 set -e
 : "${VIP:?VIP 必填}"; : "${NODE_A:?NODE_A 主節點 IP 必填}"; : "${NODE_B:?NODE_B 副節點 IP 必填}"; : "${PRIORITY:=100}"; : "${IFACE:=eth0}"; : "${VRID:=51}"; : "${PASS:=magpie51}"
 DIR="$(cd "$(dirname "$0")" && pwd)"

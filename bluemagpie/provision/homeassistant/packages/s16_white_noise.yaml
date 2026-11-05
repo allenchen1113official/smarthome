@@ -15,7 +15,7 @@ script:
         target: { entity_id: media_player.master_homepod_mini }
         data:
           media_content_type: music
-          media_content_id: "http://192.168.0.11:8123/local/audio/white_noise.mp3"
+          media_content_id: "http://192.168.0.88:8123/local/audio/white_noise.mp3"
       - action: timer.start
         target: { entity_id: timer.white_noise }
         data: { duration: "00:20:00" }

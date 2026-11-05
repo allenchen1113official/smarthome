@@ -417,7 +417,7 @@ out.append("""# 06 · 35 種情境逐一建置
 
 ### 安裝一個情境的固定流程
 
-1. 把 `sXX_*.yaml` 複製到 HAOS 的 `/config/packages/`（Samba `\\\\192.168.0.11\\config\\packages`）。
+1. 把 `sXX_*.yaml` 複製到 HAOS 的 `/config/packages/`（Samba `\\\\192.168.0.88\\config\\packages`）。
 2. 檔內標 ⚠️ 的地方（`hue_event` id、房間 ID）改成你在 03 章記下的值。
 3. 開發者工具 → YAML → **檢查設定** → 「設定有效」→ **重新載入所有 YAML 設定**（不用整台重啟）。
 4. 設定 → 自動化：確認該情境的自動化出現；開發者工具 → 狀態：`input_boolean.sXX_enabled` 存在。

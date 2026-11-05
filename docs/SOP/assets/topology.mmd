@@ -4,11 +4,11 @@ flowchart TB
     DDNS["🦆 DuckDNS<br/>AllenandAnn.duckdns.org"]
   end
   subgraph L2["第二層 · 核心路由"]
-    RT["📡 TP-Link BE3600 · 192.168.0.1<br/>PPPoE · DHCP · 主 SSID + IoT SSID<br/>轉發 443→.11 (NGINX) · 51820/udp→.11 (WireGuard)"]
+    RT["📡 TP-Link BE3600 · 192.168.0.1<br/>PPPoE · DHCP · 主 SSID + IoT SSID<br/>轉發 443→.88 (NGINX) · 51820/udp→.88 (WireGuard)"]
   end
   subgraph L3["第三層 · 智慧家庭中樞"]
-    MAC["🏠 Mac mini M4 · 192.168.0.10<br/>macOS · Ollama · Whisper · Piper · Hermes :8800"]
-    HAOS["🧠 HAOS VM (UTM 橋接) · 192.168.0.11 主節點<br/>:8123 · Mosquitto · Zigbee2MQTT · Tailscale"]
+    MAC["🏠 Mac mini M4 · 192.168.0.8<br/>macOS · Ollama · Whisper · Piper · Hermes :8800"]
+    HAOS["🧠 HAOS VM (UTM 橋接) · 192.168.0.88 主節點<br/>:8123 · Mosquitto · Zigbee2MQTT · Tailscale"]
     BK["🛟 HA Black N100 · 192.168.0.12 副節點 24/7<br/>最小 HAOS · 每小時收設定備份 · 失聯 5 分自動接手"]
     MAC --- HAOS
   end

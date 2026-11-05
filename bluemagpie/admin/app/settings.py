@@ -16,7 +16,7 @@ SCHEMA: list[dict] = [
         {"k": "name", "label": "系統名稱", "type": "text", "default": "青鳥 · Allen & Ann"},
         {"k": "timezone", "label": "時區", "type": "text", "default": "Asia/Taipei"},
         {"k": "role", "label": "節點角色", "type": "select", "options": ["primary", "standby"], "default": "primary", "help": "primary 跑全套；standby 只跑後台與 MQTT，等待接手"},
-        {"k": "lan_ip", "label": "本機區網 IP", "type": "text", "default": "", "help": "給 Hermes、Companion、副節點回連用，例 192.168.0.11"},
+        {"k": "lan_ip", "label": "本機區網 IP", "type": "text", "default": "", "help": "給 Hermes、Companion、副節點回連用，例 192.168.0.88"},
         {"k": "network_mode", "label": "Home Assistant 網路模式", "type": "select", "options": ["bridge", "host"], "default": "bridge", "help": "Linux 用 host（install.sh 已套用 docker-compose.host.yml）；Docker Desktop 用 bridge"},
         {"k": "admin_password", "label": "後台密碼", "type": "password", "default": "", "secret": True, "help": "留空＝沿用 .env 的 ADMIN_PASSWORD"},
     ]},

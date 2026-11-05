@@ -7,8 +7,8 @@
 | IP | 設備 / 服務 | 章 |
 |---|---|---|
 | 192.168.0.1 | TP-Link BE3600 | 01 |
-| 192.168.0.10 | Mac mini M4（macOS 主機） | 02 |
-| 192.168.0.11 | 節點 A：HAOS VM（HAOS 路線）或 Docker 主節點（青鳥路線） | 02 / 09 |
+| 192.168.0.8 | Mac mini M4（macOS 主機）`allenchaldeMini` / `allenchaldeMini.local` | 02 |
+| 192.168.0.88 | 節點 A：Home Assistant（HAOS VM 或青鳥 Docker 主節點）`homeassistant.local` | 02 / 09 |
 | 192.168.0.12 | 節點 B：HA Black（副節點） | 07 / 09 |
 | 192.168.0.13 | LB-A（Mac mini 上的 Alpine VM） | 11 |
 | 192.168.0.100 | VIP（keepalived 虛擬 IP） | 11 |
@@ -40,8 +40,8 @@
 | 8099（青鳥）/ 8099（HAOS 附加元件） | Zigbee2MQTT 前端 | 主節點 | 否 |
 | 6638 | SLZB-06 Zigbee 串列 | .25 | 否 |
 | 8404 | HAProxy 統計頁 | LB-A / LB-B | 否 |
-| 445 | Samba（HAOS 路線） | .11 / .12 | 否 |
-| 22 / 5900 | SSH / 螢幕共享 | .10 / .12 / .13 | 否 |
+| 445 | Samba（HAOS 路線） | .88 / .12 | 否 |
+| 22 / 5900 | SSH / 螢幕共享 | .8 / .12 / .13 | 否 |
 
 ## A.3 密鑰與憑證（放哪裡、誰產生）
 
@@ -127,3 +127,4 @@
 | 2026-11-05 | 1.4 | 06 章每情境實測紀錄表；04 章 Siri 捷徑 14 步教學與截圖位（`assets/siri/`）；12 章 §12.3b 實體自檢範本（85 個實體已與 packages / 03 / 06 章交叉比對）；修正 `script.say` 目標名 `master_mini`、03 章 Hue 場景固定 ID |
 | 2026-11-05 | 1.5 | 三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（`s00_energy.yaml`、Hermes v0.4 `energy.py` 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；`tools/check_secrets.py` + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁 |
 | 2026-11-05 | 1.6 | 架構評估後選型升級：STT 改 `wyoming-mlx-whisper large-v3-turbo`（Metal）、LLM 改 `qwen3:8b`（關 thinking，`llm.py` 帶 `think:false` 並清 `<think>`）；青鳥後台新增「STT 引擎來源 host/container」、compose whisper 改 profile；04/08/09 章同步 |
+| 2026-11-06 | 1.6.1 | 依實機更新 IP：Mac mini `allenchaldeMini` 改 192.168.0.8（原 .10）、Home Assistant 改 192.168.0.88（原 .11）；全手冊、packages、Hermes 設定、青鳥後台範例、LB 腳本、拓樸圖、安裝表試算表同步 |
