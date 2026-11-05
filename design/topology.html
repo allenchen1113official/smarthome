@@ -370,13 +370,13 @@
         <div class="node" data-tone="primary" data-id="ha">
           <div class="icon">🏠</div>
           <div class="label">Mac mini M4 · Home Assistant</div>
-          <div class="meta">M4 · 16GB · 256GB SSD<br>HAOS VM + OpenClaw + Zigbee Stick</div>
+          <div class="meta">allenchaldeMini · 192.168.0.8 · HA 192.168.0.88<br>M4 · 16GB · HAOS VM + OpenClaw + SLZB-06</div>
           <div class="badge">主中樞 · 本地 AI</div>
         </div>
         <div class="node" data-tone="standby" data-id="ha-backup">
           <div class="icon">🛟</div>
           <div class="label">HA Black (N100) · 備援</div>
-          <div class="meta">N100 · 8GB · 待命<br>每晚同步快照 · 主機失聯即接手</div>
+          <div class="meta">192.168.0.12 · N100 · 8GB · 24/7 熱備<br>每小時收設定備份 · 失聯 5 分自動接手</div>
           <div class="badge">Standby</div>
         </div>
       </div>
@@ -452,27 +452,27 @@ const NODE_DATA = {
   router: {
     icon: "📡", title: "tp-link BE3600", en: "WiFi 7 Router",
     rows: [["型號", "BE3600"], ["WiFi", "WiFi 7 · 三頻"], ["LAN", "2.5G WAN + 4× Gigabit"]],
-    list: ["Port 8123 → HAOS Web UI", "Port 443 → Reverse Proxy (NGINX)", "VLAN 隔離 IoT 與主網段（建議啟用）"],
+    list: ["192.168.0.1 · DHCP 保留：Mac mini .8、HA .88、HA Black .12、LB-A .13、VIP .100；動態池 .101–.199", "Port 443 → 192.168.0.88 (NGINX SSL Proxy)", "Port 51820/udp → 192.168.0.88 (WireGuard)", "主 SSID + IoT SSID 隔離"],
     ports: ["8123/tcp HAOS", "443/tcp HTTPS", "1883/tcp MQTT", "5683/udp Matter"],
   },
   "ha-backup": {
     icon: "🛟", title: "HA Black (N100) · 備援中樞", en: "Standby Hub · Warm Spare",
-    rows: [["CPU", "Intel N100 · 4-core"], ["RAM", "8 GB DDR5"], ["狀態", "待命（HAOS 開機、整合停用）"], ["同步", "每晚 03:00 接收主機快照"], ["接手條件", "Mac mini 失聯 > 5 分鐘"]],
+    rows: [["IP", "192.168.0.12"], ["CPU", "Intel N100 · 4-core"], ["RAM", "8 GB DDR5"], ["狀態", "24/7 熱備（HAOS 開機、整合停用）"], ["同步", "每小時接收設定備份 · 03:00 全備"], ["接手條件", "Mac mini 失聯 > 5 分鐘"]],
     list: [
       "過熱當機紀錄：原為主中樞，長時間滿載會過熱重啟，故降為備援",
       "備援模式只跑 HAOS，不跑 OpenClaw / Ollama（記憶體不足）→ 語音降級為 HomePod 原生 Siri",
-      "接手流程：拔 Zigbee Stick 插到 HA Black → 還原最新快照 → 路由 :8123 轉向改指備援 IP",
+      "接手流程（自動）：還原最新備份 → 啟動 Z2M 連 SLZB-06 (tcp://192.168.0.25:6638) → 推播通知；路由 443 → .88 改指 .12（或走 VIP 192.168.0.100）",
       "主機恢復後反向還原快照，手動切回",
     ],
     ports: ["8123/tcp HAOS (standby IP)", "22/tcp 快照同步 (rsync)"],
   },
   ha: {
     icon: "🏠", title: "Mac mini M4 · Home Assistant（主中樞）", en: "Apple M4 · 16 GB · Primary",
-    rows: [["晶片", "Apple M4 · 10 核 CPU / 10 核 GPU"], ["記憶體", "16 GB 統一記憶體"], ["儲存", "256 GB SSD"], ["OS", "macOS · HAOS (UTM VM)"], ["附加", "Zigbee Stick (USB 直通) · MQTT Broker"]],
+    rows: [["主機名稱 / IP", "allenchaldeMini · 192.168.0.8（macOS）"], ["Home Assistant", "192.168.0.88（HAOS VM 橋接，獨立 MAC）· homeassistant.local"], ["晶片", "Apple M4 · 10 核 CPU / 10 核 GPU"], ["記憶體", "16 GB 統一記憶體"], ["儲存", "256 GB SSD"], ["OS", "macOS · HAOS (UTM VM)"], ["附加", "SLZB-06 網路型 Zigbee 協調器 (192.168.0.25) · MQTT Broker"]],
     list: [
-      "HAOS — 以 UTM 虛擬機運行於 macOS，USB 直通 Zigbee Stick",
-      "每晚 03:00 HA 完整快照 → 同步到備援 HA Black（場景 23）",
-      "OpenClaw 容器 — Faster-Whisper + Ollama (Llama 3 8B) + Hermes Agent + Piper",
+      "HAOS — 以 UTM 虛擬機（橋接）運行於 macOS；Zigbee 走網路型 SLZB-06，不需 USB 直通",
+      "每小時設定備份 + 每晚 03:00 完整快照 → 推送到 HA Black（場景 23）",
+      "OpenClaw（macOS 原生）— MLX-Whisper large-v3-turbo + Ollama (Qwen3 8B) + Hermes Agent + Piper",
       "Mosquitto MQTT Broker",
       "Zigbee2MQTT — 整合 Aqara 與其他 Zigbee 設備",
       "整合：Hue Bridge API · Panasonic WiFi · Aqara · Roborock Miio",
