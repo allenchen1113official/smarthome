@@ -464,7 +464,7 @@ const NODE_DATA = {
       "接手流程（自動）：還原最新備份 → 啟動 Z2M 連 SLZB-06 (tcp://192.168.0.25:6638) → 推播通知；路由 443 → .88 改指 .12（或走 VIP 192.168.0.100）",
       "主機恢復後反向還原快照，手動切回",
     ],
-    ports: ["8123/tcp HAOS (standby IP)", "22/tcp 快照同步 (rsync)"],
+    ports: ["8123/tcp HAOS (192.168.0.12)", "9000/tcp 青鳥後台（接收每小時備份）", "8404/tcp HAProxy 統計（LB-B）"],
   },
   ha: {
     icon: "🏠", title: "Mac mini M4 · Home Assistant（主中樞）", en: "Apple M4 · 16 GB · Primary",

@@ -372,7 +372,7 @@
   <div class="brand-strip"><div class="dot"></div>Allen &amp; Ann · Smart Home Plan</div>
   <div class="eyebrow">SMART HOME PLAN · v1.0 · APR 2026</div>
   <h1>為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
-  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為備援，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本文件涵蓋三個面向：網路拓樸、30 個自動化場景、與 OpenClaw 語音流程。</p>
+  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為 24/7 熱備，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本文件涵蓋三個面向：網路拓樸、35 個自動化場景、與 OpenClaw 語音流程。</p>
 
   <div class="stats">
     <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
@@ -435,8 +435,8 @@
     <div class="topo-row">
       <div class="label">智慧家庭中樞<small>Smart Hub</small></div>
       <div class="nodes">
-        <div class="topo-node" data-tone="primary"><div class="ni">🏠</div><div class="nl">Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD<br>HAOS VM + OpenClaw + Zigbee Stick</div></div>
-        <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="ni">🛟</div><div class="nl">HA Black (N100) · 備援</div><div class="nm">待命 · 每晚接收快照<br>主機失聯即接手</div></div>
+        <div class="topo-node" data-tone="primary"><div class="ni">🏠</div><div class="nl">Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD<br>HAOS VM + OpenClaw + SLZB-06</div></div>
+        <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="ni">🛟</div><div class="nl">HA Black (N100) · 備援</div><div class="nm">24/7 熱備 · 每小時收備份<br>失聯 5 分自動接手</div></div>
       </div>
     </div>
     <div class="topo-row">
@@ -484,19 +484,19 @@
   <div class="page-head">
     <div class="crumb">/ 03</div>
     <h1>OpenClaw 本地 AI 語音家庭管家</h1>
-    <div class="sub">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~520ms 端到端</div>
+    <div class="sub">MLX-Whisper + Ollama Qwen3 8B + Hermes Agent + Piper · 100% 本地端 · ~570ms 端到端</div>
   </div>
 
   <div class="arch-grid">
     <div class="col">
       <div class="col-title">語音接收<small>Voice Acquisition</small></div>
       <div class="module">
-        <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">HomePod (客廳)</div><div class="m-en">Living Room</div></div></div>
-        <div class="m-spec">AirPlay 2 → mic-bridge</div>
+        <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">Siri 捷徑（HomePod / iPhone / Watch）</div><div class="m-en">固定句型</div></div></div>
+        <div class="m-spec">Siri 捷徑 → HA webhook（HomePod 麥克風不開放，改走捷徑）</div>
       </div>
       <div class="module">
-        <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">HomePod mini</div><div class="m-en">主臥備援</div></div></div>
-        <div class="m-spec">Backup mic path</div>
+        <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">Companion / Watch Assist · Voice PE</div><div class="m-en">自由句 · 免手喚醒詞（選配）</div></div></div>
+        <div class="m-spec">直接進 Assist 管線；HomePod 只負責 TTS 輸出</div>
       </div>
     </div>
     <div class="col">
@@ -504,16 +504,16 @@
       <div class="col-frame openclaw">
         <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
         <div class="module openclaw-core">
-          <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT — 語音轉文字</div><div class="m-en">Faster-Whisper</div></div></div>
-          <div class="m-spec">small.zh · INT8 · ~150ms</div>
+          <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT — 語音轉文字</div><div class="m-en">MLX-Whisper · large-v3-turbo</div></div></div>
+          <div class="m-spec">Metal GPU · zh · 1.6 GB · ~200ms</div>
         </div>
         <div class="module openclaw-core">
-          <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
-          <div class="m-spec">Metal GPU · 16 GB · ~250ms</div>
+          <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Qwen3 8B（think off）</div></div></div>
+          <div class="m-spec">Q4_K_M 5.2 GB · Metal GPU · ~250ms</div>
         </div>
         <div class="module openclaw-core">
           <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
-          <div class="m-spec">14 tools · guard/retry/rollback · ~40ms</div>
+          <div class="m-spec">18 tools · guard/retry/rollback · ~40ms</div>
         </div>
         <div class="module openclaw-core">
           <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">TTS — 文字轉語音</div><div class="m-en">Piper · 極速</div></div></div>
@@ -560,7 +560,7 @@
   <div class="detail-grid">
     <div class="detail-card">
       <h3>範例腳本：Allen 回家了</h3>
-      <div class="muted">語音 → Llama 3 推理 intent → HA 服務</div>
+      <div class="muted">語音 → Qwen3 推理 intent → Hermes 守門／確認 → HA 服務</div>
 <pre>transcript: "Allen 回家了"
 
 response:
@@ -578,11 +578,11 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
       <h3>硬體規格與資源用量</h3>
       <div class="muted">Mac mini M4 滿載實測（推估）</div>
       <div class="row"><div class="k">CPU</div><div class="v">Apple M4 · 10 核 CPU / 10 核 GPU · 16 GB</div></div>
-      <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.4G + HAOS VM 2G + macOS 3G ≈ 11.6/16 GB</div></div>
+      <div class="row"><div class="k">RAM 用量</div><div class="v">MLX-Whisper 1.6G + Ollama 5.2G + Piper 0.2G + Hermes 0.4G + HAOS VM 2G + macOS 3G ≈ 12.4/16 GB</div></div>
       <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 / 256 GB</div></div>
       <div class="row"><div class="k">端到端延遲</div><div class="v" style="color:var(--c-secure);font-weight:600">~520ms</div></div>
-      <div class="row"><div class="k">月電費</div><div class="v">~NT$ 50 ＋ 備援待命 ~NT$ 30</div></div>
-      <div class="row"><div class="k">備援</div><div class="v">HA Black (N100) 待命 · 每晚快照 · 失聯 5 分鐘接手</div></div>
+      <div class="row"><div class="k">月電費</div><div class="v">~NT$ 50 ＋ 熱備 ~NT$ 30；全屋用電由 Shelly EM 量測、Hermes 節能守門（eco 預設）</div></div>
+      <div class="row"><div class="k">備援</div><div class="v">HA Black (N100 · .12) 24/7 熱備 · 每小時收備份 · 失聯 5 分鐘自動接手（Z2M → SLZB-06）</div></div>
     </div>
   </div>
 
@@ -595,7 +595,7 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
   <div class="page-head">
     <div class="crumb">/ 04</div>
     <h1>Hermes Agent — 任務編排實作規格</h1>
-    <div class="sub">14 工具 · guard / confirm / retry / rollback · 6 種權限 scope · 三層本地記憶 · 股票分析模組（只分析不下單）</div>
+    <div class="sub">18 工具 · guard / confirm / retry / rollback · 6 種權限 scope · 三層本地記憶 · 股票分析模組（只分析不下單）</div>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;">
@@ -738,8 +738,8 @@ Object.keys(CATS).forEach(cKey => {
 const STEPS = [
   {n:1,t:"說：「Allen 回家了」",d:"語音輸入"},
   {n:2,t:"傳送音訊",d:"AirPlay → STT"},
-  {n:3,t:"STT 轉錄",d:"Faster-Whisper"},
-  {n:4,t:"Ollama 推理",d:"Llama 3 8B"},
+  {n:3,t:"STT 轉錄",d:"MLX-Whisper"},
+  {n:4,t:"Ollama 推理",d:"Qwen3 8B"},
   {n:5,t:"Hermes 編排",d:"Tool Calling"},
   {n:6,t:"呼叫 HA 服務",d:"REST API"},
   {n:7,t:"Piper 生成語音",d:"TTS"},

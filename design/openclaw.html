@@ -424,7 +424,7 @@
 <header class="page-head">
   <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
   <h1>OpenClaw 本地 AI 語音家庭管家</h1>
-  <div class="subtitle">Faster-Whisper（語音轉文字） + Ollama Llama 3 8B（推理） + Hermes Agent（任務編排）+ Piper（文字轉語音），完整跑在 Mac mini M4 上（Ollama 原生 Metal 加速）。100% 本地端，無雲端依賴。按下「啟動流程」可看完整八步語音流程動畫。Hermes 的工具清單、權限模型、記憶層與股票分析模組，詳見 <a href="hermes.html" style="color:var(--c-secure);font-weight:500">Hermes Agent 實作規格 →</a></div>
+  <div class="subtitle">MLX-Whisper large-v3-turbo（語音轉文字） + Ollama Qwen3 8B（推理） + Hermes Agent（任務編排 · 節能守門）+ Piper（文字轉語音），完整跑在 Mac mini M4（allenchaldeMini · 192.168.0.8）上，STT 與 LLM 都走 Metal GPU。100% 本地端，無雲端依賴。按下「啟動流程」可看完整八步語音流程動畫。Hermes 的工具清單、權限模型、記憶層與股票分析模組，詳見 <a href="hermes.html" style="color:var(--c-secure);font-weight:500">Hermes Agent 實作規格 →</a></div>
 </header>
 
 <section class="stage-frame">
@@ -448,21 +448,21 @@
           <div class="m-row">
             <div class="m-icon">🔊</div>
             <div>
-              <div class="m-name">HomePod (客廳)</div>
-              <div class="m-en">Living Room</div>
+              <div class="m-name">Siri 捷徑（HomePod / iPhone / Watch）</div>
+              <div class="m-en">Fixed phrases → HA webhook</div>
             </div>
           </div>
-          <div class="m-spec">AirPlay 2 → OpenClaw mic-bridge</div>
+          <div class="m-spec">「嘿 Siri，Allen 回家了」→ POST /api/webhook（HomePod 麥克風不開放第三方，改走捷徑）</div>
         </div>
         <div class="module" id="m-mic2" data-id="mic2">
           <div class="m-row">
             <div class="m-icon">🔉</div>
             <div>
-              <div class="m-name">HomePod mini (主臥)</div>
-              <div class="m-en">Master Bedroom</div>
+              <div class="m-name">HA Companion / Apple Watch Assist</div>
+              <div class="m-en">Free-form speech · HA Voice PE（選配）</div>
             </div>
           </div>
-          <div class="m-spec">備援麥克風路徑</div>
+          <div class="m-spec">自由句直接進 Assist 管線；Voice PE 為唯一免手喚醒詞麥克風</div>
         </div>
       </div>
 
@@ -476,20 +476,20 @@
               <div class="m-icon">📝</div>
               <div>
                 <div class="m-name">STT — 語音轉文字</div>
-                <div class="m-en">Faster-Whisper · 本地輕量</div>
+                <div class="m-en">MLX-Whisper · Metal GPU</div>
               </div>
             </div>
-            <div class="m-spec">Model: small.zh · INT8 · ~150ms</div>
+            <div class="m-spec">Model: large-v3-turbo · zh · 1.6 GB · ~200ms</div>
           </div>
           <div class="module openclaw-core" id="m-llm" data-id="llm">
             <div class="m-row">
               <div class="m-icon">🦙</div>
               <div>
                 <div class="m-name">推理引擎</div>
-                <div class="m-en">Ollama · Llama 3 (8B)</div>
+                <div class="m-en">Ollama · Qwen3 (8B · think off)</div>
               </div>
             </div>
-            <div class="m-spec">Metal GPU · 16 GB 統一記憶體 · ~250ms</div>
+            <div class="m-spec">Q4_K_M 5.2 GB · Metal GPU · ~250ms · 選配 Grok 雲端（預設關）</div>
           </div>
           <div class="module openclaw-core" id="m-hermes" data-id="hermes">
             <div class="m-row">
@@ -596,11 +596,11 @@
 <section class="tech-detail">
   <div class="detail-card">
     <h3>範例腳本：Allen 回家了</h3>
-    <div class="muted">OpenClaw 接收語音 → Llama 3 推理 intent → Hermes Agent 編排 → 觸發 HA 服務</div>
+    <div class="muted">OpenClaw 接收語音 → Qwen3 推理 intent → Hermes Agent 編排（節能守門 · 覆誦確認）→ 觸發 HA 服務</div>
 <pre><span style="color:var(--c-sleep)"># 1) STT 結果</span>
 transcript: "Allen 回家了"
 
-<span style="color:var(--c-sleep)"># 2) Llama 3 推理 (Ollama)</span>
+<span style="color:var(--c-sleep)"># 2) Qwen3 推理 (Ollama · think:false)</span>
 prompt: |
   使用者: {transcript}
   情境: { time: 17:23, weather: 28°C }
@@ -634,15 +634,15 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
     <h3>硬體規格與資源用量</h3>
     <div class="muted">Mac mini M4 滿載時的實測數據（推估）</div>
     <div class="row"><div class="k">CPU</div><div class="v">Apple M4 · 10 核 CPU / 10 核 GPU · 16 GB</div></div>
-    <div class="row"><div class="k">RAM 用量</div><div class="v">Whisper 0.6G + Ollama 5.4G + Hermes 0.4G + HAOS VM 2.0G + macOS 3.0G ≈ 11.6 GB / 16 GB</div></div>
+    <div class="row"><div class="k">RAM 用量</div><div class="v">MLX-Whisper 1.6G + Ollama 5.2G + Piper 0.2G + Hermes 0.4G + HAOS VM 2.0G + macOS 3.0G ≈ 12.4 GB / 16 GB</div></div>
     <div class="row"><div class="k">磁碟</div><div class="v">模型總和 ~12 GB / 256 GB</div></div>
-    <div class="row"><div class="k">STT 延遲</div><div class="v">faster-whisper-small · ~150ms</div></div>
-    <div class="row"><div class="k">LLM 延遲</div><div class="v">Llama 3 8B Q4 · Metal · ~250ms</div></div>
+    <div class="row"><div class="k">STT 延遲</div><div class="v">mlx-whisper large-v3-turbo · Metal · ~200ms</div></div>
+    <div class="row"><div class="k">LLM 延遲</div><div class="v">Qwen3 8B Q4_K_M · Metal · ~250ms</div></div>
     <div class="row"><div class="k">Hermes 編排</div><div class="v">14 tools · routing ~40ms</div></div>
     <div class="row"><div class="k">TTS 延遲</div><div class="v">Piper · ~80ms</div></div>
     <div class="row"><div class="k">端到端</div><div class="v" style="color:var(--c-secure);font-weight:600">~520ms（語音→燈亮）</div></div>
     <div class="row"><div class="k">月電費</div><div class="v">~NT$ 50（24/7 · 閒置約 4W）＋ 備援 HA Black 待命 ~NT$ 30</div></div>
-    <div class="row"><div class="k">備援</div><div class="v">HA Black (N100) 待命 · 每晚接收快照 · 失聯 5 分鐘通知接手（僅 HA，無本地 AI）</div></div>
+    <div class="row"><div class="k">備援</div><div class="v">HA Black (N100 · 192.168.0.12) 24/7 熱備 · 每小時收設定備份 · 失聯 5 分鐘自動接手（Z2M 連 SLZB-06；語音降級為容器版 faster-whisper + HA 內建 Assist）</div></div>
   </div>
 </section>
 
@@ -650,18 +650,18 @@ say: "Allen 回家了，冷氣已設為 24 度"</pre>
 const STEPS = [
   { n:1, t:"說：「Allen 回家了」", d:"語音輸入", active:["mic1"], from:null, to:null,
     bubble:{ html:"🗣️ <b>Allen：</b>「Allen 回家了」", anchor:"mic1", side:"right", x:0, y:-46 } },
-  { n:2, t:"傳送音訊", d:"AirPlay → STT", active:["mic1","stt"], from:"mic1", to:"stt",
-    bubble:{ html:"🔊 PCM audio stream<br>16kHz · 16-bit · 客廳 HomePod", anchor:"stt", side:"left", x:0, y:-46 } },
-  { n:3, t:"STT 轉錄", d:"Faster-Whisper", active:["stt"], from:null, to:null,
-    bubble:{ html:"📝 transcript: <b>\"Allen 回家了\"</b><br><span style='opacity:.7'>耗時 152ms</span>", anchor:"stt", side:"top", x:0, y:60 } },
-  { n:4, t:"Ollama 推理", d:"Llama 3 8B", active:["llm"], from:"stt", to:"llm",
-    bubble:{ html:"🦙 intent: <b>home_arrival</b><br>actions: [Welcome scene, AC 24°C, 開窗簾]", anchor:"llm", side:"top", x:0, y:60 } },
-  { n:5, t:"Hermes 任務編排", d:"Tool Calling · 路由", active:["hermes"], from:"llm", to:"hermes",
-    bubble:{ html:"⚡ Hermes Agent 解析 intent<br>分派 → HA service + TTS reply", anchor:"hermes", side:"top", x:0, y:60 } },
+  { n:2, t:"傳送音訊 / 文字", d:"Assist 管線 → STT", active:["mic1","stt"], from:"mic1", to:"stt",
+    bubble:{ html:"🔊 Companion/Voice PE：PCM 16kHz → Wyoming<br>Siri 捷徑：已是文字，直接進 Hermes", anchor:"stt", side:"left", x:0, y:-46 } },
+  { n:3, t:"STT 轉錄", d:"MLX-Whisper large-v3-turbo", active:["stt"], from:null, to:null,
+    bubble:{ html:"📝 transcript: <b>\"Allen 回家了\"</b><br><span style='opacity:.7'>耗時 ~200ms · Metal</span>", anchor:"stt", side:"top", x:0, y:60 } },
+  { n:4, t:"Ollama 推理", d:"Qwen3 8B", active:["llm"], from:"stt", to:"llm",
+    bubble:{ html:"🧠 intent: <b>home_arrival</b><br>actions: [Welcome scene, AC 24°C, 開窗簾]", anchor:"llm", side:"top", x:0, y:60 } },
+  { n:5, t:"Hermes 任務編排", d:"守門 · 確認 · 分派", active:["hermes"], from:"llm", to:"hermes",
+    bubble:{ html:"⚡ 節能守門：AC 24°C → <b>27°C</b>（eco）<br>覆誦「要我開 Welcome、冷氣 27 度嗎？」→「好」", anchor:"hermes", side:"top", x:0, y:60 } },
   { n:6, t:"呼叫 HA 服務", d:"REST API · Local LAN", active:["hermes","ha","devices"], from:"hermes", to:"ha",
     bubble:{ html:"🏠 POST /api/services/scene/turn_on<br>Bearer Token · 22 燈 + 1 AC + 1 Curtain", anchor:"ha", side:"top", x:0, y:60 } },
   { n:7, t:"Piper 生成語音", d:"TTS · 中文聲線", active:["tts"], from:"hermes", to:"tts",
-    bubble:{ html:"🔉 \"Allen 回家了，冷氣設為 24°C\"<br><span style='opacity:.7'>Piper 生成 78ms</span>", anchor:"tts", side:"top", x:0, y:60 } },
+    bubble:{ html:"🔉 \"歡迎回家，冷氣已設為二十七度，節能模式。\"<br><span style='opacity:.7'>Piper 生成 78ms</span>", anchor:"tts", side:"top", x:0, y:60 } },
   { n:8, t:"播報語音", d:"HomePod + 手機推播", active:["tts","out1","out2"], from:"tts", to:"out1",
     bubble:{ html:"📣 HomePod 播報 · App 推送通知", anchor:"out1", side:"left", x:0, y:-46 } },
 ];

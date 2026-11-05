@@ -31,8 +31,10 @@ design/
 
 | 項目 | 規格 |
 |---|---|
-| 主中樞 | Mac mini M4 · 10 核 CPU / 10 核 GPU · 16 GB 統一記憶體 · 256 GB SSD · HAOS (UTM VM) |
-| 備援中樞 | Home Assistant Black · Intel N100 · 8 GB · 待命；每晚 03:00 接收快照，主機失聯 > 5 分鐘通知接手（原主機因長時間滿載過熱當機而降為備援；備援僅跑 HA，無本地 AI） |
+| 主中樞 | Mac mini M4 `allenchaldeMini` · 192.168.0.8 · 10 核 CPU / 10 核 GPU · 16 GB 統一記憶體 · 256 GB SSD · HAOS (UTM VM 橋接 · 192.168.0.88) |
+| Zigbee | SLZB-06 PoE 網路型協調器 · 192.168.0.25（主副節點共用，不需 USB 直通） |
+| 用電量測 | Shelly EM 總表 + Aqara 計量插座（本地，雲端關閉） |
+| 備援中樞 | Home Assistant Black · Intel N100 · 8 GB · 192.168.0.12 · **24/7 熱備**；每小時接收設定備份 + 03:00 全備，主機失聯 > 5 分鐘自動接手（Z2M 改連 SLZB-06）；僅跑 HA + 容器版 faster-whisper，語音降級為 HA 內建 Assist（原主機因長時間滿載過熱當機而降為備援） |
 | 路由 | tp-link BE3600（WiFi 7 · 三頻） |
 | 外網 | 中華電信 100M/40M · 固定 IP · DuckDNS |
 | 照明 | Philips Hue Bridge v2 + 18 崁燈 + 1 Tap + 2 Dimmer |
@@ -46,13 +48,19 @@ design/
 
 | 元件 | 技術 | 延遲 |
 |---|---|---|
-| STT | Faster-Whisper `small.zh` INT8 | ~150 ms |
-| 推理 | Ollama · Llama 3 8B Q4（Metal GPU） | ~250 ms |
-| 編排 | Hermes Agent（14 tools · guard / retry / rollback） | ~40 ms |
+| STT | wyoming-mlx-whisper `large-v3-turbo`（Metal GPU） | ~200 ms |
+| 推理 | Ollama · Qwen3 8B Q4_K_M（Metal GPU · think off；選配 Grok 雲端，預設關） | ~250 ms |
+| 編排 | Hermes Agent（18 tools · guard / retry / rollback） | ~40 ms |
 | TTS | Piper `zh_CN-huayan` | ~80 ms |
-| **端到端** | 語音 → 燈亮 | **~520 ms** |
+| **端到端** | 語音 → 燈亮 | **~570 ms** |
 
-統一記憶體用量約 11.6 GB / 16 GB（含 macOS、HAOS VM 與股票模組），餘量 ~4.4 GB。100% 本地端執行，行情 API 為唯一對外連線（白名單唯讀）。
+統一記憶體用量約 12.4 GB / 16 GB（含 macOS、HAOS VM 與股票模組），餘量 ~3.6 GB。100% 本地端執行，行情 API 為唯一對外連線（白名單唯讀）；LINE / Telegram 機器人與 Grok 為選配。
+
+## 三條原則（憲章 v1.1.0）
+
+1. 在地執行、機敏資料不外洩（雲端 LLM 選配預設關、只送文字）。
+2. 金鑰不進 GitHub（`tools/check_secrets.py` + pre-push）。
+3. 節能省碳最高目標，由單一 AI 助理（Hermes 節能管家）決策：預設 eco、冷氣 ≥ 27 °C、燈 ≤ 70%、無人 20 分關；每日用電與碳排報告。
 
 ## 自動化場景分類
 
@@ -69,7 +77,7 @@ design/
 
 | 面向 | 內容 |
 |---|---|
-| 工具清單 | 14 個註冊工具，精簡 schema ~1.1k tokens 注入 system prompt；未註冊工具一律拒絕 |
+| 工具清單 | 18 個註冊工具（含 4 個節能），精簡 schema ~1.1k tokens 注入 system prompt；未註冊工具一律拒絕 |
 | 編排 | Plan = 步驟串，逐步 guard → confirm → dispatch → retry → settle；失敗反向補償回滾 |
 | 介面 | HA REST（主）· HA WebSocket（狀態訂閱）· MQTT QoS1（感測/告警）· Matter 經 HA server |
 | 權限 | 6 種 scope；`autonomy: confirm_all` — 任何改變實體狀態的動作先覆誦確認，深夜改推播 |

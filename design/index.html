@@ -231,7 +231,7 @@
 <section class="hero">
   <span class="eyebrow"><span class="glyph"></span>Smart Home Plan · v1.0 · Apr 2026</span>
   <h1 class="title">為 Allen 與 Ann 設計的<br><span class="accent">本地 AI 智慧家庭</span>。</h1>
-  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為備援，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本規劃涵蓋三個面向 — 網路拓樸、30 個自動化場景、以及 OpenClaw 語音流程。</p>
+  <p class="lede">以 Mac mini M4（16 GB）為主中樞、HA Black（N100）為 24/7 熱備，搭配 OpenClaw 本地語音管家、Philips Hue、Panasonic 變頻空調、Aqara 電動窗簾與 Roborock Qrevo Edge C，打造 100% 本地端執行、低延遲、無雲端依賴的家庭場域。本規劃涵蓋三個面向 — 網路拓樸、35 個自動化場景、以及 OpenClaw 語音流程。</p>
 
   <div class="stats">
     <div class="stat"><div class="n">22</div><div class="l">Hue 燈具</div></div>
@@ -328,7 +328,7 @@
         <path d="M220 55 L244 55" stroke="var(--ink-4)"/>
       </svg>
     </div>
-    <p class="desc">Faster-Whisper（STT）+ Ollama Llama 3 8B（推理）+ Hermes Agent（任務編排）+ Piper（TTS），全部跑在 Mac mini M4 上（Metal GPU 加速）。可播放八步語音流程動畫 — 從「Allen 回家了」到冷氣自動設定 24°C。</p>
+    <p class="desc">MLX-Whisper large-v3-turbo（STT · Metal）+ Ollama Qwen3 8B（推理 · Metal）+ Hermes Agent（任務編排）+ Piper（TTS），全部跑在 Mac mini M4 上（Metal GPU 加速）。可播放八步語音流程動畫 — 從「Allen 回家了」到冷氣自動設定 24°C。</p>
     <span class="cta">啟動流程 →</span>
   </a>
 
@@ -337,7 +337,7 @@
       <div class="num">/ 04</div>
       <h2>Hermes Agent 實作規格</h2>
       <div class="en">Tool Registry · Orchestration · Permissions</div>
-      <p class="desc" style="margin-top:12px">Llama 3 與 Home Assistant 之間的編排層：14 個註冊工具與 JSON Schema、條件／重試／回滾的 Plan 執行、HA REST + MQTT + Matter 介面契約與 scope 權限矩陣、三層本地記憶，以及 Mac mini M4 上的併發車道策略。新增股票分析模組 — 盤後掃描、盤中告警、語音問答、收盤圖卡與模擬單（只分析不下單）。所有改變實體狀態的動作一律先覆誦確認。</p>
+      <p class="desc" style="margin-top:12px">Qwen3 與 Home Assistant 之間的編排層：18 個註冊工具（含 4 個節能）與 JSON Schema、條件／重試／回滾的 Plan 執行、HA REST + MQTT + Matter 介面契約與 scope 權限矩陣、三層本地記憶，以及 Mac mini M4 上的併發車道策略。新增股票分析模組 — 盤後掃描、盤中告警、語音問答、收盤圖卡與模擬單（只分析不下單）。所有改變實體狀態的動作一律先覆誦確認。</p>
       <span class="cta">閱讀規格 →</span>
     </div>
     <div class="preview" style="height:190px">

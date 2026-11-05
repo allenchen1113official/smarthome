@@ -404,7 +404,7 @@
         <div class="num">/ 03</div>
         <h3>OpenClaw 架構</h3>
         <div class="en">Local AI Voice Assistant</div>
-        <p>Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper，全部跑在 Mac mini M4 上（Metal GPU 加速）。端到端延遲 ~520ms，含 Hermes 的 14 工具編排與權限模型。</p>
+        <p>MLX-Whisper + Ollama Qwen3 8B + Hermes Agent + Piper，全部跑在 Mac mini M4 上（Metal GPU 加速）。端到端延遲 ~570ms，含 Hermes 的 18 工具編排與權限模型。</p>
       </div>
     </div>
     <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Smart Home</span><span>02 / 11</span></div>
@@ -434,8 +434,8 @@
       <div class="topo-row">
         <div class="lyr-label">中樞<small>Smart Hub</small></div>
         <div class="nodes">
-          <div class="topo-node" data-tone="primary"><div class="nl">🏠 Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD · HAOS VM + OpenClaw + Zigbee Stick</div></div>
-          <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="nl">🛟 HA Black (N100) · 備援</div><div class="nm">待命 · 每晚接收快照 · 主機失聯即接手</div></div>
+          <div class="topo-node" data-tone="primary"><div class="nl">🏠 Mac mini M4 · 主中樞</div><div class="nm">M4 · 16GB · 256GB SSD · HAOS VM + OpenClaw + SLZB-06</div></div>
+          <div class="topo-node" style="border-style:dashed;background:var(--bg-tint)"><div class="nl">🛟 HA Black (N100) · 備援</div><div class="nm">24/7 熱備 · 每小時收備份 · 失聯 5 分自動接手</div></div>
         </div>
       </div>
       <div class="topo-row">
@@ -564,19 +564,19 @@
   <div class="slide-pad">
     <div class="crumb">/ 03 · OPENCLAW LOCAL AI</div>
     <h1>OpenClaw 本地 AI 語音管家</h1>
-    <p class="lede">Faster-Whisper + Ollama Llama 3 8B + Hermes Agent + Piper · 100% 本地端 · ~520ms 端到端延遲</p>
+    <p class="lede">MLX-Whisper + Ollama Qwen3 8B + Hermes Agent + Piper · 100% 本地端 · ~570ms 端到端延遲</p>
 
     <div class="arch-grid">
       <div class="col">
         <div class="col-title">語音接收<small>Voice Acquisition</small></div>
         <div class="col-frame">
           <div class="module">
-            <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">HomePod (客廳)</div><div class="m-en">Living Room</div></div></div>
-            <div class="m-spec">AirPlay 2 → mic-bridge</div>
+            <div class="m-row"><div class="m-icon">🔊</div><div><div class="m-name">Siri 捷徑（HomePod / iPhone / Watch）</div><div class="m-en">固定句型</div></div></div>
+            <div class="m-spec">Siri 捷徑 → HA webhook（HomePod 麥克風不開放，改走捷徑）</div>
           </div>
           <div class="module">
-            <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">HomePod mini</div><div class="m-en">主臥備援</div></div></div>
-            <div class="m-spec">Backup mic path</div>
+            <div class="m-row"><div class="m-icon">🔉</div><div><div class="m-name">Companion / Watch Assist · Voice PE</div><div class="m-en">自由句 · 免手喚醒詞（選配）</div></div></div>
+            <div class="m-spec">直接進 Assist 管線；HomePod 只負責 TTS 輸出</div>
           </div>
         </div>
       </div>
@@ -585,12 +585,12 @@
         <div class="col-frame openclaw">
           <div class="frame-title">OpenClaw Container<small>Local AI Pipeline</small></div>
           <div class="module openclaw-core">
-            <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT 語音轉文字</div><div class="m-en">Faster-Whisper</div></div></div>
-            <div class="m-spec">small.zh · INT8 · ~150ms</div>
+            <div class="m-row"><div class="m-icon">📝</div><div><div class="m-name">STT 語音轉文字</div><div class="m-en">MLX-Whisper · large-v3-turbo</div></div></div>
+            <div class="m-spec">Metal GPU · zh · 1.6 GB · ~200ms</div>
           </div>
           <div class="module openclaw-core">
-            <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Llama 3 8B</div></div></div>
-            <div class="m-spec">Metal GPU · 16 GB · ~250ms</div>
+            <div class="m-row"><div class="m-icon">🦙</div><div><div class="m-name">推理引擎</div><div class="m-en">Ollama · Qwen3 8B（think off）</div></div></div>
+            <div class="m-spec">Q4_K_M 5.2 GB · Metal GPU · ~250ms</div>
           </div>
           <div class="module openclaw-core">
             <div class="m-row"><div class="m-icon">⚡</div><div><div class="m-name">Hermes Agent</div><div class="m-en">任務編排 · Tool Calling</div></div></div>
@@ -644,8 +644,8 @@
     <div class="steps-grid">
       <div class="step-box"><div class="sn">STEP 01</div><div class="st">說：「Allen 回家了」</div><div class="sd">語音輸入 · 客廳 HomePod</div></div>
       <div class="step-box"><div class="sn">STEP 02</div><div class="st">傳送音訊</div><div class="sd">AirPlay → STT</div></div>
-      <div class="step-box"><div class="sn">STEP 03</div><div class="st">STT 轉錄</div><div class="sd">Faster-Whisper · 152ms</div></div>
-      <div class="step-box"><div class="sn">STEP 04</div><div class="st">Ollama 推理</div><div class="sd">Llama 3 8B · 600ms</div></div>
+      <div class="step-box"><div class="sn">STEP 03</div><div class="st">STT 轉錄</div><div class="sd">MLX-Whisper · ~200ms</div></div>
+      <div class="step-box"><div class="sn">STEP 04</div><div class="st">Ollama 推理</div><div class="sd">Qwen3 8B · ~600ms</div></div>
       <div class="step-box"><div class="sn">STEP 05</div><div class="st">Hermes 任務編排</div><div class="sd">Tool Calling · 40ms</div></div>
       <div class="step-box"><div class="sn">STEP 06</div><div class="st">呼叫 HA 服務</div><div class="sd">REST API · Local LAN</div></div>
       <div class="step-box"><div class="sn">STEP 07</div><div class="st">Piper 生成語音</div><div class="sd">TTS · 78ms</div></div>
@@ -667,7 +667,7 @@
   <div class="slide-pad">
     <div class="crumb">/ 04 · HERMES AGENT · 編排與權限</div>
     <h1>Hermes Agent — 可驗證的任務編排</h1>
-    <p class="lede">Llama 3 與 Home Assistant 之間的那一層：把自然語意轉成帶 guard、retry 與 rollback 的工具呼叫序列。14 個註冊工具、三條介面通道、六種權限 scope，全部動作先覆誦確認。</p>
+    <p class="lede">Qwen3 與 Home Assistant 之間的那一層：把自然語意轉成帶 guard、retry 與 rollback 的工具呼叫序列。18 個註冊工具（含 4 個節能）、三條介面通道、六種權限 scope，全部動作先覆誦確認。</p>
 
     <div class="steps-grid" style="grid-template-columns:repeat(6,1fr);margin-top:28px;">
       <div class="step-box"><div class="sn">01 PARSE</div><div class="st" style="font-size:20px">解析計畫</div><div class="sd">LLM JSON → Plan<br>schema 驗證</div></div>
@@ -711,7 +711,7 @@
           <div style="margin-top:8px"><b>Fast lane ×4</b> — 查狀態、HA 呼叫、報價</div>
           <div style="margin-top:8px"><b>Batch lane ×1</b> — 盤後掃描、圖卡、備份；聽到喚醒詞即暫停</div>
         </div>
-        <div style="margin-top:14px;font-size:17px;color:var(--ink-3);line-height:1.45">「冷氣幾度？」走 fast lane 免 LLM，~310ms。記憶體合計 11.6 GB / 16 GB。</div>
+        <div style="margin-top:14px;font-size:17px;color:var(--ink-3);line-height:1.45">「冷氣幾度？」走 fast lane 免 LLM，~310ms。記憶體合計 12.4 GB / 16 GB。</div>
       </div>
     </div>
     <div class="footer-bar"><span><span class="dot"></span>Allen &amp; Ann · Hermes Agent</span><span>10 / 11</span></div>
