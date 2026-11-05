@@ -101,19 +101,19 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.4 · 2026-11-05</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.5 · 2026-11-05</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>
 </header>
 <div class="wrap">
-  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#一頁快速開始">一頁快速開始</a><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a><a href="#3.12-驗證清單">3.12 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch13"><span>📟</span>12 儀表板建置</a><div class="nav-sub"><a href="#12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</a><a href="#12.2-前置">12.2 前置</a><a href="#12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</a><a href="#12.3b-貼上前-一次檢查所有實體是否存在-85-個">12.3b 貼上前：一次檢查所有實體是否存在（85 個）</a><a href="#12.4-壁掛平板設定">12.4 壁掛平板設定</a><a href="#12.5-手機">12.5 手機</a><a href="#12.6-驗收">12.6 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch14"><span>📎</span>附錄 A 總表</a><div class="nav-sub"><a href="#a.1-ip-總表">A.1 IP 總表</a><a href="#a.2-埠總表">A.2 埠總表</a><a href="#a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</a><a href="#a.4-實體命名速查">A.4 實體命名速查</a><a href="#a.5-檔案與目錄位置">A.5 檔案與目錄位置</a><a href="#a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</a><a href="#a.7-變更紀錄">A.7 變更紀錄</a></div></div></nav>
+  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#一頁快速開始">一頁快速開始</a><a href="#三條不可妥協的原則">三條不可妥協的原則</a><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.8b-用電量測-13-章節能管家的資料來源">3.8b 用電量測（13 章節能管家的資料來源）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch13"><span>📟</span>12 儀表板建置</a><div class="nav-sub"><a href="#12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</a><a href="#12.2-前置">12.2 前置</a><a href="#12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</a><a href="#12.3b-貼上前-一次檢查所有實體是否存在-93-個">12.3b 貼上前：一次檢查所有實體是否存在（93 個）</a><a href="#12.4-壁掛平板設定">12.4 壁掛平板設定</a><a href="#12.5-手機">12.5 手機</a><a href="#12.6-驗收">12.6 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch14"><span>🌱</span>13 節能與碳排</a><div class="nav-sub"><a href="#13.1-三條原則怎麼落到系統裡">13.1 三條原則怎麼落到系統裡</a><a href="#13.2-架構-量測在-ha-決策在-hermes">13.2 架構：量測在 HA、決策在 Hermes</a><a href="#13.3-用電量測硬體-03-章-3.8">13.3 用電量測硬體（03 章 §3.8）</a><a href="#13.4-ha-package-s00_energy.yaml">13.4 HA package：s00_energy.yaml</a><a href="#13.5-hermes-節能模組-v0.4">13.5 Hermes 節能模組（v0.4）</a><a href="#13.6-35-個情境的節能規則-設計時必填">13.6 35 個情境的節能規則（設計時必填）</a><a href="#13.7-儀表板-12-章補一個區塊">13.7 儀表板（12 章補一個區塊）</a><a href="#13.8-金鑰不進-github-推送前掃描">13.8 金鑰不進 GitHub：推送前掃描</a><a href="#13.9-驗證清單">13.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch15"><span>📎</span>附錄 A 總表</a><div class="nav-sub"><a href="#a.1-ip-總表">A.1 IP 總表</a><a href="#a.2-埠總表">A.2 埠總表</a><a href="#a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</a><a href="#a.4-實體命名速查">A.4 實體命名速查</a><a href="#a.5-檔案與目錄位置">A.5 檔案與目錄位置</a><a href="#a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</a><a href="#a.8-資料流清單-原則-1-什麼資料會離開家裡">A.8 資料流清單（原則 1：什麼資料會離開家裡）</a><a href="#a.7-變更紀錄">A.7 變更紀錄</a></div></div></nav>
   <main>
     <div class="hero">
       <h1>從無到有：Mac mini M4 × Home Assistant × OpenClaw × Hermes</h1>
       <p>依 <code>design/</code> 規劃文件逐章實作的新手建置手冊：網路拓樸、HAOS 虛擬機、設備整合、本地語音管線、Hermes 管家，以及 35 個自動化情境的完整 YAML 與驗收步驟。</p>
       <div class="stats">
-        <div class="stat"><b>14</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
+        <div class="stat"><b>15</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>61</b>HA 自動化</div><div class="stat"><b>18</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
       </div>
       <div class="scenes">
         <h2>情境索引</h2>
@@ -123,7 +123,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
     </div>
     <section id="ch0" class="chapter"><div class="eyebrow">📘 手冊首頁</div><h1 id="allen-ann-智慧家庭-從無到有建置-sop">Allen &amp; Ann 智慧家庭 — 從無到有建置 SOP</h1>
 <blockquote>
-<p>版本 1.4 · 2026-11-05（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
+<p>版本 1.5 · 2026-11-05（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。</p>
 </blockquote>
 <h2 id="一頁快速開始">一頁快速開始</h2>
@@ -152,8 +152,39 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <td>10（Telegram 10 分鐘、LINE 需 https）</td>
 </tr>
 <tr>
+<td>節能省碳（AI 節能管家）</td>
+<td>03 §3.8b 量測 → 13 → 12 能源區塊</td>
+</tr>
+<tr>
 <td>查任何 IP / 埠 / 密鑰</td>
 <td>附錄 A</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="三條不可妥協的原則">三條不可妥協的原則</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>原則</th>
+<th>手冊哪裡落實</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>系統在地執行，機敏資料不外洩</td>
+<td>04（本地語音）、05（Ollama 預設）、09（Grok 選配預設關）、13 §13.1、附錄 A.8 資料流</td>
+</tr>
+<tr>
+<td>2</td>
+<td>金鑰、機敏資料不推上 GitHub</td>
+<td>13 §13.8 <code>tools/check_secrets.py</code> + pre-push；附錄 A.3 密鑰位置</td>
+</tr>
+<tr>
+<td>3</td>
+<td>節能省碳為最高目標，由一個 AI 助理決策</td>
+<td>13 全章；06 情境節能規則（13 §13.6）；12 能源區塊</td>
 </tr>
 </tbody>
 </table></div>
@@ -247,8 +278,14 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <td>2 小時</td>
 </tr>
 <tr>
+<td>13</td>
+<td><a href="#ch14">13-節能與碳排-AI節能管家.md</a></td>
+<td>三條原則落實；Shelly EM / 計量插座；<code>s00_energy.yaml</code>；Hermes 節能守門（只收緊不放寬）與每日用電碳排報告；35 情境節能規則；金鑰推送前掃描</td>
+<td>半天</td>
+</tr>
+<tr>
 <td>A</td>
-<td><a href="#ch14">A-附錄-總表.md</a></td>
+<td><a href="#ch15">A-附錄-總表.md</a></td>
 <td>IP / 埠 / 密鑰 / 實體 / 檔案位置 / 兩條路線選擇 / 變更紀錄</td>
 <td>隨查</td>
 </tr>
@@ -259,11 +296,11 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 ├── assets/topology.mmd / topology.png     拓樸圖（Mermaid 原始碼 + 已渲染圖）
 ├── ha-config/
 │   ├── configuration.yaml.snippet         要加進 HA configuration.yaml 的片段（packages、rest_command、shell_command…）
-│   ├── packages/s00_*.yaml                共用：helpers/腳本、語音入口、節點感知（主/副節點）
+│   ├── packages/s00_*.yaml                共用：helpers/腳本、語音入口、節點感知、節能（s00_energy）
 │   ├── packages/s01_*.yaml … s35_*.yaml   35 個情境的 HA package（helpers + automations + scripts 一包）
 │   └── standby/standby_node.yaml          只放在副節點 HA Black 的監看與自動接手 package
-└── hermes/                                 Hermes Agent v0.1 骨架（可直接 `uvicorn` 啟動）
-    ├── config/policy.yaml · market.yaml · tools/*.yaml
+└── hermes/                                 Hermes Agent v0.4 骨架（可直接 `uvicorn` 啟動）
+    ├── config/policy.yaml · market.yaml · energy.yaml · tools/*.yaml
     ├── hermes/*.py
     ├── requirements.txt · com.allenann.hermes.plist · README.md
 </code></pre>
@@ -1760,6 +1797,44 @@ proximity:
 <li>iPhone 設定 → Home Assistant → 通知 → 允許「時效性通知」（深夜停損告警與主機失聯要用）。</li>
 <li>測試：開發者工具 → 動作 → <code>notify.both</code> 送一則訊息，兩支手機都要收到。</li>
 </ol>
+<h2 id="3.8b-用電量測-13-章節能管家的資料來源">3.8b 用電量測（13 章節能管家的資料來源）</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>量什麼</th>
+<th>設備</th>
+<th>整合</th>
+<th>實體（固定用這些名字）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全屋總用電</td>
+<td>Shelly EM + 50A CT 夾（配電箱總開關後；請水電師傅安裝）</td>
+<td>設定 → 整合 → <strong>Shelly</strong>（自動發現，IP 固定 <code>192.168.0.26</code>）</td>
+<td><code>sensor.home_power</code>（W）、<code>sensor.home_energy_total</code>（kWh 累計）</td>
+</tr>
+<tr>
+<td>冷氣 ×3</td>
+<td>各迴路一顆 Shelly 1PM（或 Aqara 計量插座 20A）</td>
+<td>Shelly / Z2M</td>
+<td><code>sensor.ac_living_energy</code>、<code>sensor.ac_master_energy</code>、<code>sensor.ac_second_energy</code></td>
+</tr>
+<tr>
+<td>電視影音 / 音響 / 次臥書桌</td>
+<td>Aqara 智慧插座 SP-EUC01 ×3（Z2M）</td>
+<td>Z2M friendly_name <code>tv_plug</code> / <code>audio_plug</code> / <code>second_desk_plug</code></td>
+<td><code>switch.&lt;name&gt;</code>、<code>sensor.&lt;name&gt;_energy</code>、<code>sensor.&lt;name&gt;_power</code></td>
+</tr>
+<tr>
+<td>冰箱 / 洗烘 / Mac mini</td>
+<td>Aqara 智慧插座 ×3，<strong>只量測、永不切斷</strong></td>
+<td>同上 <code>fridge_plug</code> / <code>laundry_plug</code> / <code>server_plug</code></td>
+<td><code>sensor.&lt;name&gt;_energy</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Shelly 裝置在 Shelly App 裡<strong>關閉雲端</strong>（Settings → Cloud → Disable）並只留區網；韌體更新時再暫時開。HA <strong>能源儀表板</strong>（設定 → 儀表板 → 能源）：電網消耗選 <code>sensor.home_energy_total</code>，個別裝置加上表各 <code>sensor.*_energy</code>。</p>
 <h2 id="3.9-天氣與空氣品質">3.9 天氣與空氣品質</h2>
 <ul>
 <li>內建 <strong>Met.no</strong>（設定 → 整合 → 新增 → Meteorologisk institutt）：無需金鑰 → <code>weather.home</code>。</li>
@@ -2314,6 +2389,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 <p>目標：Hermes 以 launchd 常駐於 Mac mini <code>:8800</code>，成為 HA Assist 的對話代理；任何改變實體狀態的動作先覆誦確認（<code>autonomy: confirm_all</code>），深夜改推播；失敗反向回滾；股票模組可用。
 完成判準：§5.9。
 程式碼：<code>docs/SOP/hermes/</code>（v0.1 骨架，已通過語法與離線功能測試；對應 <code>design/hermes.html</code> v0.3 規格）。</p>
+<p>v0.4 起多了 <strong>節能管家</strong> 模組（<code>hermes/energy.py</code>、<code>config/energy.yaml</code>、<code>config/tools/energy.yaml</code>）：每個計畫執行前經 <code>energy.clamp</code> 守門，另提供 <code>energy.report / set_mode / pause_guard / idle_sweep</code> 四個工具。安裝步驟不變（檔案已在骨架內）；參數與原理見 <strong>13 章</strong>。</p>
 </blockquote>
 <h2 id="5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code>HA Assist 管線 ── 對話代理 = 「Ollama」整合 ──► http://192.168.0.10:8800  (Hermes 偽裝成 Ollama 端點)
@@ -8384,6 +8460,24 @@ automation:
 <td>Z2M map</td>
 <td>全部 LQI &gt; 80，24 小時無掉線 ☐</td>
 </tr>
+<tr>
+<td>A9</td>
+<td>金鑰掃描</td>
+<td><code>python3 tools/check_secrets.py</code></td>
+<td><code>OK: 0 findings</code> ☐</td>
+</tr>
+<tr>
+<td>A10</td>
+<td>資料不外洩</td>
+<td>路由器流量統計 / Little Snitch 看 Mac mini 24 小時</td>
+<td>只有 TWSE、met.no、Apple、Telegram/LINE（若啟用）、x.ai（若啟用 Grok）☐</td>
+</tr>
+<tr>
+<td>A11</td>
+<td>節能</td>
+<td>13 章 §13.9 第 2–7 項</td>
+<td>守門句出現、無人 20 分關、日報到 ☐</td>
+</tr>
 </tbody>
 </table></div>
 <h3 id="b.-兩人可用性-憲章-iv">B. 兩人可用性（憲章 IV）</h3>
@@ -8515,6 +8609,18 @@ automation:
 <td>D6</td>
 <td>冷氣整合停用後「Allen 回家了」→「好」</td>
 <td>燈先亮再還原、回報人話</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>D7</td>
+<td>「客廳冷氣 24 度」→「好」（eco）</td>
+<td>回「節能：冷氣最低 27 度」，實際 27</td>
+<td>☐</td>
+</tr>
+<tr>
+<td>D8</td>
+<td>「今天用了幾度」</td>
+<td>&lt; 1 秒回報度數/碳排/節能 %</td>
 <td>☐</td>
 </tr>
 </tbody>
@@ -8749,6 +8855,21 @@ automation:
 <td><code>docker compose logs hermes</code></td>
 <td><code>GROK_API_KEY</code>；<code>llm.provider: grok</code>；看是否 <code>fallback → ollama</code></td>
 </tr>
+<tr>
+<td>冷氣設 24 卻變 27 / 燈只到 40%</td>
+<td>回覆句尾「節能：…」</td>
+<td>這是守門正常行為；說「這次不要省」或後台切 normal/comfort；長期不要就關 <code>input_boolean.energy_guard</code></td>
+</tr>
+<tr>
+<td>用電報告「還沒有用電資料」</td>
+<td><code>sensor.home_energy_total</code></td>
+<td>Shelly EM 未加入或實體名不同（03 §3.8b）；<code>utility_meter</code> 要等第一個整點</td>
+</tr>
+<tr>
+<td>無人時空調沒關</td>
+<td><code>binary_sensor.home_nobody</code></td>
+<td>person 實體沒更新（Companion 定位）；<code>energy_mode = comfort</code> 時 e01 不動作</td>
+</tr>
 </tbody>
 </table></div>
 <h2 id="8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</h2>
@@ -8802,6 +8923,10 @@ Z2M_DATA=~/openclaw/z2m zigbee2mqtt    # 正常後寫成 launchd plist（仿 04 
 <tr>
 <td>每季</td>
 <td>11 章五項故障演練；附錄 A 密鑰輪替檢查（HA 權杖、共用密鑰）</td>
+</tr>
+<tr>
+<td>每年 6 月</td>
+<td>查台電最新「電力排碳係數」→ 更新 <code>input_number.energy_carbon_factor</code> 與 <code>energy.yaml</code>；用上一年台電帳單重算基準日用電</td>
 </tr>
 </tbody>
 </table></div></section><section id="ch10" class="chapter"><div class="eyebrow">🐦 09 青鳥一鍵部署</div><h1 id="09-青鳥-台灣藍鵲-一鍵-docker-部署與後台">09 · 青鳥 · 台灣藍鵲：一鍵 Docker 部署與後台</h1>
@@ -9786,6 +9911,52 @@ views:
               entity: binary_sensor.hermes_online
               name: Hermes 離線
               color: red
+      # --- 能源（13 章）---
+      - type: grid
+        cards:
+          - type: heading
+            heading: 能源
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.home_power
+                name: 即時
+              - type: entity
+                entity: binary_sensor.tariff_peak_now
+                name: 尖峰
+                visibility:
+                  - condition: state
+                    entity: binary_sensor.tariff_peak_now
+                    state: &quot;on&quot;
+          - type: tile
+            entity: sensor.home_energy_today
+            name: 今日用電
+            icon: mdi:flash
+          - type: tile
+            entity: sensor.home_co2_today
+            name: 今日碳排
+            icon: mdi:molecule-co2
+          - type: tile
+            entity: sensor.home_saving_pct_today
+            name: 比基準
+            icon: mdi:leaf
+            color: green
+          - type: tile
+            entity: input_select.energy_mode
+            name: 節能模式
+            icon: mdi:leaf-circle
+            features:
+              - type: select-options
+          - type: tile
+            entity: script.energy_idle_sweep
+            name: 節能巡檢
+            icon: mdi:broom
+            tap_action: { action: perform-action, perform_action: script.energy_idle_sweep, data: { keep: fridge } }
+          - type: tile
+            entity: script.energy_report
+            name: 用電報告
+            icon: mdi:chart-bar
+            tap_action: { action: perform-action, perform_action: script.energy_report, data: { period: today, say: true } }
       # --- 情境 ---
       - type: grid
         cards:
@@ -10126,7 +10297,7 @@ views:
         target: { entity_id: automation.s04_leave_home }
         data: { skip_condition: true }
 </code></pre>
-<h2 id="12.3b-貼上前-一次檢查所有實體是否存在-85-個">12.3b 貼上前：一次檢查所有實體是否存在（85 個）</h2>
+<h2 id="12.3b-貼上前-一次檢查所有實體是否存在-93-個">12.3b 貼上前：一次檢查所有實體是否存在（93 個）</h2>
 <p>儀表板 YAML 引用的實體名稱已與本手冊 <code>ha-config/packages/</code>、03 章整合命名、06 章情境交叉比對過（2026-11-05）；但 Hue / Z2M / Panasonic 匯入後的實體 ID 仍可能和你實際改名的不同。貼儀表板之前，到 <strong>開發者工具 → 範本</strong> 貼下面這段，它會列出「儀表板用到、但 HA 裡還沒有」的實體：</p>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-jinja">{% set wanted = [
      'automation.s04_leave_home',
@@ -10135,6 +10306,7 @@ views:
      'binary_sensor.hermes_online',
      'binary_sensor.is_primary_node',
      'binary_sensor.living_motion',
+     'binary_sensor.tariff_peak_now',
      'binary_sensor.wan_ping',
      'climate.living',
      'climate.master',
@@ -10179,6 +10351,7 @@ views:
      'input_boolean.s35_enabled',
      'input_boolean.sleep_mode',
      'input_select.ann_shift',
+     'input_select.energy_mode',
      'light.entry_1',
      'light.living_1',
      'light.living_10',
@@ -10200,11 +10373,17 @@ views:
      'person.ann',
      'scene.living_dinner',
      'scene.living_welcome',
+     'script.energy_idle_sweep',
+     'script.energy_report',
      'script.home_leave',
      'script.reset_ac_filter',
      'script.reset_vacuum_runs',
      'script.weather_briefing',
      'sensor.hermes_world_entities',
+     'sensor.home_co2_today',
+     'sensor.home_energy_today',
+     'sensor.home_power',
+     'sensor.home_saving_pct_today',
      'sensor.living_humidity',
      'sensor.living_temperature',
      'sensor.master_temperature',
@@ -10266,6 +10445,11 @@ views:
 <td>05 章；REST 感測器要等 Hermes 回應後才會出現</td>
 </tr>
 <tr>
+<td><code>sensor.home_*</code>、<code>input_select.energy_mode</code>、<code>script.energy_*</code></td>
+<td><code>s00_energy.yaml</code> 未裝或 Shelly EM 未接</td>
+<td>13 章 §13.3–13.4</td>
+</tr>
+<tr>
 <td><code>update.home_assistant_core_update</code></td>
 <td>新裝 HA 第一次更新檢查未完成</td>
 <td>等 1 小時或 設定 → 系統 → 更新 → 檢查更新</td>
@@ -10287,6 +10471,10 @@ views:
 <tr>
 <td>瀏覽器</td>
 <td>iPad：HA Companion App → 設定 → Companion App → 全螢幕；Android：Fully Kiosk Browser（可整合 HA 螢幕喚醒）</td>
+</tr>
+<tr>
+<td>節能</td>
+<td>平板夜間 23:00–07:00 螢幕關閉（Companion <code>command_screen_off</code>）；平板本身接 <code>switch.standby_plugs</code> 以外的插座</td>
 </tr>
 <tr>
 <td>自動喚醒</td>
@@ -10349,7 +10537,563 @@ views:
 <td>☐</td>
 </tr>
 </tbody>
-</table></div></section><section id="ch14" class="chapter"><div class="eyebrow">📎 附錄 A 總表</div><h1 id="附錄-a-總表-ip-埠-密鑰-實體-檔案位置-變更紀錄">附錄 A · 總表（IP / 埠 / 密鑰 / 實體 / 檔案位置 / 變更紀錄）</h1>
+</table></div></section><section id="ch14" class="chapter"><div class="eyebrow">🌱 13 節能與碳排</div><h1 id="13-節能與碳排-ai-節能管家">13 · 節能與碳排：AI 節能管家</h1>
+<blockquote>
+<p>目標：把「節能省碳」做成系統的<strong>最高設計目標</strong>（憲章 VI），而且只用<strong>一個 AI 助理（Hermes 節能管家）</strong>做所有節能決策——住戶永遠只需要對一個對象說「省一點」或「這次不要省」。
+先決條件：03 章（含本章新增的 §3.8 用電量測）、05 章 Hermes、06 章情境。完成判準：§13.9。</p>
+</blockquote>
+<h2 id="13.1-三條原則怎麼落到系統裡">13.1 三條原則怎麼落到系統裡</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>原則</th>
+<th>系統落實</th>
+<th>在哪驗證</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(1) 在地執行，機敏資料不外洩</strong></td>
+<td>語音 STT/LLM/TTS 全在 Mac mini；Hermes 預設大腦 <code>ollama</code>（本地）；Grok 雲端只是<strong>選配且預設關閉</strong>，開啟時只送文字、不送語音與錄音，且後台會顯示警示；用電數據、在家/不在家、睡眠狀態只存在 HA 與 Hermes SQLite，不上雲；LINE/Telegram 只收指令與回覆文字，不推送感測器原始資料</td>
+<td>08 章 A5 埠掃描；附錄 A.8 資料流清單</td>
+</tr>
+<tr>
+<td><strong>(2) 金鑰不進 GitHub</strong></td>
+<td>全部密鑰只在 <code>secrets.yaml</code> / <code>.env</code> / launchd 環境變數；<code>.gitignore</code> 已排除 <code>bluemagpie/.env</code>、<code>config/</code>、<code>data/</code>、<code>backups/</code>；推送前跑 <code>tools/check_secrets.py</code>（§13.8）；手冊內出現的 token 一律是 <code>xai-...</code>、<code>eyJhbGci...</code> 佔位</td>
+<td>§13.8 掃描結果為 0</td>
+</tr>
+<tr>
+<td><strong>(3) 節能省碳最高目標，一個 AI 助理</strong></td>
+<td>Hermes 多了 <code>energy</code> 模組：<strong>每一個</strong>會動到空調/燈光/家電的計畫，執行前都經過「節能守門」修正；HA 只做量測與反射動作；35 個情境各有節能規則（§13.6）；每天 21:30 報告用電與碳排</td>
+<td>§13.9</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="13.2-架構-量測在-ha-決策在-hermes">13.2 架構：量測在 HA、決策在 Hermes</h2>
+<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code> Shelly EM（總表 CT）──┐
+ Aqara 計量插座 ×N ────┼─► HA（utility_meter 日/月、碳排、尖峰時段、全屋無人）
+ Hue Motion 照度 ──────┘        │  反射動作：無人 20 分關空調、開窗關冷氣、尖峰提醒、白天調暗
+                                │
+   任何語音/情境計畫 ──► Hermes ──► energy.clamp（守門：溫度下限、亮度上限、除濕優先）──► 執行
+                                └─► energy.report（每日 21:30 / 週一週報 / 隨問隨答）
+</code></pre>
+<p>為什麼決策只放 Hermes：</p>
+<ul>
+<li><strong>一個開關管全部</strong>：住戶說「這次不要省」→ <code>energy.pause_guard</code> 兩小時，35 個情境同時放寬；不必逐個情境改條件。</li>
+<li><strong>只收緊、不放寬</strong>：守門只會把 24 度改 27 度、100% 改 40%，不會反過來；情境本身的安全邏輯（鎖、警報、SOS）完全不經守門。</li>
+<li><strong>可解釋</strong>：每次修正都寫進 tx log（<code>energy s2 節能：冷氣最低 27 度</code>）並附在回覆句尾，住戶知道為什麼。</li>
+</ul>
+<h2 id="13.3-用電量測硬體-03-章-3.8">13.3 用電量測硬體（03 章 §3.8）</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>量什麼</th>
+<th>設備</th>
+<th>本地？</th>
+<th>HA 實體</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全屋總用電</td>
+<td>Shelly EM + 50A CT 夾（裝在配電箱總開關後；請水電師傅 30 分鐘）</td>
+<td>是（Wi-Fi，原生 HA 整合）</td>
+<td><code>sensor.home_power</code>、<code>sensor.home_energy_total</code></td>
+</tr>
+<tr>
+<td>三台冷氣</td>
+<td>冷氣專用迴路各一顆 Shelly 1PM 或 Aqara 智慧插座（計量版，20A）</td>
+<td>是（Zigbee）</td>
+<td><code>sensor.ac_living_energy</code> …（kWh 累計）</td>
+</tr>
+<tr>
+<td>電視影音 / 音響 / 次臥書桌</td>
+<td>Aqara 智慧插座 SP-EUC01 ×3</td>
+<td>是</td>
+<td><code>switch.tv_plug</code>、<code>switch.audio_plug</code>、<code>switch.second_desk_plug</code> + <code>sensor.*_energy</code></td>
+</tr>
+<tr>
+<td>冰箱、洗烘、Mac mini</td>
+<td>Aqara 智慧插座（<strong>只量不切</strong>：s00_energy 的待機群組不含這三個）</td>
+<td>是</td>
+<td><code>sensor.fridge_plug_energy</code>、<code>sensor.laundry_plug_energy</code>、<code>sensor.server_plug_energy</code></td>
+</tr>
+<tr>
+<td>自然光</td>
+<td>Hue Motion 附照度（已有）</td>
+<td>是</td>
+<td><code>sensor.living_illuminance</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Z2M friendly_name 與實體對照寫進 03 章 §3.3 的表；<code>utility_meter</code> 會自動產生 <code>*_today</code> / <code>*_month</code>。</p>
+<p>HA 內建 <strong>能源儀表板</strong>（設定 → 儀表板 → 能源）：電網消耗選 <code>sensor.home_energy_total</code>，個別裝置加上面的 <code>sensor.*_energy</code>；它會畫出每小時與每日分項圖，本章的報告數字與它一致。</p>
+<h2 id="13.4-ha-package-s00_energy.yaml">13.4 HA package：<code>s00_energy.yaml</code></h2>
+<p>放進 <code>/config/packages/</code>（青鳥路線：後台套用時自動安裝）。內容：</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>類別</th>
+<th>實體</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>helper</td>
+<td><code>input_select.energy_mode</code>（eco/normal/comfort，預設 <strong>eco</strong>）</td>
+<td>全域節能模式；儀表板一鍵切</td>
+</tr>
+<tr>
+<td>helper</td>
+<td><code>input_boolean.energy_guard</code></td>
+<td>守門總開關</td>
+</tr>
+<tr>
+<td>helper</td>
+<td><code>input_boolean.energy_standby_cut</code></td>
+<td>離家/睡前是否切待機插座</td>
+</tr>
+<tr>
+<td>helper</td>
+<td><code>input_number.energy_baseline_kwh_day</code>（預設 12）</td>
+<td>基準日用電：入住後第一個月平均，或台電帳單 ÷ 天數</td>
+</tr>
+<tr>
+<td>helper</td>
+<td><code>input_number.energy_carbon_factor</code>（0.474）</td>
+<td>台電公告電力排碳係數，每年更新</td>
+</tr>
+<tr>
+<td>timer</td>
+<td><code>timer.energy_mode_revert</code></td>
+<td>normal/comfort 到期自動回 eco</td>
+</tr>
+<tr>
+<td>utility_meter</td>
+<td><code>sensor.home_energy_today/month</code>、各裝置 <code>*_energy_today</code></td>
+<td>日/月歸零累計</td>
+</tr>
+<tr>
+<td>template</td>
+<td><code>sensor.home_co2_today</code>、<code>sensor.home_saving_pct_today</code>、<code>binary_sensor.tariff_peak_now</code>、<code>binary_sensor.home_nobody</code></td>
+<td>碳排、節能比例、尖峰、全屋無人</td>
+</tr>
+<tr>
+<td>switch group</td>
+<td><code>switch.standby_plugs</code></td>
+<td>待機插座群（電視、音響、書桌）</td>
+</tr>
+<tr>
+<td>script</td>
+<td><code>script.energy_idle_sweep</code>、<code>script.energy_report</code></td>
+<td>巡檢；叫 Hermes 做報告（Hermes 離線時 HA 自己推簡版）</td>
+</tr>
+<tr>
+<td>automation</td>
+<td>e01 無人 20 分關空調 ｜ e02 開窗 3 分關該房冷氣 ｜ e03 尖峰提醒 ｜ e04 21:30 日報 ｜ e05 白天調暗 ｜ e06 模式到期回 eco ｜ e07 週一週報</td>
+<td>反射動作</td>
+</tr>
+</tbody>
+</table></div>
+<p>完整 YAML：<code>ha-config/packages/s00_energy.yaml</code>。</p>
+<h2 id="13.5-hermes-節能模組-v0.4">13.5 Hermes 節能模組（v0.4）</h2>
+<p>檔案：<code>hermes/hermes/energy.py</code>、<code>config/energy.yaml</code>、<code>config/tools/energy.yaml</code>。</p>
+<h3 id="守門規則-energy.clamp-每一步執行前">守門規則（<code>energy.clamp</code>，每一步執行前）</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>eco（預設）</th>
+<th>normal</th>
+<th>comfort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>climate.set</code> 冷氣溫度下限</td>
+<td><strong>27 °C</strong>（尖峰 28）</td>
+<td>26（尖峰 27）</td>
+<td>24</td>
+</tr>
+<tr>
+<td><code>climate.set</code> 暖氣上限</td>
+<td>20</td>
+<td>22</td>
+<td>24</td>
+</tr>
+<tr>
+<td>除濕取代冷氣</td>
+<td>室內 RH &lt; 65% 且室溫 ≤ 28 → <code>dry</code></td>
+<td>RH &lt; 60%</td>
+<td>不做</td>
+</tr>
+<tr>
+<td>風速</td>
+<td>未指定 → <code>auto</code></td>
+<td>auto</td>
+<td>auto</td>
+</tr>
+<tr>
+<td><code>light.set</code> 亮度上限</td>
+<td>70%；白天（照度 ≥ 300 lx）客廳/次臥 <strong>40%</strong></td>
+<td>100% / 60%</td>
+<td>不限</td>
+</tr>
+<tr>
+<td><code>light.activate_scene</code> Focus</td>
+<td>改 Welcome</td>
+<td>不改</td>
+<td>不改</td>
+</tr>
+<tr>
+<td>無人多久關</td>
+<td>20 分</td>
+<td>30 分</td>
+<td>60 分</td>
+</tr>
+</tbody>
+</table></div>
+<p>修正會附在回覆：「好了。節能：冷氣最低 27 度。」住戶不喜歡 → 說「這次不要省」。</p>
+<h3 id="工具">工具</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>說什麼會觸發</th>
+<th>做什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>energy.report</code></td>
+<td>「今天用了幾度」「這個月電費」「省了多少」</td>
+<td>讀 utility_meter 與基準 → 「今天用電 9.4 度，約 4.5 公斤碳排，比基準省了 22%；最耗電是冷氣客廳 5.1 度、電視影音 1.2 度。冷氣佔一半以上，設定溫度每高一度約省百分之六。」</td>
+</tr>
+<tr>
+<td><code>energy.set_mode</code></td>
+<td>「今天宴客」「切舒適模式兩小時」</td>
+<td>改 <code>input_select.energy_mode</code> 並啟動 timer，到期回 eco</td>
+</tr>
+<tr>
+<td><code>energy.pause_guard</code></td>
+<td>「這次不要省」「別管節能」</td>
+<td>暫停守門 120 分鐘（只影響 Hermes 守門，HA 反射動作照舊）</td>
+</tr>
+<tr>
+<td><code>energy.idle_sweep</code></td>
+<td>「我要出門了」「睡前巡一下」</td>
+<td>呼叫 <code>script.energy_idle_sweep</code>：關空調/燈、切待機群組（冰箱/伺服器永不切）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="設定重點-config-energy.yaml">設定重點（<code>config/energy.yaml</code>）</h3>
+<ul>
+<li><code>carbon_kg_per_kwh: 0.474</code>：台電 2024 公告值；每年 6 月查台電「電力排碳係數」更新。</li>
+<li><code>tariff</code>：住商型簡易時間電價二段式（夏月 6–9 月平日 09–24 尖峰；非夏月 06–11、14–24；週末全離峰）。<strong>只用來避峰與報告</strong>，不算電費（電費以台電帳單為準）。</li>
+<li><code>sensors.devices</code>：有幾個計量插座填幾個，報告會列前三名。</li>
+</ul>
+<h2 id="13.6-35-個情境的節能規則-設計時必填">13.6 35 個情境的節能規則（設計時必填）</h2>
+<p>每個情境在 06 章表格外，依本表加上節能行為；「守門」欄表示該情境透過 Hermes 執行的動作會被 §13.5 修正。</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>情境</th>
+<th>節能規則</th>
+<th>守門</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>晨間喚醒</td>
+<td>只開主臥 Sunrise 10→30%，不開空調；冬天暖氣上限 20</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>02</td>
+<td>天氣簡報</td>
+<td>純資訊，無耗電</td>
+<td>—</td>
+</tr>
+<tr>
+<td>03</td>
+<td>早餐燈光</td>
+<td>照度 ≥ 300 lx 跳過開燈</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>04</td>
+<td>離家</td>
+<td>觸發 <code>energy.idle_sweep</code>（空調/燈/待機全關；冰箱伺服器保留）</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>05</td>
+<td>走廊夜燈</td>
+<td>1% 暖白，動作停止 2 分鐘關</td>
+<td>—</td>
+</tr>
+<tr>
+<td>06</td>
+<td>出門提醒</td>
+<td>若有空調/燈仍開 → 提醒句加「要我順便關掉嗎」</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>07</td>
+<td>回家歡迎</td>
+<td>先開燈 Welcome（eco 上限 70%）；冷氣只在室溫 ≥ 28 才預冷，設 27</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>08</td>
+<td>影音模式</td>
+<td>崁燈 10% + Play 燈條；冷氣不動；結束後 <code>switch.tv_plug</code> 15 分鐘無訊號切斷</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>09</td>
+<td>晚餐氛圍</td>
+<td>2700K 65%（eco 上限內）；白天跳過</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>10</td>
+<td>浴室除濕</td>
+<td>濕度 &gt; 70% 才開換氣，30 分鐘上限</td>
+<td>—</td>
+</tr>
+<tr>
+<td>11</td>
+<td>晚間放鬆</td>
+<td>燈 30%；冷氣改除濕或 27</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>12</td>
+<td>室溫過熱提醒</td>
+<td>先建議開窗/風扇，再建議冷氣 27</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>13</td>
+<td>就寢</td>
+<td>空調 27 + 睡眠模式；1 小時後 +1 度；待機群組切斷</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Ann 補眠</td>
+<td>主臥獨立：只控主臥空調，其餘房間不動</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>15</td>
+<td>深睡溫控</td>
+<td>03:00 起每小時 +0.5 度到 28；06:00 關</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>16</td>
+<td>班別切換</td>
+<td>只改排程，不耗電</td>
+<td>—</td>
+</tr>
+<tr>
+<td>17</td>
+<td>夜間開窗</td>
+<td>開窗 3 分鐘自動關該房冷氣（e02）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>18</td>
+<td>白噪音</td>
+<td>HomePod mini 音量 ≤ 20%，定時 45 分關</td>
+<td>—</td>
+</tr>
+<tr>
+<td>19</td>
+<td>掃地機</td>
+<td>離峰（週末或 24:00 後）或離家時掃；電量 &lt; 20% 不出門</td>
+<td>—</td>
+</tr>
+<tr>
+<td>20</td>
+<td>洗衣烘衣提醒</td>
+<td>尖峰時段啟動 → 提醒改離峰；完成 10 分鐘切插座</td>
+<td>—</td>
+</tr>
+<tr>
+<td>21</td>
+<td>冷氣濾網</td>
+<td>濾網累計 200 小時提醒（髒濾網多耗 5–15%）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>22</td>
+<td>開窗提醒</td>
+<td>同 17，白天版</td>
+<td>—</td>
+</tr>
+<tr>
+<td>23</td>
+<td>每日快照</td>
+<td>03:00 跑，Mac mini 不休眠已計入基準</td>
+<td>—</td>
+</tr>
+<tr>
+<td>24</td>
+<td>設備離線</td>
+<td>離線設備若為插座 → 報告排除</td>
+<td>—</td>
+</tr>
+<tr>
+<td>25</td>
+<td>凌晨告警</td>
+<td>安全類，不經守門</td>
+<td>—</td>
+</tr>
+<tr>
+<td>26</td>
+<td>網路警告</td>
+<td>燈效 3 次即還原（不留燈）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>27</td>
+<td>訪客模式</td>
+<td>自動切 <code>normal</code> 模式，離開回 eco</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>28</td>
+<td>SOS</td>
+<td>安全類，不經守門</td>
+<td>—</td>
+</tr>
+<tr>
+<td>29</td>
+<td>AI 回家</td>
+<td>Hermes 計畫整組過守門；預冷只在 ≥ 28 °C</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>30</td>
+<td>AI 晚安</td>
+<td>同 13 + <code>energy.idle_sweep keep: fridge</code></td>
+<td>✔</td>
+</tr>
+<tr>
+<td>31</td>
+<td>股票語音問答</td>
+<td>純資訊</td>
+<td>—</td>
+</tr>
+<tr>
+<td>32</td>
+<td>盤後掃描</td>
+<td>純資訊；圖卡渲染在 Mac mini（已在基準內）</td>
+<td>—</td>
+</tr>
+<tr>
+<td>33</td>
+<td>停損告警</td>
+<td>純資訊</td>
+<td>—</td>
+</tr>
+<tr>
+<td>34</td>
+<td>模擬下單</td>
+<td>純資訊</td>
+<td>—</td>
+</tr>
+<tr>
+<td>35</td>
+<td>深夜確認</td>
+<td>深夜任何升溫/調暗以外的動作需確認</td>
+<td>✔</td>
+</tr>
+</tbody>
+</table></div>
+<p>新增情境時：spec 的「Constitution Check」必須回答「這個情境在 eco 模式下的耗電行為是什麼」才能開 plan（憲章 VI）。</p>
+<h2 id="13.7-儀表板-12-章補一個區塊">13.7 儀表板（12 章補一個區塊）</h2>
+<p>首頁「現況」區下方加「能源」區：<code>sensor.home_power</code>（即時 W）、<code>sensor.home_energy_today</code>、<code>sensor.home_co2_today</code>、<code>sensor.home_saving_pct_today</code>（綠 ≥ 0 / 紅 &lt; 0）、<code>binary_sensor.tariff_peak_now</code>、<code>input_select.energy_mode</code> 三鍵切換、<code>script.energy_idle_sweep</code> 與 <code>script.energy_report</code> 按鈕。YAML 片段已加在 12 章 §12.3 首頁 view。</p>
+<h2 id="13.8-金鑰不進-github-推送前掃描">13.8 金鑰不進 GitHub：推送前掃描</h2>
+<p><code>tools/check_secrets.py</code>（已放在 repo 根目錄 <code>tools/</code>）：</p>
+<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">python3 tools/check_secrets.py            # 掃 git 追蹤中的檔案；找到就非 0 結束
+git config core.hooksPath .githooks       # 啟用 pre-push：推送前自動跑一次
+</code></pre>
+<p>規則：偵測 <code>xai-</code>、<code>sk-</code>、<code>ghp_</code>、<code>eyJhbGci</code>（JWT）、<code>AKIA</code>、<code>-----BEGIN</code>、LINE channel secret 長 hex、Telegram token <code>數字:英數</code> 等；佔位符（<code>xai-...</code>、<code>&lt;token&gt;</code>）會排除。<code>.env</code>、<code>secrets.yaml</code>、<code>config/</code>、<code>data/</code>、<code>backups/</code> 本來就不在 git 內；請不要用 <code>git add -f</code> 強加。</p>
+<h2 id="13.9-驗證清單">13.9 驗證清單</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>檢查</th>
+<th>預期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>開發者工具 → 狀態 搜 <code>energy_</code></td>
+<td><code>input_select.energy_mode = eco</code>、<code>sensor.home_energy_today</code> 有數字</td>
+</tr>
+<tr>
+<td>2</td>
+<td>對 Assist 說「客廳冷氣 24 度」→「好」</td>
+<td>回「好了。節能：冷氣最低 27 度」，冷氣實際 27</td>
+</tr>
+<tr>
+<td>3</td>
+<td>說「這次不要省」再說「客廳冷氣 24 度」</td>
+<td>冷氣 24，無節能句</td>
+</tr>
+<tr>
+<td>4</td>
+<td>白天（照度 ≥ 300）說「客廳燈全亮」</td>
+<td>亮度 40%，回「白天自然光夠」</td>
+</tr>
+<tr>
+<td>5</td>
+<td>兩人都離家 20 分鐘</td>
+<td>空調/燈關、待機插座斷、收到推播；冰箱/Mac mini 插座仍開</td>
+</tr>
+<tr>
+<td>6</td>
+<td>開主臥窗 3 分鐘（冷氣開著）</td>
+<td>主臥冷氣關、推播</td>
+</tr>
+<tr>
+<td>7</td>
+<td>說「今天用了幾度」</td>
+<td>報告句含度數、碳排、節能 %、前兩名</td>
+</tr>
+<tr>
+<td>8</td>
+<td>21:30</td>
+<td>收到日報推播（Telegram 若已設定也收到）</td>
+</tr>
+<tr>
+<td>9</td>
+<td>切 <code>comfort</code> 模式後 2 小時</td>
+<td>自動回 eco，記錄簿有紀錄</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>python3 tools/check_secrets.py</code></td>
+<td><code>OK: 0 findings</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>一個月後</td>
+<td><code>sensor.home_saving_pct_today</code> 月平均 ≥ 15%（目標；冷氣季節通常 20–30%）</td>
+</tr>
+</tbody>
+</table></div>
+<p>通過 → 更新附錄 A 變更紀錄；每年 6 月更新 <code>energy_carbon_factor</code>。</p></section><section id="ch15" class="chapter"><div class="eyebrow">📎 附錄 A 總表</div><h1 id="附錄-a-總表-ip-埠-密鑰-實體-檔案位置-變更紀錄">附錄 A · 總表（IP / 埠 / 密鑰 / 實體 / 檔案位置 / 變更紀錄）</h1>
 <blockquote>
 <p>貼在路由器旁、存一份在手機；所有章節的數字以本附錄為準。</p>
 </blockquote>
@@ -10407,6 +11151,11 @@ views:
 <td>192.168.0.25</td>
 <td>SLZB-06 Zigbee 協調器</td>
 <td>02 / 07</td>
+</tr>
+<tr>
+<td>192.168.0.26–.29</td>
+<td>Shelly EM 總表、Shelly 1PM 冷氣 ×3</td>
+<td>03 §3.8b / 13</td>
 </tr>
 <tr>
 <td>192.168.0.30 / .31</td>
@@ -10673,6 +11422,11 @@ views:
 <td>configuration.yaml 或 s00_magpie</td>
 <td>對外呼叫</td>
 </tr>
+<tr>
+<td><code>input_select.energy_mode</code>、<code>input_boolean.energy_guard</code>、<code>sensor.home_energy_today/month</code>、<code>sensor.home_co2_today</code>、<code>sensor.home_saving_pct_today</code>、<code>binary_sensor.tariff_peak_now</code>、<code>binary_sensor.home_nobody</code>、<code>switch.standby_plugs</code>、<code>script.energy_idle_sweep / energy_report</code></td>
+<td>s00_energy</td>
+<td>節能管家（13 章）</td>
+</tr>
 </tbody>
 </table></div>
 <h2 id="a.5-檔案與目錄位置">A.5 檔案與目錄位置</h2>
@@ -10775,6 +11529,73 @@ views:
 </tbody>
 </table></div>
 <p>兩條路線的 packages、Hermes、設計文件共用；可從 HAOS 路線用 HA 備份搬到青鳥路線（還原到 <code>config/homeassistant/</code>）。</p>
+<h2 id="a.8-資料流清單-原則-1-什麼資料會離開家裡">A.8 資料流清單（原則 1：什麼資料會離開家裡）</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>資料</th>
+<th>去哪</th>
+<th>什麼情況</th>
+<th>怎麼關</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>語音錄音</td>
+<td><strong>不離家</strong>（Whisper 本地）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>指令文字 + 當下狀態摘要（溫度、在家/不在家）</td>
+<td>x.ai（Grok）</td>
+<td><strong>只有</strong>後台把 Hermes 大腦切成 grok 時</td>
+<td>後台 → 語音 → Hermes 大腦 = ollama（預設）</td>
+</tr>
+<tr>
+<td>指令與回覆文字</td>
+<td>LINE / Telegram 伺服器</td>
+<td>使用 10 章 bot 時</td>
+<td>不設定 bot</td>
+</tr>
+<tr>
+<td>推播通知文字</td>
+<td>Apple APNs（Companion）</td>
+<td>所有 notify</td>
+<td>無法避免；內容只寫結論不寫感測原始值</td>
+</tr>
+<tr>
+<td>股票代號查詢</td>
+<td>TWSE / TPEx</td>
+<td>31–34 情境</td>
+<td>關 <code>s31_enabled</code> 等</td>
+</tr>
+<tr>
+<td>天氣查詢（座標）</td>
+<td>met.no</td>
+<td>02 情境</td>
+<td>改用 HA 內建 <code>weather</code> 離線快取</td>
+</tr>
+<tr>
+<td>DuckDNS 更新（公網 IP）</td>
+<td>duckdns.org</td>
+<td>07 章遠端存取</td>
+<td>只用 Tailscale 不用 DuckDNS</td>
+</tr>
+<tr>
+<td>備份、用電、在家紀錄、睡眠</td>
+<td><strong>不離家</strong>（主副節點之間 LAN）</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Shelly / Aqara 量測</td>
+<td><strong>不離家</strong>（Shelly 雲端已關）</td>
+<td>—</td>
+<td>Shelly App → Cloud → Disable</td>
+</tr>
+</tbody>
+</table></div>
 <h2 id="a.7-變更紀錄">A.7 變更紀錄</h2>
 <div class="tbl"><table>
 <thead>
@@ -10809,6 +11630,11 @@ views:
 <td>2026-11-05</td>
 <td>1.4</td>
 <td>06 章每情境實測紀錄表；04 章 Siri 捷徑 14 步教學與截圖位（<code>assets/siri/</code>）；12 章 §12.3b 實體自檢範本（85 個實體已與 packages / 03 / 06 章交叉比對）；修正 <code>script.say</code> 目標名 <code>master_mini</code>、03 章 Hue 場景固定 ID</td>
+</tr>
+<tr>
+<td>2026-11-05</td>
+<td>1.5</td>
+<td>三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（<code>s00_energy.yaml</code>、Hermes v0.4 <code>energy.py</code> 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；<code>tools/check_secrets.py</code> + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁</td>
 </tr>
 </tbody>
 </table></div></section>

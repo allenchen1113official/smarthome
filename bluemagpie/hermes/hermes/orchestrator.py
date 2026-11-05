@@ -5,7 +5,7 @@ from datetime import datetime
 from .config import CFG, POLICY, TOOLS
 from .ha import ha
 from .memory import mem
-from . import tools, market, policy, llm
+from . import tools, market, policy, llm, energy
 from .textnorm import to_traditional
 
 log = logging.getLogger("hermes.orch")
@@ -145,7 +145,7 @@ async def handle(text: str, speaker: str | None = None, source: str = "voice") -
 
 async def execute_plan(plan: dict) -> str:
     """GUARD → snapshot → DISPATCH(+RETRY) → SETTLE / 反向補償"""
-    t0 = time.time(); done: list[tuple[dict, dict]] = []
+    t0 = time.time(); done: list[tuple[dict, dict]] = []; energy_notes: list[str] = []
     sleep = await ha.get_state(CFG["presence"]["sleep_mode"]); sleep_on = bool(sleep and sleep["state"] == "on")
     tx(f"plan {plan['id']} START intent={plan['intent']}")
     for s in plan["steps"]:
@@ -165,6 +165,10 @@ async def execute_plan(plan: dict) -> str:
             tx(f"guard {s['id']} sleep_mode → skip"); continue
         if (time.time() - t0) * 1000 > POLICY["plan"]["max_total_ms"]:
             tx(f"plan {plan['id']} TIMEOUT"); await _rollback(done); return "動作太久了，已還原。"
+        # ENERGY GUARD（憲章 VI）：只收緊不放寬；comfort 模式 / 暫停守門時原樣通過
+        args, enotes = await energy.clamp(tool, args)
+        if enotes:
+            s["args"] = args; energy_notes.extend(enotes); tx(f"energy {s['id']} {' / '.join(enotes)}")
         # snapshot
         snap = await tools.snapshot(ents) if ents else {}
         if snap:
@@ -193,6 +197,8 @@ async def execute_plan(plan: dict) -> str:
     mem.session["last_plan"] = {"intent": plan["intent"], "steps": [x["tool"] for x in plan["steps"]], "args": [x["args"] for x in plan["steps"]]}
     tx(f"plan {plan['id']} DONE total {time.time()-t0:.1f}s")
     reply = plan.get("reply") or "好了。"
+    if energy_notes:
+        reply = reply.rstrip("。") + "。" + "；".join(dict.fromkeys(energy_notes)) + "。"
     mem.add_turn("assistant", reply)
     return reply
 

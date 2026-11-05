@@ -80,3 +80,9 @@ git pull && docker compose pull && docker compose up -d --build
 ## 與 docs/SOP 的關係
 
 SOP 00–08 章描述在 HAOS（Mac mini UTM VM + HA Black）上的手動建置；本資料夾是同一套設計的 Docker 化產品版，35 情境 YAML、Hermes 程式與 SOP 共用。差異見 `docs/SOP/09-青鳥一鍵部署.md`。
+
+## 三條原則（憲章 v1.1.0）
+
+1. **在地執行**：預設 Hermes 大腦 `ollama`；後台「語音」頁的 Grok 為選配、預設關閉，開啟時只送文字。
+2. **金鑰不進 GitHub**：`.env`、`config/`、`data/`、`backups/` 已 git-ignore；推送前 `python3 tools/check_secrets.py`。
+3. **節能省碳最高目標**：後台「節能管家」頁設定 eco 參數；Hermes `energy.clamp` 守門所有空調/燈光/家電動作；`s00_energy.yaml` 量測與每日報告（手冊 13 章）。

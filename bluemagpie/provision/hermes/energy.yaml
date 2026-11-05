@@ -1,0 +1,74 @@
+# hermes/energy.yaml — 節能管家（AI 節能守門 + 用電報告）
+# 原則：節能省碳是情境設計的最高目標；每一個會改變空調/燈光/家電的計畫，執行前都經 energy.clamp 修正。
+enabled: true
+
+# HA 端 helper（packages/s00_energy.yaml 建立；儀表板可切換）
+mode_entity: input_select.energy_mode          # eco | normal | comfort
+guard_entity: input_boolean.energy_guard       # off = 暫停節能守門（例如宴客）
+override_minutes: 120                          # 住戶說「這次不要省」→ 暫停守門的分鐘數
+
+# 碳排係數：台電公告「電力排碳係數」（kgCO2e/kWh）；每年 6 月更新一次
+carbon_kg_per_kwh: 0.474
+
+# 台電 住商型簡易時間電價（二段式）；只用來「避開尖峰」與報告，不算電費
+tariff:
+  plan: 住商型簡易時間電價（二段式）
+  summer_months: [6, 7, 8, 9]
+  peak_summer: [["09:00", "24:00"]]            # 週一–五
+  peak_other:  [["06:00", "11:00"], ["14:00", "24:00"]]
+  weekend_all_offpeak: true
+
+# 三種模式的守門參數
+modes:
+  eco:                                         # 預設（憲章 VI）
+    ac_min_cool: 27                            # 冷氣設定溫度下限（°C）；每高 1 °C 約省 6 %
+    ac_max_heat: 20
+    ac_prefer_dry_rh_below: 65                 # 室內濕度低於此值且室溫 ≤ 28 → 建議除濕取代冷氣
+    ac_fan_default: auto
+    light_max_pct: 70                          # 燈光亮度上限
+    daylight_light_max_pct: 40                 # 白天（照度足夠）時的上限
+    idle_off_min: 20                           # 無人多久後關空調/燈
+    peak_ac_min_cool: 28                       # 尖峰時段冷氣下限再加 1 °C
+  normal:
+    ac_min_cool: 26
+    ac_max_heat: 22
+    ac_prefer_dry_rh_below: 60
+    ac_fan_default: auto
+    light_max_pct: 100
+    daylight_light_max_pct: 60
+    idle_off_min: 30
+    peak_ac_min_cool: 27
+  comfort:                                     # 宴客 / 生病 / 住戶明確要求
+    ac_min_cool: 24
+    ac_max_heat: 24
+    ac_prefer_dry_rh_below: 0
+    ac_fan_default: auto
+    light_max_pct: 100
+    daylight_light_max_pct: 100
+    idle_off_min: 60
+    peak_ac_min_cool: 24
+
+daylight:
+  illuminance_entity: sensor.living_illuminance   # Hue Motion 附帶照度（03 章）
+  lux_threshold: 300
+
+# 用電感測（03 章 §3.8 建議：Shelly EM 總表 + Aqara 計量插座）
+sensors:
+  power_w: sensor.home_power                       # 即時總功率（W）
+  today_kwh: sensor.home_energy_today              # utility_meter（s00_energy.yaml）
+  month_kwh: sensor.home_energy_month
+  baseline_entity: input_number.energy_baseline_kwh_day   # 基準日用電（入住前 30 天平均）
+  devices:                                         # 分項（有幾個填幾個；報告列前三名）
+    冷氣客廳: sensor.ac_living_energy_today
+    冷氣主臥: sensor.ac_master_energy_today
+    冷氣次臥: sensor.ac_second_energy_today
+    電視影音: sensor.tv_plug_energy_today
+    冰箱: sensor.fridge_plug_energy_today
+    洗衣烘衣: sensor.laundry_plug_energy_today
+    伺服器: sensor.server_plug_energy_today
+
+report:
+  daily_at: "21:30"                                # HA 自動化 e04 觸發（s00_energy.yaml）
+  weekly_dow: 0                                    # 週一早上做週報
+  channels: [ha_companion_push, telegram]          # telegram 需 10 章 bot；沒有就只推播
+  say: false                                       # true = 也用 HomePod 唸（深夜會改推播）

@@ -1,0 +1,280 @@
+# file: packages/s00_energy.yaml
+# 節能與碳排（憲章 VI）：HA 只負責「量測 + 反射動作」；決策（省多少、何時放寬）統一由 Hermes 節能管家做（13 章）。
+# ⚠️ 需先有用電感測：Shelly EM 總表 → sensor.home_energy_total（kWh 累計）、sensor.home_power（W）；分項計量插座見 03 章 §3.8。
+
+input_select:
+  energy_mode:
+    name: 節能模式
+    icon: mdi:leaf
+    options: [eco, normal, comfort]
+    initial: eco
+
+input_boolean:
+  energy_guard:
+    name: 節能守門
+    icon: mdi:shield-check
+    initial: on
+  energy_standby_cut:
+    name: 離家/睡前切待機電源
+    icon: mdi:power-plug-off
+    initial: on
+
+input_number:
+  energy_baseline_kwh_day:
+    name: 基準日用電（kWh）
+    min: 1
+    max: 100
+    step: 0.1
+    initial: 12
+    unit_of_measurement: kWh
+    icon: mdi:chart-line
+  energy_carbon_factor:
+    name: 電力排碳係數（kgCO2e/kWh）
+    min: 0.3
+    max: 0.7
+    step: 0.001
+    initial: 0.474
+    icon: mdi:molecule-co2
+
+timer:
+  energy_mode_revert:
+    name: 節能模式自動恢復
+    duration: "02:00:00"
+
+utility_meter:
+  home_energy_today:
+    source: sensor.home_energy_total
+    cycle: daily
+  home_energy_month:
+    source: sensor.home_energy_total
+    cycle: monthly
+  ac_living_energy_today:
+    source: sensor.ac_living_energy
+    cycle: daily
+  ac_master_energy_today:
+    source: sensor.ac_master_energy
+    cycle: daily
+  ac_second_energy_today:
+    source: sensor.ac_second_energy
+    cycle: daily
+  tv_plug_energy_today:
+    source: sensor.tv_plug_energy
+    cycle: daily
+  fridge_plug_energy_today:
+    source: sensor.fridge_plug_energy
+    cycle: daily
+  laundry_plug_energy_today:
+    source: sensor.laundry_plug_energy
+    cycle: daily
+  server_plug_energy_today:
+    source: sensor.server_plug_energy
+    cycle: daily
+
+template:
+  - sensor:
+      - name: 今日碳排
+        unique_id: home_co2_today
+        unit_of_measurement: kgCO2e
+        icon: mdi:molecule-co2
+        state: "{{ (states('sensor.home_energy_today') | float(0) * states('input_number.energy_carbon_factor') | float(0.474)) | round(2) }}"
+      - name: 今日節能比例
+        unique_id: home_saving_pct_today
+        unit_of_measurement: "%"
+        icon: mdi:leaf
+        state: >
+          {% set b = states('input_number.energy_baseline_kwh_day') | float(0) %}
+          {% set k = states('sensor.home_energy_today') | float(0) %}
+          {{ ((1 - k / b) * 100) | round(0) if b > 0 else 0 }}
+  - binary_sensor:
+      - name: 尖峰電價時段
+        unique_id: tariff_peak_now
+        icon: mdi:cash-clock
+        state: >
+          {% set n = now() %}
+          {% if n.weekday() >= 5 %} off
+          {% elif n.month in [6,7,8,9] %} {{ 'on' if 9 <= n.hour < 24 else 'off' }}
+          {% else %} {{ 'on' if (6 <= n.hour < 11) or (14 <= n.hour < 24) else 'off' }}
+          {% endif %}
+      - name: 全屋無人
+        unique_id: home_nobody
+        device_class: occupancy
+        state: "{{ is_state('person.allen','not_home') and is_state('person.ann','not_home') }}"
+
+switch:
+  - platform: group
+    name: 待機插座群
+    unique_id: standby_plugs
+    entities:
+      - switch.tv_plug
+      - switch.audio_plug
+      - switch.second_desk_plug
+    # ⚠️ 不要把冰箱、伺服器（Mac mini / HA Black）、路由器放進來
+
+script:
+  energy_idle_sweep:
+    alias: 節能巡檢（關無人房間燈/空調、切待機）
+    icon: mdi:broom
+    fields:
+      keep: { description: "none / fridge / server / all_plugs", default: fridge }
+    sequence:
+      - action: climate.turn_off
+        target: { entity_id: [climate.living, climate.master, climate.second] }
+        continue_on_error: true
+      - action: light.turn_off
+        target: { entity_id: light.all_lights }
+        data: { transition: 3 }
+      - if: "{{ keep != 'all_plugs' and is_state('input_boolean.energy_standby_cut','on') }}"
+        then:
+          - action: switch.turn_off
+            target: { entity_id: switch.standby_plugs }
+      - action: logbook.log
+        data: { name: 節能巡檢, message: "已關空調/燈光，待機插座 {{ '保留' if keep == 'all_plugs' else '切斷' }}" }
+
+  energy_report:
+    alias: 用電報告（請 Hermes 說）
+    icon: mdi:chart-bar
+    fields:
+      period: { description: "today / week / month", default: today }
+      say: { description: "是否用 HomePod 唸", default: false }
+    sequence:
+      - action: rest_command.hermes_command
+        continue_on_error: true
+        response_variable: r
+        data:
+          text: "{{ '這個月' if period == 'month' else ('這週' if period == 'week' else '今天') }}用電報告"
+          speaker: allen
+          output: living_homepod
+          say: "{{ say }}"
+      - if: "{{ r is not defined or r.status != 200 }}"
+        then:   # Hermes 離線 → HA 自己報簡版
+          - action: notify.both
+            data:
+              title: 用電報告（簡版）
+              message: "今天 {{ states('sensor.home_energy_today') }} 度，約 {{ states('sensor.home_co2_today') }} kg 碳排，比基準{{ '省' if states('sensor.home_saving_pct_today')|int(0) >= 0 else '多' }} {{ states('sensor.home_saving_pct_today')|abs }}%。"
+
+automation:
+  - id: e01_idle_ac_off
+    alias: 節能 01 無人 20 分鐘關空調
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.home_nobody
+        to: "on"
+        for: { minutes: 20 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.energy_guard
+        state: "on"
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.energy_mode
+            state: comfort
+      - condition: template
+        value_template: "{{ ['climate.living','climate.master','climate.second'] | select('is_state','off') | list | count < 3 }}"
+    actions:
+      - action: script.energy_idle_sweep
+        data: { keep: fridge }
+      - action: notify.both
+        data: { message: "家裡沒人 20 分鐘，已關空調與燈、切待機電源。回家時說「Allen 回家了」會自動恢復。" }
+
+  - id: e02_window_open_ac_off
+    alias: 節能 02 開窗 3 分鐘自動關該房空調
+    mode: parallel
+    triggers:
+      - trigger: state
+        entity_id: [binary_sensor.living_window, binary_sensor.master_window, binary_sensor.second_window]
+        to: "on"
+        for: { minutes: 3 }
+    conditions:
+      - condition: state
+        entity_id: input_boolean.energy_guard
+        state: "on"
+    actions:
+      - variables:
+          room: "{{ trigger.entity_id.split('.')[1].replace('_window','') }}"
+      - if: "{{ not is_state('climate.' ~ room, 'off') }}"
+        then:
+          - action: climate.turn_off
+            target: { entity_id: "climate.{{ room }}" }
+          - action: notify.both
+            data: { message: "{{ room }} 窗開著 3 分鐘，已先關冷氣（關窗後說「{{ room }}冷氣開」即可）。" }
+
+  - id: e03_peak_tariff_notice
+    alias: 節能 03 進入尖峰時段提醒
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.tariff_peak_now
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_select.energy_mode
+        state: eco
+      - condition: template
+        value_template: "{{ ['climate.living','climate.master','climate.second'] | select('is_state','cool') | list | count > 0 }}"
+    actions:
+      - action: rest_command.hermes_command
+        continue_on_error: true
+        data: { text: "尖峰時段開始，請把開著的冷氣調到節能溫度", speaker: allen, output: living_homepod, say: false }
+
+  - id: e04_daily_report
+    alias: 節能 04 每日 21:30 用電報告
+    mode: single
+    triggers:
+      - trigger: time
+        at: "21:30:00"
+    actions:
+      - action: script.energy_report
+        data: { period: today, say: false }
+
+  - id: e05_daylight_dim
+    alias: 節能 05 白天自然光夠就調暗客廳
+    mode: single
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.living_illuminance
+        above: 300
+        for: { minutes: 5 }
+    conditions:
+      - condition: state
+        entity_id: input_select.energy_mode
+        state: eco
+      - condition: state
+        entity_id: input_boolean.movie_mode
+        state: "off"
+      - condition: numeric_state
+        entity_id: light.living_all
+        attribute: brightness
+        above: 110          # ≈ 43 %
+    actions:
+      - action: light.turn_on
+        target: { entity_id: light.living_all }
+        data: { brightness_pct: 40, transition: 10 }
+
+  - id: e06_mode_revert
+    alias: 節能 06 模式到期自動回 eco
+    mode: single
+    triggers:
+      - trigger: event
+        event_type: timer.finished
+        event_data: { entity_id: timer.energy_mode_revert }
+    actions:
+      - action: input_select.select_option
+        target: { entity_id: input_select.energy_mode }
+        data: { option: eco }
+      - action: logbook.log
+        data: { name: 節能模式, message: "已自動恢復 eco" }
+
+  - id: e07_weekly_report
+    alias: 節能 07 週一 08:30 週報
+    mode: single
+    triggers:
+      - trigger: time
+        at: "08:30:00"
+    conditions:
+      - condition: time
+        weekday: [mon]
+    actions:
+      - action: script.energy_report
+        data: { period: week, say: false }

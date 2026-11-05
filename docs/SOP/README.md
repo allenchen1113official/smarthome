@@ -1,6 +1,6 @@
 # Allen & Ann 智慧家庭 — 從無到有建置 SOP
 
-> 版本 1.4 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
+> 版本 1.5 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
 > 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。
 
 ## 一頁快速開始
@@ -11,7 +11,16 @@
 | 傳統 HAOS 路線 | 01 → 02 → 03 → 06 → 04 → 05 → 07 → 08 |
 | 第二台熱備 + 負載均衡 | 09 §9.5（副節點）→ 11（LB） |
 | 家人遠端控制 | 10（Telegram 10 分鐘、LINE 需 https） |
+| 節能省碳（AI 節能管家） | 03 §3.8b 量測 → 13 → 12 能源區塊 |
 | 查任何 IP / 埠 / 密鑰 | 附錄 A |
+
+## 三條不可妥協的原則
+
+| | 原則 | 手冊哪裡落實 |
+|---|---|---|
+| 1 | 系統在地執行，機敏資料不外洩 | 04（本地語音）、05（Ollama 預設）、09（Grok 選配預設關）、13 §13.1、附錄 A.8 資料流 |
+| 2 | 金鑰、機敏資料不推上 GitHub | 13 §13.8 `tools/check_secrets.py` + pre-push；附錄 A.3 密鑰位置 |
+| 3 | 節能省碳為最高目標，由一個 AI 助理決策 | 13 全章；06 情境節能規則（13 §13.6）；12 能源區塊 |
 
 ## 文件地圖
 
@@ -30,6 +39,7 @@
 | 10 | [10-LINE-Telegram-遠端控制介面.md](10-LINE-Telegram-遠端控制介面.md) | 家庭成員用 LINE / Telegram 遠端控制裝置與情境：指令文法、介面、安全、`magpie-bot` 建置 | 1 小時 |
 | 11 | [11-雙節點安裝範例-負載均衡.md](11-雙節點安裝範例-負載均衡.md) | 安裝範例：Mac mini 主 + HA Black 副，HAProxy + keepalived VIP，無狀態服務雙活、HA 主從自動切換、故障演練 | 1 天 |
 | 12 | [12-儀表板建置.md](12-儀表板建置.md) | 依 Claude Design 優化稿做成 HA 原生 Sections 儀表板（首頁 / 客廳房間頁 / 情境總控），貼上前 85 個實體一鍵自檢，壁掛平板與手機設定 | 2 小時 |
+| 13 | [13-節能與碳排-AI節能管家.md](13-節能與碳排-AI節能管家.md) | 三條原則落實；Shelly EM / 計量插座；`s00_energy.yaml`；Hermes 節能守門（只收緊不放寬）與每日用電碳排報告；35 情境節能規則；金鑰推送前掃描 | 半天 |
 | A | [A-附錄-總表.md](A-附錄-總表.md) | IP / 埠 / 密鑰 / 實體 / 檔案位置 / 兩條路線選擇 / 變更紀錄 | 隨查 |
 
 ## 附帶的可直接使用檔案
@@ -39,11 +49,11 @@ docs/SOP/
 ├── assets/topology.mmd / topology.png     拓樸圖（Mermaid 原始碼 + 已渲染圖）
 ├── ha-config/
 │   ├── configuration.yaml.snippet         要加進 HA configuration.yaml 的片段（packages、rest_command、shell_command…）
-│   ├── packages/s00_*.yaml                共用：helpers/腳本、語音入口、節點感知（主/副節點）
+│   ├── packages/s00_*.yaml                共用：helpers/腳本、語音入口、節點感知、節能（s00_energy）
 │   ├── packages/s01_*.yaml … s35_*.yaml   35 個情境的 HA package（helpers + automations + scripts 一包）
 │   └── standby/standby_node.yaml          只放在副節點 HA Black 的監看與自動接手 package
-└── hermes/                                 Hermes Agent v0.1 骨架（可直接 `uvicorn` 啟動）
-    ├── config/policy.yaml · market.yaml · tools/*.yaml
+└── hermes/                                 Hermes Agent v0.4 骨架（可直接 `uvicorn` 啟動）
+    ├── config/policy.yaml · market.yaml · energy.yaml · tools/*.yaml
     ├── hermes/*.py
     ├── requirements.txt · com.allenann.hermes.plist · README.md
 ```

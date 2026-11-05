@@ -59,9 +59,9 @@ aliases:
   浴室: bath
 
 areas:
-  living:  { light: light.living_all,  climate: climate.living,  cover: cover.living_curtain,  motion: binary_sensor.living_motion }
-  master:  { light: light.master_all,  climate: climate.master,  cover: cover.bedroom_curtain, motion: null, temp: sensor.master_temperature }
-  second:  { light: light.second_all,  climate: climate.second }
+  living:  { light: light.living_all,  climate: climate.living,  cover: cover.living_curtain,  motion: binary_sensor.living_motion, temperature: sensor.living_temperature, humidity: sensor.living_humidity }
+  master:  { light: light.master_all,  climate: climate.master,  cover: cover.bedroom_curtain, motion: null, temp: sensor.master_temperature, temperature: sensor.master_temperature, humidity: sensor.master_humidity }
+  second:  { light: light.second_all,  climate: climate.second, temperature: sensor.second_temperature, humidity: sensor.second_humidity }
   entry:   { light: light.entry_1 }
   bath:    { light: light.bath_1, motion: binary_sensor.bath_motion }
 
@@ -79,3 +79,7 @@ presence:
   ann: person.ann
   ann_shift: input_select.ann_shift
   sleep_mode: input_boolean.sleep_mode
+
+# 節能管家：參數在 energy.yaml；這裡只開關
+energy:
+  enabled: true

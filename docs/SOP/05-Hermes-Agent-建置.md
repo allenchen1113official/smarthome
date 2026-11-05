@@ -4,6 +4,8 @@
 > 完成判準：§5.9。
 > 程式碼：`docs/SOP/hermes/`（v0.1 骨架，已通過語法與離線功能測試；對應 `design/hermes.html` v0.3 規格）。
 
+> v0.4 起多了 **節能管家** 模組（`hermes/energy.py`、`config/energy.yaml`、`config/tools/energy.yaml`）：每個計畫執行前經 `energy.clamp` 守門，另提供 `energy.report / set_mode / pause_guard / idle_sweep` 四個工具。安裝步驟不變（檔案已在骨架內）；參數與原理見 **13 章**。
+
 ## 5.1 Hermes 在管線中的位置與串接方式
 
 ```

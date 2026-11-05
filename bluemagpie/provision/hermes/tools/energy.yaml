@@ -1,0 +1,31 @@
+# 節能管家工具（Hermes v0.4）
+tools:
+  - name: energy.report
+    scope: read
+    confirm: false
+    desc: 回報今天/本月用電、碳排、相對基準的節省比例與前三大耗電，並給一句建議
+    params:
+      period: { type: string, enum: [today, month, week], default: today }
+
+  - name: energy.set_mode
+    scope: write.comfort
+    desc: 切換節能模式 eco（預設）/ normal / comfort；comfort 會放寬冷氣與燈光限制
+    retry: 2
+    params:
+      mode: { type: string, enum: [eco, normal, comfort] }
+      minutes: { type: integer, min: 10, max: 720, default: 120 }
+    required: [mode]
+
+  - name: energy.pause_guard
+    scope: write.comfort
+    desc: 住戶說「這次不要省電」→ 暫停節能守門 N 分鐘（之後自動恢復 eco）
+    params:
+      minutes: { type: integer, min: 10, max: 720, default: 120 }
+
+  - name: energy.idle_sweep
+    scope: write.appliance
+    desc: 立刻巡一次：關掉無人房間的燈與空調、切斷待機插座（離家 / 睡前用）
+    compensate: light.restore_snapshot
+    retry: 1
+    params:
+      keep: { type: string, enum: [none, fridge, server, all_plugs], default: fridge }

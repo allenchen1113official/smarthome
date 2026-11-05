@@ -15,6 +15,7 @@
 | 192.168.0.20 | Hue Bridge v2 | 03 |
 | 192.168.0.21 | Hue Play HDMI Sync Box | 03 |
 | 192.168.0.25 | SLZB-06 Zigbee 協調器 | 02 / 07 |
+| 192.168.0.26–.29 | Shelly EM 總表、Shelly 1PM 冷氣 ×3 | 03 §3.8b / 13 |
 | 192.168.0.30 / .31 | HomePod / HomePod mini | 03 |
 | 192.168.0.40 | Roborock Qrevo Edge C | 03 |
 | 192.168.0.50–.52 | Panasonic 客廳 / 主臥 / 次臥 | 03 |
@@ -72,6 +73,7 @@
 | `binary_sensor.wan_ping`、`binary_sensor.macmini_ping` | ping | 網路 / 主節點 |
 | `script.ac_set / say / flash_lights / vacuum_rooms / emergency_sos / hermes_alert / home_leave` | s00_common | 共用腳本 |
 | `rest_command.hermes_command / hermes_screen / hermes_alerts / magpie_backup / magpie_bot_notify` | configuration.yaml 或 s00_magpie | 對外呼叫 |
+| `input_select.energy_mode`、`input_boolean.energy_guard`、`sensor.home_energy_today/month`、`sensor.home_co2_today`、`sensor.home_saving_pct_today`、`binary_sensor.tariff_peak_now`、`binary_sensor.home_nobody`、`switch.standby_plugs`、`script.energy_idle_sweep / energy_report` | s00_energy | 節能管家（13 章） |
 
 ## A.5 檔案與目錄位置
 
@@ -100,6 +102,20 @@
 
 兩條路線的 packages、Hermes、設計文件共用；可從 HAOS 路線用 HA 備份搬到青鳥路線（還原到 `config/homeassistant/`）。
 
+## A.8 資料流清單（原則 1：什麼資料會離開家裡）
+
+| 資料 | 去哪 | 什麼情況 | 怎麼關 |
+|---|---|---|---|
+| 語音錄音 | **不離家**（Whisper 本地） | — | — |
+| 指令文字 + 當下狀態摘要（溫度、在家/不在家） | x.ai（Grok） | **只有**後台把 Hermes 大腦切成 grok 時 | 後台 → 語音 → Hermes 大腦 = ollama（預設） |
+| 指令與回覆文字 | LINE / Telegram 伺服器 | 使用 10 章 bot 時 | 不設定 bot |
+| 推播通知文字 | Apple APNs（Companion） | 所有 notify | 無法避免；內容只寫結論不寫感測原始值 |
+| 股票代號查詢 | TWSE / TPEx | 31–34 情境 | 關 `s31_enabled` 等 |
+| 天氣查詢（座標） | met.no | 02 情境 | 改用 HA 內建 `weather` 離線快取 |
+| DuckDNS 更新（公網 IP） | duckdns.org | 07 章遠端存取 | 只用 Tailscale 不用 DuckDNS |
+| 備份、用電、在家紀錄、睡眠 | **不離家**（主副節點之間 LAN） | — | — |
+| Shelly / Aqara 量測 | **不離家**（Shelly 雲端已關） | — | Shelly App → Cloud → Disable |
+
 ## A.7 變更紀錄
 
 | 日期（台北） | 版本 | 內容 |
@@ -109,3 +125,4 @@
 | 2026-10-29 | 1.2 | 儀表板優化設計（Claude Design 畫布） |
 | 2026-11-05 | 1.3 | 09 青鳥一鍵部署與後台、OpenClaw 一鍵串接、10 LINE/Telegram、Grok 接口、11 雙節點負載均衡、12 儀表板、附錄 A；GitHub 同步 |
 | 2026-11-05 | 1.4 | 06 章每情境實測紀錄表；04 章 Siri 捷徑 14 步教學與截圖位（`assets/siri/`）；12 章 §12.3b 實體自檢範本（85 個實體已與 packages / 03 / 06 章交叉比對）；修正 `script.say` 目標名 `master_mini`、03 章 Hue 場景固定 ID |
+| 2026-11-05 | 1.5 | 三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（`s00_energy.yaml`、Hermes v0.4 `energy.py` 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；`tools/check_secrets.py` + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁 |

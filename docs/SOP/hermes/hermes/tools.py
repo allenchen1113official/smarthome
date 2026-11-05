@@ -145,6 +145,18 @@ async def execute(tool: str, args: dict) -> dict:
             oid = mem.paper_order(args["symbol"], args["side"], int(args["shares"]), float(price))
             return {"ok": True, "order_id": f"po_{oid}", "price": price}
 
+    if tool.startswith("energy."):
+        from . import energy
+        if tool == "energy.report":
+            r = await energy.report(args.get("period", "today"))
+            return {"ok": True, "text": energy.report_text(r), **r}
+        if tool == "energy.set_mode":
+            return {"ok": True, **await energy.set_mode(args["mode"], args.get("minutes"))}
+        if tool == "energy.pause_guard":
+            return {"ok": True, **energy.pause_guard(int(args.get("minutes", 120)))}
+        if tool == "energy.idle_sweep":
+            return {"ok": True, **await energy.idle_sweep(args.get("keep", "fridge"))}
+
     raise ValueError(f"unknown tool {tool}")
 
 

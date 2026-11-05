@@ -19,6 +19,7 @@ CH = [
     ("10-LINE-Telegram-遠端控制介面.md", "10 LINE / Telegram 遠端控制", "💬"),
     ("11-雙節點安裝範例-負載均衡.md", "11 雙節點負載均衡範例", "⚖️"),
     ("12-儀表板建置.md", "12 儀表板建置", "📟"),
+    ("13-節能與碳排-AI節能管家.md", "13 節能與碳排", "🌱"),
     ("A-附錄-總表.md", "附錄 A 總表", "📎"),
 ]
 SCENE_CAT = {}
@@ -205,7 +206,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
 <style>{CSS}</style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.4 · 2026-11-05</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.5 · 2026-11-05</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>
@@ -217,7 +218,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
       <h1>從無到有：Mac mini M4 × Home Assistant × OpenClaw × Hermes</h1>
       <p>依 <code>design/</code> 規劃文件逐章實作的新手建置手冊：網路拓樸、HAOS 虛擬機、設備整合、本地語音管線、Hermes 管家，以及 35 個自動化情境的完整 YAML 與驗收步驟。</p>
       <div class="stats">
-        <div class="stat"><b>14</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>54</b>HA 自動化</div><div class="stat"><b>14</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
+        <div class="stat"><b>15</b>章</div><div class="stat"><b>35</b>情境</div><div class="stat"><b>61</b>HA 自動化</div><div class="stat"><b>18</b>Hermes 工具</div><div class="stat"><b>6</b>週路線</div>
       </div>
       <div class="scenes">
         <h2>情境索引</h2>

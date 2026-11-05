@@ -44,7 +44,7 @@ SCHEMA: list[dict] = [
         {"k": "ollama_source", "label": "Ollama 來源", "type": "select", "options": ["container", "host"], "default": "container", "help": "macOS 選 host（主機原生 Ollama 有 Metal 加速）"},
         {"k": "ollama_url", "label": "主機 Ollama 網址（host 模式）", "type": "text", "default": "http://host.docker.internal:11434"},
         {"k": "ollama_model", "label": "LLM 模型", "type": "text", "default": "llama3:8b"},
-        {"k": "llm_provider", "label": "Hermes 大腦", "type": "select", "options": ["ollama", "grok"], "default": "ollama", "help": "ollama＝本地（符合本地優先憲章）；grok＝xAI 雲端 Grok 接口，只送文字上下文（不送語音、不送錄音），失敗自動退回本地"},
+        {"k": "llm_provider", "label": "Hermes 大腦", "type": "select", "options": ["ollama", "grok"], "default": "ollama", "help": "⚠️ 原則 1：預設 ollama（全本地）。grok＝xAI 雲端，屬選配且預設關閉；開啟後每句指令的文字上下文會送到 x.ai（不送語音、錄音、在家狀態、用電），失敗自動退回本地"},
         {"k": "grok_api_key", "label": "Grok（xAI）API Key", "type": "password", "default": "", "secret": True, "help": "https://console.x.ai 建立；存於 .env 的 GROK_API_KEY"},
         {"k": "grok_model", "label": "Grok 模型", "type": "text", "default": "grok-4-fast"},
         {"k": "grok_fallback", "label": "Grok 失敗時退回本地 Ollama", "type": "bool", "default": True},
@@ -55,6 +55,16 @@ SCHEMA: list[dict] = [
         {"k": "quiet_end", "label": "深夜時段結束", "type": "text", "default": "07:00"},
         {"k": "watchlist", "label": "自選股（逗號分隔）", "type": "text", "default": "2330,2454,3037,2317,2603"},
         {"k": "stop_loss_pct", "label": "停損告警（跌破成本 %）", "type": "int", "default": 8},
+    ]},
+    {"id": "energy", "title": "節能管家（憲章 VI）", "fields": [
+        {"k": "enabled", "label": "啟用 Hermes 節能守門", "type": "bool", "default": True, "help": "所有空調/燈光/家電計畫先經 energy.clamp 只收緊不放寬；關掉僅在除錯時"},
+        {"k": "default_mode", "label": "預設節能模式", "type": "select", "options": ["eco", "normal", "comfort"], "default": "eco"},
+        {"k": "ac_min_cool", "label": "eco 冷氣最低溫（°C）", "type": "int", "default": 27},
+        {"k": "light_max_pct", "label": "eco 燈光亮度上限（%）", "type": "int", "default": 70},
+        {"k": "idle_off_min", "label": "無人幾分鐘關空調/燈", "type": "int", "default": 20},
+        {"k": "carbon_factor", "label": "電力排碳係數 kgCO2e/kWh", "type": "text", "default": "0.474", "help": "台電每年公告；2024 年 0.474"},
+        {"k": "baseline_kwh_day", "label": "基準日用電（kWh）", "type": "text", "default": "12", "help": "台電帳單度數 ÷ 天數"},
+        {"k": "report_time", "label": "每日用電報告時間", "type": "text", "default": "21:30"},
     ]},
     {"id": "notify", "title": "通知對象", "fields": [
         {"k": "allen", "label": "Allen 的 notify 服務", "type": "text", "default": "notify.mobile_app_allen_iphone"},
@@ -208,7 +218,18 @@ def apply(d: dict) -> dict:
     hcfg["grok"] = {"base_url": "https://api.x.ai/v1", "model": v["grok_model"], "api_key_env": "HERMES_GROK_API_KEY", "temperature": 0.1, "timeout_s": 15, "max_tokens": 600}
     hcfg["notify"] = {"allen": d["notify"]["allen"], "ann": d["notify"]["ann"], "both": "notify.both"}
     hcfg["paths"] = {"db": "/data/hermes.db", "tx_log": "/data/logs/hermes.tx.log", "cards_dir": "/cards", "cards_url_prefix": "/local/hermes"}
+    hcfg["energy"] = {"enabled": bool(d["energy"]["enabled"])}
     (hdir / "hermes.yaml").write_text(yaml.safe_dump(hcfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    # 節能管家參數：provision/hermes/energy.yaml 為範本，後台欄位覆蓋 eco 與係數
+    en = yaml.safe_load((PROVISION / "hermes" / "energy.yaml").read_text(encoding="utf-8"))
+    e = d["energy"]
+    en["enabled"] = bool(e["enabled"])
+    en["carbon_kg_per_kwh"] = float(e["carbon_factor"] or 0.474)
+    en["modes"]["eco"]["ac_min_cool"] = int(e["ac_min_cool"]); en["modes"]["eco"]["peak_ac_min_cool"] = int(e["ac_min_cool"]) + 1
+    en["modes"]["eco"]["light_max_pct"] = int(e["light_max_pct"]); en["modes"]["eco"]["idle_off_min"] = int(e["idle_off_min"])
+    en["report"]["daily_at"] = e["report_time"]
+    (hdir / "energy.yaml").write_text(yaml.safe_dump(en, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    changed["hermes"].append("energy.yaml")
     pol = yaml.safe_load((hdir / "policy.yaml").read_text(encoding="utf-8"))
     pol["autonomy"] = d["hermes"]["autonomy"]
     pol["confirm"]["quiet_hours"]["window"] = [d["hermes"]["quiet_start"], d["hermes"]["quiet_end"]]
@@ -332,6 +353,16 @@ magpie: !include magpie.yaml
     if d["ha"]["install_packages"]:
         for p in (PROVISION / "homeassistant" / "packages").glob("*.yaml"):
             shutil.copy(p, hac / "packages" / p.name)
+        # s00_energy.yaml：把後台的節能預設寫進 helper 的 initial（憲章 VI）
+        ep = hac / "packages" / "s00_energy.yaml"
+        if ep.exists():
+            import re as _re
+            e = d["energy"]; txt = ep.read_text(encoding="utf-8")
+            txt = _re.sub(r"(options: \[eco, normal, comfort\]\n    initial: )\w+", r"\g<1>" + e["default_mode"], txt)
+            txt = _re.sub(r"(energy_baseline_kwh_day:(?:\n    .*)*?\n    initial: )[\d.]+", r"\g<1>" + str(float(e["baseline_kwh_day"] or 12)), txt)
+            txt = _re.sub(r"(energy_carbon_factor:(?:\n    .*)*?\n    initial: )[\d.]+", r"\g<1>" + str(float(e["carbon_factor"] or 0.474)), txt)
+            txt = txt.replace('at: "21:30:00"', f'at: "{e["report_time"]}:00"')
+            ep.write_text(txt, encoding="utf-8")
     changed["homeassistant"] += ["secrets.yaml", "packages/s00_magpie.yaml"] + (["packages/*"] if d["ha"]["install_packages"] else [])
 
     # .env（容器層變數：埠、模型、token、profiles）
