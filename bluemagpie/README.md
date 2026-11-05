@@ -46,7 +46,7 @@ bash install.sh standby
 | Home Assistant | magpie-homeassistant | 8123 | Linux host 網路／其他 bridge |
 | Mosquitto | magpie-mosquitto | 1883 | |
 | Zigbee2MQTT | magpie-zigbee2mqtt | 8099 | SLZB-06 TCP；Linux 可改 USB |
-| Whisper STT | magpie-whisper | 10300 | Wyoming |
+| Whisper STT | magpie-whisper（Linux；macOS 改主機原生 mlx-whisper，profile `whisper` 不啟動） | 10300 | Wyoming |
 | Piper TTS | magpie-piper | 10200 | Wyoming |
 | Ollama | magpie-ollama | 11434 | profile `ollama`；macOS 建議用主機原生 |
 | Hermes | magpie-hermes | 8800 | Ollama 相容 `/api/chat` 給 HA Assist |

@@ -19,7 +19,7 @@ def _hosts(d: dict) -> dict:
                 k, _, v = line.partition("="); env[k.strip()] = v.split("#")[0].strip()
     vip = d["cluster"].get("lb_vip")
     return {
-        "whisper": (vip, 10300) if vip else (h or "whisper", int(env.get("WHISPER_PORT", 10300)) if h else 10300),
+        "whisper": (vip, 10300) if vip else (("host.docker.internal", int(d["voice"].get("stt_host_port", 10300))) if d["voice"].get("stt_source") == "host" else (h or "whisper", int(env.get("WHISPER_PORT", 10300)) if h else 10300)),
         "piper": (vip, 10200) if vip else (h or "piper", int(env.get("PIPER_PORT", 10200)) if h else 10200),
         "hermes_url": f"http://{h or 'hermes'}:{env.get('HERMES_PORT', 8800) if h else 8800}",
         "ollama_url": d["voice"]["ollama_url"] if d["voice"]["ollama_source"] == "host" else "http://ollama:11434",
@@ -144,7 +144,7 @@ async def _create_pipeline(d: dict, H: dict, ents: dict) -> dict:
         import websockets
     except ImportError:
         return {"ok": False, "error": "websockets 未安裝"}
-    stt = next((e for e in ents["stt"] if "whisper" in e), ents["stt"][0] if ents["stt"] else None)
+    stt = next((e for e in ents["stt"] if "whisper" in e or "mlx" in e), ents["stt"][0] if ents["stt"] else None)
     tts = next((e for e in ents["tts"] if "piper" in e), ents["tts"][0] if ents["tts"] else None)
     conv = next((e for e in ents["conversation"] if "hermes" in e or "ollama" in e), None)
     if not (stt and tts and conv):

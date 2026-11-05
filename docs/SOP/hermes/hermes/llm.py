@@ -42,14 +42,21 @@ async def build_context() -> str:
     return "# context\n" + json.dumps(ctx, ensure_ascii=False)
 
 
+def _strip_think(t: str) -> str:
+    """舊版 Ollama 不吃 think 參數時，把 <think>…</think> 砍掉再解析 JSON"""
+    return re.sub(r"<think>.*?</think>", "", t, flags=re.S).strip()
+
+
 async def _ollama(messages: list[dict]) -> str:
     o = CFG["ollama"]
     body = {"model": o["model"], "messages": messages, "stream": False, "format": "json",
             "options": {"temperature": o.get("temperature", 0.1), "num_ctx": o.get("num_ctx", 4096)}, "keep_alive": -1}
+    if o.get("think") is not None:        # Qwen3 等推理模型：關閉 thinking，回覆才不會夾 <think>
+        body["think"] = bool(o["think"])
     async with httpx.AsyncClient(timeout=o.get("timeout_s", 8)) as cl:
         r = await cl.post(o["url"].rstrip("/") + "/api/chat", json=body)
         r.raise_for_status()
-        return r.json()["message"]["content"]
+        return _strip_think(r.json()["message"]["content"])
 
 
 async def _grok(messages: list[dict]) -> str:

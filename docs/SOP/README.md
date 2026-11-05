@@ -1,6 +1,6 @@
 # Allen & Ann 智慧家庭 — 從無到有建置 SOP
 
-> 版本 1.5 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
+> 版本 1.6 · 2026-11-05（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
 > 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。
 
 ## 一頁快速開始
@@ -30,7 +30,7 @@
 | 01 | [01-網路拓樸實作.md](01-網路拓樸實作.md) | 畫出並實作五層網路拓樸、IP 規劃、BE3600 設定、連接埠表 | 2 小時 |
 | 02 | [02-Mac-mini-M4-HAOS-安裝.md](02-Mac-mini-M4-HAOS-安裝.md) | macOS 整備、UTM 建立 HAOS 虛擬機、Zigbee Stick USB 直通、HA 初始化 | 2–3 小時 |
 | 03 | [03-設備整合.md](03-設備整合.md) | Hue / Panasonic / Zigbee2MQTT+Aqara / Roborock / HomePod / Companion App / 輔助實體 | 半天 |
-| 04 | [04-OpenClaw-本地語音管線.md](04-OpenClaw-本地語音管線.md) | Faster-Whisper + Ollama + Piper 安裝，串接 HA Assist，HomePod 進出路徑，Siri 捷徑逐步建立（14 步 + 截圖位） | 半天 |
+| 04 | [04-OpenClaw-本地語音管線.md](04-OpenClaw-本地語音管線.md) | MLX-Whisper（Metal）+ Ollama Qwen3 8B + Piper 安裝，串接 HA Assist，HomePod 進出路徑，Siri 捷徑逐步建立（14 步 + 截圖位） | 半天 |
 | 05 | [05-Hermes-Agent-建置.md](05-Hermes-Agent-建置.md) | 部署 Hermes 編排服務（14 工具 / 權限 / 記憶 / 股票模組），用 launchd 常駐 | 半天 |
 | 06 | [06-35情境逐一建置.md](06-35情境逐一建置.md) | 35 個情境每一個的前置、實體、YAML、測試、手動覆寫與實測紀錄表 | 分 5 週，每週一類 |
 | 07 | [07-備援備份與遠端存取.md](07-備援備份與遠端存取.md) | 熱備雙節點（主 Mac mini／副 HA Black 24/7）、SLZB-06、每小時設定備份、失聯自動接手與回切、DuckDNS+SSL、Tailscale | 1 天 |

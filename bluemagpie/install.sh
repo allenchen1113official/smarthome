@@ -29,7 +29,7 @@ if [ "$ROLE" = "standby" ]; then
 elif [ "$(uname -s)" = "Darwin" ]; then
   # macOS：Ollama 用主機原生（Metal），容器版不啟動
   sed -i.bak "s/^COMPOSE_PROFILES=.*/COMPOSE_PROFILES=primary/" .env && rm -f .env.bak
-  command -v ollama >/dev/null 2>&1 || echo "提示：macOS 建議 brew install ollama && ollama pull llama3:8b（後台 Ollama 來源選「主機」）"
+  command -v ollama >/dev/null 2>&1 || echo "提示：macOS 建議 brew install ollama && ollama pull qwen3:8b && pip install wyoming-mlx-whisper（後台 Ollama 來源選「主機」）"
 fi
 
 # 3) 目錄與初始設定（後台「套用」會重新產生）

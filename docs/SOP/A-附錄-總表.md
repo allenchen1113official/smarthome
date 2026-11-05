@@ -82,7 +82,7 @@
 | HA 設定 | HAOS `/config`（Samba `config`） | `bluemagpie/config/homeassistant/` |
 | packages | `/config/packages/` | `bluemagpie/config/homeassistant/packages/`（套用時從 `provision/` 複製） |
 | Hermes 程式 / 設定 / DB | `~/openclaw/hermes/`、`config/`、`hermes.db` | 映像 `bluemagpie/hermes`、`config/hermes/`、`data/hermes/hermes.db` |
-| 語音模型 | `~/openclaw/whisper`、`voices` | `data/whisper`、`data/piper`、`data/ollama` |
+| 語音模型 | `~/openclaw/whisper`（HF 快取，large-v3-turbo）、`voices` | `data/whisper`、`data/piper`、`data/ollama` |
 | 圖卡 | `/config/www/hermes/` | `config/homeassistant/www/hermes/` |
 | 備份 | HA 備份頁 + 副節點 Samba `backup` | `backups/magpie_*.tar.gz`、副節點 `backups/recv_*` |
 | 後台設定 | — | `data/admin/settings.yaml` |
@@ -126,3 +126,4 @@
 | 2026-11-05 | 1.3 | 09 青鳥一鍵部署與後台、OpenClaw 一鍵串接、10 LINE/Telegram、Grok 接口、11 雙節點負載均衡、12 儀表板、附錄 A；GitHub 同步 |
 | 2026-11-05 | 1.4 | 06 章每情境實測紀錄表；04 章 Siri 捷徑 14 步教學與截圖位（`assets/siri/`）；12 章 §12.3b 實體自檢範本（85 個實體已與 packages / 03 / 06 章交叉比對）；修正 `script.say` 目標名 `master_mini`、03 章 Hue 場景固定 ID |
 | 2026-11-05 | 1.5 | 三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（`s00_energy.yaml`、Hermes v0.4 `energy.py` 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；`tools/check_secrets.py` + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁 |
+| 2026-11-05 | 1.6 | 架構評估後選型升級：STT 改 `wyoming-mlx-whisper large-v3-turbo`（Metal）、LLM 改 `qwen3:8b`（關 thinking，`llm.py` 帶 `think:false` 並清 `<think>`）；青鳥後台新增「STT 引擎來源 host/container」、compose whisper 改 profile；04/08/09 章同步 |

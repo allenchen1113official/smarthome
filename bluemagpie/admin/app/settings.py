@@ -39,11 +39,13 @@ SCHEMA: list[dict] = [
         {"k": "channel", "label": "頻道", "type": "int", "default": 15},
     ]},
     {"id": "voice", "title": "語音（OpenClaw）", "fields": [
-        {"k": "whisper_model", "label": "Whisper 模型", "type": "select", "options": ["tiny", "base", "small", "medium"], "default": "small"},
+        {"k": "stt_source", "label": "STT 引擎來源", "type": "select", "options": ["container", "host"], "default": "container", "help": "container＝faster-whisper 容器（Linux / HA Black）；host＝主機原生 wyoming-mlx-whisper（macOS Apple Silicon，Metal 加速，04 章 §4.4）"},
+        {"k": "stt_host_port", "label": "主機 mlx-whisper 埠（host 模式）", "type": "int", "default": 10300},
+        {"k": "whisper_model", "label": "Whisper 模型（container 模式）", "type": "select", "options": ["tiny", "base", "small", "medium"], "default": "small"},
         {"k": "piper_voice", "label": "Piper 聲線", "type": "text", "default": "zh_CN-huayan-medium"},
         {"k": "ollama_source", "label": "Ollama 來源", "type": "select", "options": ["container", "host"], "default": "container", "help": "macOS 選 host（主機原生 Ollama 有 Metal 加速）"},
         {"k": "ollama_url", "label": "主機 Ollama 網址（host 模式）", "type": "text", "default": "http://host.docker.internal:11434"},
-        {"k": "ollama_model", "label": "LLM 模型", "type": "text", "default": "llama3:8b"},
+        {"k": "ollama_model", "label": "LLM 模型", "type": "text", "default": "qwen3:8b", "help": "Qwen3 繁中與 JSON 輸出優於 llama3；Hermes 自動關 thinking。16 GB 用 8b，24 GB 可用 14b"},
         {"k": "llm_provider", "label": "Hermes 大腦", "type": "select", "options": ["ollama", "grok"], "default": "ollama", "help": "⚠️ 原則 1：預設 ollama（全本地）。grok＝xAI 雲端，屬選配且預設關閉；開啟後每句指令的文字上下文會送到 x.ai（不送語音、錄音、在家狀態、用電），失敗自動退回本地"},
         {"k": "grok_api_key", "label": "Grok（xAI）API Key", "type": "password", "default": "", "secret": True, "help": "https://console.x.ai 建立；存於 .env 的 GROK_API_KEY"},
         {"k": "grok_model", "label": "Grok 模型", "type": "text", "default": "grok-4-fast"},
@@ -375,7 +377,7 @@ magpie: !include magpie.yaml
     env.update({"TZ": d["site"]["timezone"], "HA_TOKEN": d["ha"]["token"], "WHISPER_MODEL": v["whisper_model"], "PIPER_VOICE": v["piper_voice"], "GROK_API_KEY": v["grok_api_key"]})
     if d["site"]["admin_password"]:
         env["ADMIN_PASSWORD"] = d["site"]["admin_password"]
-    profiles = ["standby"] if role == "standby" else ["primary"] + (["ollama"] if v["ollama_source"] == "container" else [])
+    profiles = ["standby"] if role == "standby" else ["primary"] + (["ollama"] if v["ollama_source"] == "container" else []) + (["whisper"] if v["stt_source"] == "container" else [])
     env["COMPOSE_PROFILES"] = ",".join(profiles)
     env_path.write_text("\n".join(f"{k}={val}" for k, val in env.items()) + "\n", encoding="utf-8")
     changed["env"].append(".env")

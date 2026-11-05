@@ -1,27 +1,31 @@
 # 04 · OpenClaw 本地語音管線
 
-> 目標：Faster-Whisper（STT）、Ollama Llama 3 8B（推理）、Piper（TTS）全部在 Mac mini 原生跑（Ollama 走 Metal GPU），HA 的 Assist 管線用它們；語音可從 Companion App / Apple Watch / Siri 捷徑進來，回覆從 HomePod 出去。
+> 目標：MLX-Whisper（STT，Metal GPU）、Ollama Qwen3 8B（推理，Metal GPU）、Piper（TTS）全部在 Mac mini 原生跑，HA 的 Assist 管線用它們；語音可從 Companion App / Apple Watch / Siri 捷徑進來，回覆從 HomePod 出去。
 > 完成判準：§4.9。本章先用 Ollama 直接當對話代理做通路測試；05 章再把對話代理換成 Hermes。
 
 ## 4.1 架構與資源預算
 
 ```
- 麥克風 ─► HA Assist 管線 ─► STT: Wyoming faster-whisper (.10:10300)
+ 麥克風 ─► HA Assist 管線 ─► STT: Wyoming mlx-whisper (.10:10300)
                            ─► 對話代理: Ollama 整合 → (04) Ollama :11434 / (05) Hermes :8800
                            ─► TTS: Wyoming piper (.10:10200) ─► HomePod (AirPlay) 或 App
 ```
 
 | 元件 | 跑在哪 | 記憶體 | 延遲（設計值） |
 |---|---|---|---|
-| Faster-Whisper `small` INT8（語言固定 zh） | macOS 原生 Python（CPU） | 0.6 GB | ~150 ms（5 秒內短句） |
-| Ollama Llama 3 8B Q4_0 | macOS 原生（Metal） | 5.4 GB | ~250 ms 首 token |
+| MLX-Whisper `large-v3-turbo`（語言固定 zh） | macOS 原生 Python（**Metal GPU**） | 1.6 GB（q4 版 0.5 GB） | ~200 ms（5 秒內短句，近即時） |
+| Ollama **Qwen3 8B** Q4_K_M（非 thinking） | macOS 原生（Metal） | 5.2 GB | ~250 ms 首 token |
 | Piper `zh_CN-huayan-medium` | macOS 原生 Python | 0.2 GB | ~80 ms |
 | Hermes（05 章） | macOS 原生 Python | 0.4 GB | ~40 ms |
 | HAOS VM | UTM | 2.0 GB | — |
 | macOS | — | 3.0 GB | — |
-| 合計 | | **11.6 / 16 GB** | 端到端 ~520 ms |
+| 合計 | | **12.4 / 16 GB** | 端到端 ~570 ms |
 
-⚠️ Faster-Whisper 在 Apple Silicon 只用 CPU（CTranslate2 無 Metal）。短指令 150 ms 夠用；若想用 GPU 可改 `whisper.cpp`（`brew install whisper-cpp`）搭配 `wyoming-whisper-cpp`，本 SOP 以 Faster-Whisper 為主因為安裝最簡單。
+選型說明（v1.6 起）：
+
+- **STT 改 MLX-Whisper**：Faster-Whisper（CTranslate2）在 Apple Silicon 只能用 CPU，只跑得動 `small`；`wyoming-mlx-whisper` 走 Metal，可以用 `large-v3-turbo`，中文辨識準確度明顯高於 small（「主臥／主握」這類誤辨大幅減少），仍是 Wyoming 協定，HA 端設定完全一樣。只支援 Apple Silicon；青鳥 Linux 節點（HA Black）仍用容器版 faster-whisper。
+- **LLM 改 Qwen3 8B**：Llama 3 的繁體中文理解與 JSON 結構化輸出都弱於 Qwen3；Hermes 靠模型輸出 JSON 計畫，中文理解直接影響「這個我還不會」的比例。Qwen3 要關 thinking（Hermes 呼叫時帶 `think: false`），否則回覆會夾 `<think>` 拖慢。
+- 記憶體仍在 16 GB 安全範圍；24 GB 機器可改 `qwen3:14b`（9 GB）。
 
 ## 4.2 目錄與 Python 環境
 
@@ -31,7 +35,7 @@ cd ~/openclaw
 python3.12 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install wyoming-faster-whisper wyoming-piper piper-tts
+pip install wyoming-mlx-whisper wyoming-piper piper-tts     # mlx-whisper 需 Apple Silicon + Python 3.10–3.13
 ```
 
 ## 4.3 Ollama（Metal 推理）
@@ -42,8 +46,9 @@ brew install ollama
 launchctl setenv OLLAMA_HOST 0.0.0.0
 launchctl setenv OLLAMA_KEEP_ALIVE -1          # 模型常駐，免首句冷啟動
 brew services restart ollama
-ollama pull llama3:8b                           # Q4_0，約 4.7 GB
-ollama run llama3:8b "用繁體中文回答：客廳燈打開，輸出 JSON {intent, actions}"   # 第一次會慢，之後 < 1 秒
+ollama pull qwen3:8b                            # Q4_K_M，約 5.2 GB
+# 試跑（/no_think 關掉思考模式；Hermes 程式內是用 API 參數 think:false）
+ollama run qwen3:8b "/no_think 用繁體中文回答：客廳燈打開，輸出 JSON {intent, actions}"   # 第一次會慢，之後 < 1 秒
 curl -s http://192.168.0.10:11434/api/tags | jq '.models[].name'   # 從 HAOS VM 也要通：ha 終端機 curl 同網址
 ```
 
@@ -55,7 +60,7 @@ sed -i '' 's#<dict>#<dict><key>EnvironmentVariables</key><dict><key>OLLAMA_HOST<
 brew services restart ollama
 ```
 
-## 4.4 Faster-Whisper（Wyoming 伺服器）
+## 4.4 MLX-Whisper（Wyoming 伺服器，Metal GPU）
 
 ```bash
 cat > ~/Library/LaunchAgents/com.allenann.whisper.plist <<'EOF'
@@ -64,26 +69,27 @@ cat > ~/Library/LaunchAgents/com.allenann.whisper.plist <<'EOF'
 <plist version="1.0"><dict>
   <key>Label</key><string>com.allenann.whisper</string>
   <key>ProgramArguments</key><array>
-    <string>/Users/allen/openclaw/venv/bin/wyoming-faster-whisper</string>
+    <string>/Users/allen/openclaw/venv/bin/wyoming-mlx-whisper</string>
     <string>--uri</string><string>tcp://0.0.0.0:10300</string>
-    <string>--model</string><string>small</string>
+    <string>--model</string><string>mlx-community/whisper-large-v3-turbo</string>
     <string>--language</string><string>zh</string>
-    <string>--compute-type</string><string>int8</string>
-    <string>--beam-size</string><string>2</string>
-    <string>--data-dir</string><string>/Users/allen/openclaw/whisper</string>
-    <string>--download-dir</string><string>/Users/allen/openclaw/whisper</string>
-    <string>--initial-prompt</string><string>以下是繁體中文的智慧家庭語音指令。</string>
+    <string>--initial-prompt</string><string>以下是台灣繁體中文的智慧家庭語音指令：客廳、主臥、次臥、玄關、冷氣、窗簾、掃地機。</string>
   </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>HF_HOME</key><string>/Users/allen/openclaw/whisper</string>
+  </dict>
   <key>RunAtLoad</key><true/><key>KeepAlive</key><true/>
   <key>StandardOutPath</key><string>/Users/allen/openclaw/logs/whisper.log</string>
   <key>StandardErrorPath</key><string>/Users/allen/openclaw/logs/whisper.err</string>
 </dict></plist>
 EOF
 launchctl load ~/Library/LaunchAgents/com.allenann.whisper.plist
-sleep 20; tail -5 ~/openclaw/logs/whisper.err      # 第一次會下載 small 模型（~480 MB），看到 Ready 即成功
+sleep 60; tail -5 ~/openclaw/logs/whisper.err      # 第一次會從 Hugging Face 下載 large-v3-turbo（~1.6 GB），看到 Ready 即成功
 ```
 
-（`small` 是多語模型，`--language zh` 固定中文；設計文件寫的 `small.zh` 即此組合。輸出會是簡體，Hermes/Ollama 不受影響；TTS 前由 05 章 Hermes 轉繁體。）
+- 記憶體緊時把 `--model` 改成 `mlx-community/whisper-large-v3-turbo-q4`（0.5 GB，準確度接近）。
+- `--initial-prompt` 放常用房間與設備名，能把專有名詞的辨識率再拉高；輸出可能簡繁混用，Hermes 一律轉繁體（05 章 `textnorm.py`），HA 內建 Assist 不受影響。
+- 若 Mac 不是 Apple Silicon 或 Python 版本是 3.14：退回 `pip install wyoming-faster-whisper`，plist 的程式改 `wyoming-faster-whisper --model small --compute-type int8`。
 
 ## 4.5 Piper（Wyoming 伺服器，中文聲線）
 
@@ -120,14 +126,14 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 
 ## 4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線
 
-1. 設定 → 整合 → 新增 → **Wyoming Protocol** → 主機 `192.168.0.10`、埠 `10300` → 名稱 `faster-whisper`。
+1. 設定 → 整合 → 新增 → **Wyoming Protocol** → 主機 `192.168.0.10`、埠 `10300` → 名稱 `mlx-whisper`。
 2. 再新增一次 Wyoming → `192.168.0.10`、`10200` → `piper`。
-3. 設定 → 整合 → 新增 → **Ollama** → URL `http://192.168.0.10:11434` → 模型 `llama3:8b` → 「控制 Home Assistant」先選 **Assist**（本章測通路用；05 章會改成指向 Hermes 並選「不控制」）。
+3. 設定 → 整合 → 新增 → **Ollama** → URL `http://192.168.0.10:11434` → 模型 `qwen3:8b` → 「控制 Home Assistant」先選 **Assist**（本章測通路用；05 章會改成指向 Hermes 並選「不控制」）。
 4. 設定 → 語音助理 → 新增助理：
    - 名稱 `OpenClaw`
    - 語言 `中文（台灣）`
    - 對話代理 `Ollama`（05 章改 `Hermes`）
-   - 語音轉文字 `faster-whisper`
+   - 語音轉文字 `mlx-whisper`
    - 文字轉語音 `piper`，聲線 `zh_CN-huayan-medium`
    - 設為 **偏好的助理**。
 5. 設定 → 語音助理 → 「公開」：讓 Assist 看得到的實體**只勾**燈、空調、窗簾、掃地機、媒體播放器與感測器（不要公開 `input_boolean.sXX_enabled` 之類內部開關）。
@@ -230,11 +236,11 @@ Siri 聽不懂名字時：把捷徑名改成口語更常見的講法（例如「
 
 | # | 檢查 | 預期 |
 |---|---|---|
-| 1 | `curl http://192.168.0.10:11434/api/tags` 在 HAOS 終端機 | 列出 `llama3:8b` |
+| 1 | `curl http://192.168.0.10:11434/api/tags` 在 HAOS 終端機 | 列出 `qwen3:8b` |
 | 2 | `launchctl list \| grep allenann` | whisper、piper 都在 |
 | 3 | HA → 整合 | Wyoming ×2、Ollama 綠色 |
 | 4 | HA Assist 打字「客廳燈開」 | 燈亮，有中文回覆 |
-| 5 | HA Assist 講話「主臥冷氣二十六度」 | STT 正確；冷氣設 26 |
+| 5 | HA Assist 講話「主臥冷氣二十六度」 | STT 正確（large-v3-turbo 不會聽成「主握」）；冷氣設 27（eco 守門）或 26（守門暫停） |
 | 6 | HomePod 說「嘿 Siri，Allen 回家了」 | HomePod 播回覆（內容先隨 Ollama，05 章後變 Hermes 覆誦確認） |
 | 7 | 深夜（或手動開 sleep_mode）呼叫 `script.say` target 主臥 | 不出聲，改推播 |
 | 8 | 活動監視器 | 記憶體壓力綠色；Ollama 常駐約 5–6 GB |

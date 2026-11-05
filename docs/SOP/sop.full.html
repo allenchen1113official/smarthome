@@ -101,13 +101,13 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 </style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.5 · 2026-11-05</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.6 · 2026-11-05</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>
 </header>
 <div class="wrap">
-  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#一頁快速開始">一頁快速開始</a><a href="#三條不可妥協的原則">三條不可妥協的原則</a><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.8b-用電量測-13-章節能管家的資料來源">3.8b 用電量測（13 章節能管家的資料來源）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch13"><span>📟</span>12 儀表板建置</a><div class="nav-sub"><a href="#12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</a><a href="#12.2-前置">12.2 前置</a><a href="#12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</a><a href="#12.3b-貼上前-一次檢查所有實體是否存在-93-個">12.3b 貼上前：一次檢查所有實體是否存在（93 個）</a><a href="#12.4-壁掛平板設定">12.4 壁掛平板設定</a><a href="#12.5-手機">12.5 手機</a><a href="#12.6-驗收">12.6 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch14"><span>🌱</span>13 節能與碳排</a><div class="nav-sub"><a href="#13.1-三條原則怎麼落到系統裡">13.1 三條原則怎麼落到系統裡</a><a href="#13.2-架構-量測在-ha-決策在-hermes">13.2 架構：量測在 HA、決策在 Hermes</a><a href="#13.3-用電量測硬體-03-章-3.8">13.3 用電量測硬體（03 章 §3.8）</a><a href="#13.4-ha-package-s00_energy.yaml">13.4 HA package：s00_energy.yaml</a><a href="#13.5-hermes-節能模組-v0.4">13.5 Hermes 節能模組（v0.4）</a><a href="#13.6-35-個情境的節能規則-設計時必填">13.6 35 個情境的節能規則（設計時必填）</a><a href="#13.7-儀表板-12-章補一個區塊">13.7 儀表板（12 章補一個區塊）</a><a href="#13.8-金鑰不進-github-推送前掃描">13.8 金鑰不進 GitHub：推送前掃描</a><a href="#13.9-驗證清單">13.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch15"><span>📎</span>附錄 A 總表</a><div class="nav-sub"><a href="#a.1-ip-總表">A.1 IP 總表</a><a href="#a.2-埠總表">A.2 埠總表</a><a href="#a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</a><a href="#a.4-實體命名速查">A.4 實體命名速查</a><a href="#a.5-檔案與目錄位置">A.5 檔案與目錄位置</a><a href="#a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</a><a href="#a.8-資料流清單-原則-1-什麼資料會離開家裡">A.8 資料流清單（原則 1：什麼資料會離開家裡）</a><a href="#a.7-變更紀錄">A.7 變更紀錄</a></div></div></nav>
+  <nav class="side" id="side" aria-label="章節"><div class="nav-ch"><a class="nav-top" href="#ch0"><span>📘</span>手冊首頁</a><div class="nav-sub"><a href="#一頁快速開始">一頁快速開始</a><a href="#三條不可妥協的原則">三條不可妥協的原則</a><a href="#文件地圖">文件地圖</a><a href="#附帶的可直接使用檔案">附帶的可直接使用檔案</a><a href="#建置順序-一定要照順序">建置順序（一定要照順序）</a><a href="#與設計文件的對應與修正">與設計文件的對應與修正</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch1"><span>🗺️</span>00 總覽與路線圖</a><div class="nav-sub"><a href="#0.1-這個家要長成什麼樣子">0.1 這個家要長成什麼樣子</a><a href="#0.2-五條憲章原則怎麼落到-sop">0.2 五條憲章原則怎麼落到 SOP</a><a href="#0.3-採購與到位清單">0.3 採購與到位清單</a><a href="#0.4-帳號與憑證清單-建置前先備齊-全部存進-secrets.yaml">0.4 帳號與憑證清單（建置前先備齊，全部存進 secrets.yaml）</a><a href="#0.5-命名規則-之後所有章節都照這套">0.5 命名規則（之後所有章節都照這套）</a><a href="#0.6-建置路線圖-建議-6-週">0.6 建置路線圖（建議 6 週）</a><a href="#0.7-新手必懂的-8-個-home-assistant-名詞">0.7 新手必懂的 8 個 Home Assistant 名詞</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch2"><span>📡</span>01 網路拓樸實作</a><div class="nav-sub"><a href="#1.1-五層拓樸圖">1.1 五層拓樸圖</a><a href="#1.2-ip-位址規劃-dhcp-保留">1.2 IP 位址規劃（DHCP 保留）</a><a href="#1.3-ssid-規劃">1.3 SSID 規劃</a><a href="#1.4-中華電信-固定-ip-duckdns">1.4 中華電信 + 固定 IP + DuckDNS</a><a href="#1.5-tp-link-be3600-逐步設定">1.5 TP-Link BE3600 逐步設定</a><a href="#1.6-連接埠與服務總表">1.6 連接埠與服務總表</a><a href="#1.7-實體接線">1.7 實體接線</a><a href="#1.8-驗證清單">1.8 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch3"><span>🖥️</span>02 Mac mini + HAOS</a><div class="nav-sub"><a href="#2.1-macos-初始設定-約-30-分鐘">2.1 macOS 初始設定（約 30 分鐘）</a><a href="#2.2-下載-haos-映像檔">2.2 下載 HAOS 映像檔</a><a href="#2.3-用-utm-建立-haos-虛擬機-約-20-分鐘">2.3 用 UTM 建立 HAOS 虛擬機（約 20 分鐘）</a><a href="#2.4-zigbee-協調器-slzb-06-網路型-建議-或-usb-stick-直通">2.4 Zigbee 協調器：SLZB-06（網路型，建議）或 USB Stick 直通</a><a href="#2.5-home-assistant-初始化-約-15-分鐘">2.5 Home Assistant 初始化（約 15 分鐘）</a><a href="#2.6-基礎附加元件-設定-附加元件-附加元件商店">2.6 基礎附加元件（設定 → 附加元件 → 附加元件商店）</a><a href="#2.7-zigbee2mqtt-設定">2.7 Zigbee2MQTT 設定</a><a href="#2.8-configuration.yaml-基礎片段">2.8 configuration.yaml 基礎片段</a><a href="#2.9-驗證清單">2.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch4"><span>🔌</span>03 設備整合</a><div class="nav-sub"><a href="#3.1-hacs-社群整合商店">3.1 HACS（社群整合商店）</a><a href="#3.2-philips-hue-bridge-18-燈-tap-dimmer-2-motion-2">3.2 Philips Hue（Bridge + 18 燈 + Tap + Dimmer ×2 + Motion ×2）</a><a href="#3.3-hue-play-hdmi-sync-box-hacs">3.3 Hue Play HDMI Sync Box（HACS）</a><a href="#3.4-panasonic-空調-雲端-本地-ir-雙路徑">3.4 Panasonic 空調（⚠️ 雲端 + 本地 IR 雙路徑）</a><a href="#3.5-zigbee2mqtt-aqara-窗簾-2-門窗-溫濕度-人體-插座-繼電器">3.5 Zigbee2MQTT：Aqara 窗簾 ×2、門窗、溫濕度、人體、插座、繼電器</a><a href="#3.6-roborock-qrevo-edge-c">3.6 Roborock Qrevo Edge C</a><a href="#3.7-homepod-2-airplay-輸出">3.7 HomePod ×2（AirPlay 輸出）</a><a href="#3.8-ha-companion-app-allen-ann-手機">3.8 HA Companion App（Allen / Ann 手機）</a><a href="#3.8b-用電量測-13-章節能管家的資料來源">3.8b 用電量測（13 章節能管家的資料來源）</a><a href="#3.9-天氣與空氣品質">3.9 天氣與空氣品質</a><a href="#3.10-網路與節點實體-情境-26-27-07-章熱備">3.10 網路與節點實體（情境 26 / 27、07 章熱備）</a><a href="#3.11-輔助實體一次建完">3.11 輔助實體一次建完</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch5"><span>🎙️</span>04 OpenClaw 語音管線</a><div class="nav-sub"><a href="#4.1-架構與資源預算">4.1 架構與資源預算</a><a href="#4.2-目錄與-python-環境">4.2 目錄與 Python 環境</a><a href="#4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</a><a href="#4.4-mlx-whisper-wyoming-伺服器-metal-gpu">4.4 MLX-Whisper（Wyoming 伺服器，Metal GPU）</a><a href="#4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</a><a href="#4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</a><a href="#4.7-語音進聲路徑-三條都做-homepod-麥克風不可用">4.7 語音進聲路徑（三條都做，HomePod 麥克風不可用）</a><a href="#4.8-homepod-播報與深夜音量-script.say">4.8 HomePod 播報與深夜音量（script.say）</a><a href="#4.9-驗證清單">4.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch6"><span>⚡</span>05 Hermes Agent</a><div class="nav-sub"><a href="#5.1-hermes-在管線中的位置與串接方式">5.1 Hermes 在管線中的位置與串接方式</a><a href="#5.2-安裝">5.2 安裝</a><a href="#5.3-設定檔逐一檢查">5.3 設定檔逐一檢查</a><a href="#5.4-ha-端把對話代理切到-hermes">5.4 HA 端把對話代理切到 Hermes</a><a href="#5.5-ha-端輔助腳本-packages-s00_common.yaml-與-s00_voice.yaml">5.5 HA 端輔助腳本（packages/s00_common.yaml 與 s00_voice.yaml）</a><a href="#5.6-launchd-常駐">5.6 launchd 常駐</a><a href="#5.7-編排流程對照-設計-程式">5.7 編排流程對照（設計 → 程式）</a><a href="#5.8-股票模組啟用">5.8 股票模組啟用</a><a href="#5.9-grok-xai-雲端大腦接口-選配">5.9 Grok（xAI）雲端大腦接口（選配）</a><a href="#5.10-驗證清單">5.10 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch7"><span>🎬</span>06 35 情境建置</a><div class="nav-sub"><a href="#6.0-共通做法">6.0 共通做法</a><a href="#6.a-晨間與通勤-情境-01-06-建議-第-3-週">6.A 晨間與通勤（情境 01–06）· 建議 第 3 週</a><a href="#6.b-下班與休憩-情境-07-12-建議-第-3-週">6.B 下班與休憩（情境 07–12）· 建議 第 3 週</a><a href="#6.c-輪班與深度睡眠-情境-13-18-建議-第-4-週">6.C 輪班與深度睡眠（情境 13–18）· 建議 第 4 週</a><a href="#6.d-家電與維護-情境-19-24-建議-第-4-週">6.D 家電與維護（情境 19–24）· 建議 第 4 週</a><a href="#6.e-安全與-ai-管家-情境-25-30-建議-第-4-5-週">6.E 安全與 AI 管家（情境 25–30）· 建議 第 4–5 週</a><a href="#6.f-hermes-主導-情境-31-35-建議-第-5-週">6.F Hermes 主導（情境 31–35）· 建議 第 5 週</a><a href="#6.z-全部裝完之後">6.Z 全部裝完之後</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch8"><span>🛟</span>07 備援與遠端</a><div class="nav-sub"><a href="#7.1-架構">7.1 架構</a><a href="#7.2-slzb-06-網路-zigbee-協調器">7.2 SLZB-06 網路 Zigbee 協調器</a><a href="#7.3-副節點-ha-black-準備-只做一次">7.3 副節點 HA Black 準備（只做一次）</a><a href="#7.4-主節點-每小時設定備份-每晚全備-情境-23">7.4 主節點：每小時設定備份 + 每晚全備（情境 23）</a><a href="#7.5-主節點-packages-的-節點感知-s00_node.yaml-兩台共用">7.5 主節點 packages 的「節點感知」（s00_node.yaml，兩台共用）</a><a href="#7.6-回切手冊-主節點修好後-手動-約-10-分鐘">7.6 回切手冊（主節點修好後，手動，約 10 分鐘）</a><a href="#7.7-遠端存取">7.7 遠端存取</a><a href="#7.8-hermes-的節點容錯">7.8 Hermes 的節點容錯</a><a href="#7.9-驗證清單">7.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch9"><span>✅</span>08 驗收與排除</a><div class="nav-sub"><a href="#8.1-全系統驗收清單-兩人一起做-約-2-小時">8.1 全系統驗收清單（兩人一起做，約 2 小時）</a><a href="#8.2-故障排除">8.2 故障排除</a><a href="#8.3-備案-zigbee2mqtt-改在-macos-主機跑">8.3 備案：Zigbee2MQTT 改在 macOS 主機跑</a><a href="#8.4-維運節奏">8.4 維運節奏</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch10"><span>🐦</span>09 青鳥一鍵部署</a><div class="nav-sub"><a href="#9.1-產品架構">9.1 產品架構</a><a href="#9.2-安裝-主節點">9.2 安裝（主節點）</a><a href="#9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</a><a href="#9.4-後台功能">9.4 後台功能</a><a href="#9.5-副節點與熱備">9.5 副節點與熱備</a><a href="#9.6-跨平台注意事項">9.6 跨平台注意事項</a><a href="#9.7-遠端存取-docker-版">9.7 遠端存取（Docker 版）</a><a href="#9.8-驗證清單">9.8 驗證清單</a><a href="#9.9-已知限制-v0.1">9.9 已知限制（v0.1）</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch11"><span>💬</span>10 LINE / Telegram 遠端控制</a><div class="nav-sub"><a href="#10.1-為什麼要兩個平台-怎麼分工">10.1 為什麼要兩個平台、怎麼分工</a><a href="#10.2-架構">10.2 架構</a><a href="#10.3-指令文法">10.3 指令文法</a><a href="#10.4-介面設計">10.4 介面設計</a><a href="#10.5-安全">10.5 安全</a><a href="#10.6-建置步驟">10.6 建置步驟</a><a href="#10.7-範例對話">10.7 範例對話</a><a href="#10.8-驗證清單">10.8 驗證清單</a><a href="#10.9-grok-接口的定位">10.9 Grok 接口的定位</a><a href="#10.10-v0.2-規劃">10.10 v0.2 規劃</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch12"><span>⚖️</span>11 雙節點負載均衡範例</a><div class="nav-sub"><a href="#11.1-拓樸">11.1 拓樸</a><a href="#11.2-前置">11.2 前置</a><a href="#11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</a><a href="#11.4-節點-b-ha-black-副">11.4 節點 B（HA Black，副）</a><a href="#11.5-lb-b-ha-black-原生">11.5 LB-B（HA Black 原生）</a><a href="#11.6-lb-a-mac-mini-上的-alpine-小-vm">11.6 LB-A（Mac mini 上的 Alpine 小 VM）</a><a href="#11.7-驗證-雙活">11.7 驗證（雙活）</a><a href="#11.8-故障演練">11.8 故障演練</a><a href="#11.9-設定調整提醒">11.9 設定調整提醒</a><a href="#11.10-驗收">11.10 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch13"><span>📟</span>12 儀表板建置</a><div class="nav-sub"><a href="#12.1-設計原則-卡片對應">12.1 設計原則 → 卡片對應</a><a href="#12.2-前置">12.2 前置</a><a href="#12.3-儀表板-yaml-設定-儀表板-新增-從頭開始-右上角-原始碼編輯器-貼上">12.3 儀表板 YAML（設定 → 儀表板 → 新增 → 從頭開始 → 右上角 ⋮ → 原始碼編輯器 貼上）</a><a href="#12.3b-貼上前-一次檢查所有實體是否存在-93-個">12.3b 貼上前：一次檢查所有實體是否存在（93 個）</a><a href="#12.4-壁掛平板設定">12.4 壁掛平板設定</a><a href="#12.5-手機">12.5 手機</a><a href="#12.6-驗收">12.6 驗收</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch14"><span>🌱</span>13 節能與碳排</a><div class="nav-sub"><a href="#13.1-三條原則怎麼落到系統裡">13.1 三條原則怎麼落到系統裡</a><a href="#13.2-架構-量測在-ha-決策在-hermes">13.2 架構：量測在 HA、決策在 Hermes</a><a href="#13.3-用電量測硬體-03-章-3.8">13.3 用電量測硬體（03 章 §3.8）</a><a href="#13.4-ha-package-s00_energy.yaml">13.4 HA package：s00_energy.yaml</a><a href="#13.5-hermes-節能模組-v0.4">13.5 Hermes 節能模組（v0.4）</a><a href="#13.6-35-個情境的節能規則-設計時必填">13.6 35 個情境的節能規則（設計時必填）</a><a href="#13.7-儀表板-12-章補一個區塊">13.7 儀表板（12 章補一個區塊）</a><a href="#13.8-金鑰不進-github-推送前掃描">13.8 金鑰不進 GitHub：推送前掃描</a><a href="#13.9-驗證清單">13.9 驗證清單</a></div></div><div class="nav-ch"><a class="nav-top" href="#ch15"><span>📎</span>附錄 A 總表</a><div class="nav-sub"><a href="#a.1-ip-總表">A.1 IP 總表</a><a href="#a.2-埠總表">A.2 埠總表</a><a href="#a.3-密鑰與憑證-放哪裡-誰產生">A.3 密鑰與憑證（放哪裡、誰產生）</a><a href="#a.4-實體命名速查">A.4 實體命名速查</a><a href="#a.5-檔案與目錄位置">A.5 檔案與目錄位置</a><a href="#a.6-兩條建置路線怎麼選">A.6 兩條建置路線怎麼選</a><a href="#a.8-資料流清單-原則-1-什麼資料會離開家裡">A.8 資料流清單（原則 1：什麼資料會離開家裡）</a><a href="#a.7-變更紀錄">A.7 變更紀錄</a></div></div></nav>
   <main>
     <div class="hero">
       <h1>從無到有：Mac mini M4 × Home Assistant × OpenClaw × Hermes</h1>
@@ -123,7 +123,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
     </div>
     <section id="ch0" class="chapter"><div class="eyebrow">📘 手冊首頁</div><h1 id="allen-ann-智慧家庭-從無到有建置-sop">Allen &amp; Ann 智慧家庭 — 從無到有建置 SOP</h1>
 <blockquote>
-<p>版本 1.5 · 2026-11-05（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
+<p>版本 1.6 · 2026-11-05（台北時間）· 對應設計文件 <code>design/</code>（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 <code>.specify/memory/constitution.md</code> v1.0.0
 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。</p>
 </blockquote>
 <h2 id="一頁快速開始">一頁快速開始</h2>
@@ -226,7 +226,7 @@ hr{border:0;border-top:1px solid var(--line);margin:28px 0}
 <tr>
 <td>04</td>
 <td><a href="#ch5">04-OpenClaw-本地語音管線.md</a></td>
-<td>Faster-Whisper + Ollama + Piper 安裝，串接 HA Assist，HomePod 進出路徑，Siri 捷徑逐步建立（14 步 + 截圖位）</td>
+<td>MLX-Whisper（Metal）+ Ollama Qwen3 8B + Piper 安裝，串接 HA Assist，HomePod 進出路徑，Siri 捷徑逐步建立（14 步 + 截圖位）</td>
 <td>半天</td>
 </tr>
 <tr>
@@ -1927,11 +1927,11 @@ proximity:
 </table></div>
 <p>全部通過 → 可以開始 06 章情境 01–28；想先做語音就進 04 章。</p></section><section id="ch5" class="chapter"><div class="eyebrow">🎙️ 04 OpenClaw 語音管線</div><h1 id="04-openclaw-本地語音管線">04 · OpenClaw 本地語音管線</h1>
 <blockquote>
-<p>目標：Faster-Whisper（STT）、Ollama Llama 3 8B（推理）、Piper（TTS）全部在 Mac mini 原生跑（Ollama 走 Metal GPU），HA 的 Assist 管線用它們；語音可從 Companion App / Apple Watch / Siri 捷徑進來，回覆從 HomePod 出去。
+<p>目標：MLX-Whisper（STT，Metal GPU）、Ollama Qwen3 8B（推理，Metal GPU）、Piper（TTS）全部在 Mac mini 原生跑，HA 的 Assist 管線用它們；語音可從 Companion App / Apple Watch / Siri 捷徑進來，回覆從 HomePod 出去。
 完成判準：§4.9。本章先用 Ollama 直接當對話代理做通路測試；05 章再把對話代理換成 Hermes。</p>
 </blockquote>
 <h2 id="4.1-架構與資源預算">4.1 架構與資源預算</h2>
-<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code> 麥克風 ─► HA Assist 管線 ─► STT: Wyoming faster-whisper (.10:10300)
+<pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code> 麥克風 ─► HA Assist 管線 ─► STT: Wyoming mlx-whisper (.10:10300)
                            ─► 對話代理: Ollama 整合 → (04) Ollama :11434 / (05) Hermes :8800
                            ─► TTS: Wyoming piper (.10:10200) ─► HomePod (AirPlay) 或 App
 </code></pre>
@@ -1946,15 +1946,15 @@ proximity:
 </thead>
 <tbody>
 <tr>
-<td>Faster-Whisper <code>small</code> INT8（語言固定 zh）</td>
-<td>macOS 原生 Python（CPU）</td>
-<td>0.6 GB</td>
-<td>~150 ms（5 秒內短句）</td>
+<td>MLX-Whisper <code>large-v3-turbo</code>（語言固定 zh）</td>
+<td>macOS 原生 Python（<strong>Metal GPU</strong>）</td>
+<td>1.6 GB（q4 版 0.5 GB）</td>
+<td>~200 ms（5 秒內短句，近即時）</td>
 </tr>
 <tr>
-<td>Ollama Llama 3 8B Q4_0</td>
+<td>Ollama <strong>Qwen3 8B</strong> Q4_K_M（非 thinking）</td>
 <td>macOS 原生（Metal）</td>
-<td>5.4 GB</td>
+<td>5.2 GB</td>
 <td>~250 ms 首 token</td>
 </tr>
 <tr>
@@ -1984,19 +1984,24 @@ proximity:
 <tr>
 <td>合計</td>
 <td></td>
-<td><strong>11.6 / 16 GB</strong></td>
-<td>端到端 ~520 ms</td>
+<td><strong>12.4 / 16 GB</strong></td>
+<td>端到端 ~570 ms</td>
 </tr>
 </tbody>
 </table></div>
-<p>⚠️ Faster-Whisper 在 Apple Silicon 只用 CPU（CTranslate2 無 Metal）。短指令 150 ms 夠用；若想用 GPU 可改 <code>whisper.cpp</code>（<code>brew install whisper-cpp</code>）搭配 <code>wyoming-whisper-cpp</code>，本 SOP 以 Faster-Whisper 為主因為安裝最簡單。</p>
+<p>選型說明（v1.6 起）：</p>
+<ul>
+<li><strong>STT 改 MLX-Whisper</strong>：Faster-Whisper（CTranslate2）在 Apple Silicon 只能用 CPU，只跑得動 <code>small</code>；<code>wyoming-mlx-whisper</code> 走 Metal，可以用 <code>large-v3-turbo</code>，中文辨識準確度明顯高於 small（「主臥／主握」這類誤辨大幅減少），仍是 Wyoming 協定，HA 端設定完全一樣。只支援 Apple Silicon；青鳥 Linux 節點（HA Black）仍用容器版 faster-whisper。</li>
+<li><strong>LLM 改 Qwen3 8B</strong>：Llama 3 的繁體中文理解與 JSON 結構化輸出都弱於 Qwen3；Hermes 靠模型輸出 JSON 計畫，中文理解直接影響「這個我還不會」的比例。Qwen3 要關 thinking（Hermes 呼叫時帶 <code>think: false</code>），否則回覆會夾 <code>&lt;think&gt;</code> 拖慢。</li>
+<li>記憶體仍在 16 GB 安全範圍；24 GB 機器可改 <code>qwen3:14b</code>（9 GB）。</li>
+</ul>
 <h2 id="4.2-目錄與-python-環境">4.2 目錄與 Python 環境</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">mkdir -p ~/openclaw/{whisper,piper,voices,logs}
 cd ~/openclaw
 python3.12 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install wyoming-faster-whisper wyoming-piper piper-tts
+pip install wyoming-mlx-whisper wyoming-piper piper-tts     # mlx-whisper 需 Apple Silicon + Python 3.10–3.13
 </code></pre>
 <h2 id="4.3-ollama-metal-推理">4.3 Ollama（Metal 推理）</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">brew install ollama
@@ -2004,8 +2009,9 @@ pip install wyoming-faster-whisper wyoming-piper piper-tts
 launchctl setenv OLLAMA_HOST 0.0.0.0
 launchctl setenv OLLAMA_KEEP_ALIVE -1          # 模型常駐，免首句冷啟動
 brew services restart ollama
-ollama pull llama3:8b                           # Q4_0，約 4.7 GB
-ollama run llama3:8b &quot;用繁體中文回答：客廳燈打開，輸出 JSON {intent, actions}&quot;   # 第一次會慢，之後 &lt; 1 秒
+ollama pull qwen3:8b                            # Q4_K_M，約 5.2 GB
+# 試跑（/no_think 關掉思考模式；Hermes 程式內是用 API 參數 think:false）
+ollama run qwen3:8b &quot;/no_think 用繁體中文回答：客廳燈打開，輸出 JSON {intent, actions}&quot;   # 第一次會慢，之後 &lt; 1 秒
 curl -s http://192.168.0.10:11434/api/tags | jq '.models[].name'   # 從 HAOS VM 也要通：ha 終端機 curl 同網址
 </code></pre>
 <p>brew services 會隨登入自動啟動。要讓 <code>OLLAMA_HOST</code> 永久生效，再把它寫進 brew 的 plist：</p>
@@ -2013,32 +2019,35 @@ curl -s http://192.168.0.10:11434/api/tags | jq '.models[].name'   # 從 HAOS VM
   ~/Library/LaunchAgents/homebrew.mxcl.ollama.plist
 brew services restart ollama
 </code></pre>
-<h2 id="4.4-faster-whisper-wyoming-伺服器">4.4 Faster-Whisper（Wyoming 伺服器）</h2>
+<h2 id="4.4-mlx-whisper-wyoming-伺服器-metal-gpu">4.4 MLX-Whisper（Wyoming 伺服器，Metal GPU）</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">cat &gt; ~/Library/LaunchAgents/com.allenann.whisper.plist &lt;&lt;'EOF'
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
 &lt;plist version=&quot;1.0&quot;&gt;&lt;dict&gt;
   &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;com.allenann.whisper&lt;/string&gt;
   &lt;key&gt;ProgramArguments&lt;/key&gt;&lt;array&gt;
-    &lt;string&gt;/Users/allen/openclaw/venv/bin/wyoming-faster-whisper&lt;/string&gt;
+    &lt;string&gt;/Users/allen/openclaw/venv/bin/wyoming-mlx-whisper&lt;/string&gt;
     &lt;string&gt;--uri&lt;/string&gt;&lt;string&gt;tcp://0.0.0.0:10300&lt;/string&gt;
-    &lt;string&gt;--model&lt;/string&gt;&lt;string&gt;small&lt;/string&gt;
+    &lt;string&gt;--model&lt;/string&gt;&lt;string&gt;mlx-community/whisper-large-v3-turbo&lt;/string&gt;
     &lt;string&gt;--language&lt;/string&gt;&lt;string&gt;zh&lt;/string&gt;
-    &lt;string&gt;--compute-type&lt;/string&gt;&lt;string&gt;int8&lt;/string&gt;
-    &lt;string&gt;--beam-size&lt;/string&gt;&lt;string&gt;2&lt;/string&gt;
-    &lt;string&gt;--data-dir&lt;/string&gt;&lt;string&gt;/Users/allen/openclaw/whisper&lt;/string&gt;
-    &lt;string&gt;--download-dir&lt;/string&gt;&lt;string&gt;/Users/allen/openclaw/whisper&lt;/string&gt;
-    &lt;string&gt;--initial-prompt&lt;/string&gt;&lt;string&gt;以下是繁體中文的智慧家庭語音指令。&lt;/string&gt;
+    &lt;string&gt;--initial-prompt&lt;/string&gt;&lt;string&gt;以下是台灣繁體中文的智慧家庭語音指令：客廳、主臥、次臥、玄關、冷氣、窗簾、掃地機。&lt;/string&gt;
   &lt;/array&gt;
+  &lt;key&gt;EnvironmentVariables&lt;/key&gt;&lt;dict&gt;
+    &lt;key&gt;HF_HOME&lt;/key&gt;&lt;string&gt;/Users/allen/openclaw/whisper&lt;/string&gt;
+  &lt;/dict&gt;
   &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;&lt;key&gt;KeepAlive&lt;/key&gt;&lt;true/&gt;
   &lt;key&gt;StandardOutPath&lt;/key&gt;&lt;string&gt;/Users/allen/openclaw/logs/whisper.log&lt;/string&gt;
   &lt;key&gt;StandardErrorPath&lt;/key&gt;&lt;string&gt;/Users/allen/openclaw/logs/whisper.err&lt;/string&gt;
 &lt;/dict&gt;&lt;/plist&gt;
 EOF
 launchctl load ~/Library/LaunchAgents/com.allenann.whisper.plist
-sleep 20; tail -5 ~/openclaw/logs/whisper.err      # 第一次會下載 small 模型（~480 MB），看到 Ready 即成功
+sleep 60; tail -5 ~/openclaw/logs/whisper.err      # 第一次會從 Hugging Face 下載 large-v3-turbo（~1.6 GB），看到 Ready 即成功
 </code></pre>
-<p>（<code>small</code> 是多語模型，<code>--language zh</code> 固定中文；設計文件寫的 <code>small.zh</code> 即此組合。輸出會是簡體，Hermes/Ollama 不受影響；TTS 前由 05 章 Hermes 轉繁體。）</p>
+<ul>
+<li>記憶體緊時把 <code>--model</code> 改成 <code>mlx-community/whisper-large-v3-turbo-q4</code>（0.5 GB，準確度接近）。</li>
+<li><code>--initial-prompt</code> 放常用房間與設備名，能把專有名詞的辨識率再拉高；輸出可能簡繁混用，Hermes 一律轉繁體（05 章 <code>textnorm.py</code>），HA 內建 Assist 不受影響。</li>
+<li>若 Mac 不是 Apple Silicon 或 Python 版本是 3.14：退回 <code>pip install wyoming-faster-whisper</code>，plist 的程式改 <code>wyoming-faster-whisper --model small --compute-type int8</code>。</li>
+</ul>
 <h2 id="4.5-piper-wyoming-伺服器-中文聲線">4.5 Piper（Wyoming 伺服器，中文聲線）</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">cd ~/openclaw/voices
 wget https://huggingface.co/rhasspy/piper-voices/resolve/main/zh/zh_CN/huayan/medium/zh_CN-huayan-medium.onnx
@@ -2070,14 +2079,14 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 <p>數字讀法：Piper 中文聲線對阿拉伯數字讀得不穩，Hermes 回覆前會把 <code>24</code> 轉成「二十四」（05 章 <code>textnorm.py</code>）。HA 自己的 TTS 文字也請用中文數字。</p>
 <h2 id="4.6-ha-端-wyoming-2-ollama-整合-assist-管線">4.6 HA 端：Wyoming ×2 + Ollama 整合 + Assist 管線</h2>
 <ol>
-<li>設定 → 整合 → 新增 → <strong>Wyoming Protocol</strong> → 主機 <code>192.168.0.10</code>、埠 <code>10300</code> → 名稱 <code>faster-whisper</code>。</li>
+<li>設定 → 整合 → 新增 → <strong>Wyoming Protocol</strong> → 主機 <code>192.168.0.10</code>、埠 <code>10300</code> → 名稱 <code>mlx-whisper</code>。</li>
 <li>再新增一次 Wyoming → <code>192.168.0.10</code>、<code>10200</code> → <code>piper</code>。</li>
-<li>設定 → 整合 → 新增 → <strong>Ollama</strong> → URL <code>http://192.168.0.10:11434</code> → 模型 <code>llama3:8b</code> → 「控制 Home Assistant」先選 <strong>Assist</strong>（本章測通路用；05 章會改成指向 Hermes 並選「不控制」）。</li>
+<li>設定 → 整合 → 新增 → <strong>Ollama</strong> → URL <code>http://192.168.0.10:11434</code> → 模型 <code>qwen3:8b</code> → 「控制 Home Assistant」先選 <strong>Assist</strong>（本章測通路用；05 章會改成指向 Hermes 並選「不控制」）。</li>
 <li>設定 → 語音助理 → 新增助理：
    - 名稱 <code>OpenClaw</code>
    - 語言 <code>中文（台灣）</code>
    - 對話代理 <code>Ollama</code>（05 章改 <code>Hermes</code>）
-   - 語音轉文字 <code>faster-whisper</code>
+   - 語音轉文字 <code>mlx-whisper</code>
    - 文字轉語音 <code>piper</code>，聲線 <code>zh_CN-huayan-medium</code>
    - 設為 <strong>偏好的助理</strong>。</li>
 <li>設定 → 語音助理 → 「公開」：讓 Assist 看得到的實體<strong>只勾</strong>燈、空調、窗簾、掃地機、媒體播放器與感測器（不要公開 <code>input_boolean.sXX_enabled</code> 之類內部開關）。</li>
@@ -2340,7 +2349,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 <tr>
 <td>1</td>
 <td><code>curl http://192.168.0.10:11434/api/tags</code> 在 HAOS 終端機</td>
-<td>列出 <code>llama3:8b</code></td>
+<td>列出 <code>qwen3:8b</code></td>
 </tr>
 <tr>
 <td>2</td>
@@ -2360,7 +2369,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 <tr>
 <td>5</td>
 <td>HA Assist 講話「主臥冷氣二十六度」</td>
-<td>STT 正確；冷氣設 26</td>
+<td>STT 正確（large-v3-turbo 不會聽成「主握」）；冷氣設 27（eco 守門）或 26（守門暫停）</td>
 </tr>
 <tr>
 <td>6</td>
@@ -8740,7 +8749,17 @@ automation:
 <tr>
 <td>STT 把「主臥」聽成「主握」</td>
 <td>whisper.err</td>
-<td><code>--initial-prompt</code> 加常用詞；或改 <code>medium</code> 模型（RAM +1 GB）</td>
+<td>確認已是 <code>mlx-whisper large-v3-turbo</code>（04 §4.4）；<code>--initial-prompt</code> 加常用詞</td>
+</tr>
+<tr>
+<td>回覆很慢且 tx log 有 <code>&lt;think&gt;</code></td>
+<td>hermes.err</td>
+<td>Qwen3 thinking 沒關：<code>hermes.yaml</code> <code>ollama.think: false</code>；Ollama 升到支援 <code>think</code> 參數的版本（≥ 0.9）</td>
+</tr>
+<tr>
+<td>whisper.err <code>No module named mlx</code></td>
+<td>—</td>
+<td>不是 Apple Silicon 或 Python 3.14：改回 faster-whisper（04 §4.4 末）</td>
 </tr>
 <tr>
 <td>Piper 讀數字怪</td>
@@ -8765,7 +8784,7 @@ automation:
 <tr>
 <td>記憶體壓力黃/紅</td>
 <td>活動監視器</td>
-<td>Ollama 改 <code>llama3.2:3b</code>（2 GB）；或 HAOS VM 降 1.5 GB</td>
+<td>Whisper 改 <code>large-v3-turbo-q4</code>（省 1.1 GB）；Ollama 改 <code>qwen3:4b</code>（2.6 GB）；或 HAOS VM 降 1.5 GB</td>
 </tr>
 </tbody>
 </table></div>
@@ -8966,7 +8985,7 @@ Z2M_DATA=~/openclaw/z2m zigbee2mqtt    # 正常後寫成 launchd plist（仿 04 
 <tr>
 <td>語音</td>
 <td>macOS 原生 launchd</td>
-<td>Whisper / Piper 容器；Ollama 容器或主機原生（macOS Metal）</td>
+<td>Piper 容器；Whisper 與 Ollama 可用容器（Linux）或主機原生（macOS：mlx-whisper + Ollama，皆 Metal）</td>
 </tr>
 <tr>
 <td>Hermes</td>
@@ -9001,7 +9020,7 @@ Z2M_DATA=~/openclaw/z2m zigbee2mqtt    # 正常後寫成 launchd plist（仿 04 
 cd SmartHome/bluemagpie
 bash install.sh
 </code></pre>
-<p>腳本做的事：檢查/安裝 Docker → 產生 <code>.env</code>（隨機後台密碼）→ 建立 <code>config/ data/ backups/</code> → Linux 額外套 <code>docker-compose.host.yml</code>（HA host 網路）→ <code>docker compose up -d --build</code> → 印出後台與 HA 網址。macOS 會自動停掉容器版 Ollama，提示安裝主機原生 Ollama。</p>
+<p>腳本做的事：檢查/安裝 Docker → 產生 <code>.env</code>（隨機後台密碼）→ 建立 <code>config/ data/ backups/</code> → Linux 額外套 <code>docker-compose.host.yml</code>（HA host 網路）→ <code>docker compose up -d --build</code> → 印出後台與 HA 網址。macOS 會自動停掉容器版 Ollama 與 Whisper（profile <code>primary</code> 不含 <code>ollama</code>、<code>whisper</code>），提示安裝主機原生 Ollama（<code>qwen3:8b</code>）與 <code>wyoming-mlx-whisper</code>（04 章 §4.3–4.4）。</p>
 <p>Windows：PowerShell 執行 <code>.\install.ps1</code>（需先裝 Docker Desktop + WSL2）。</p>
 <h2 id="9.3-後台設定流程-第一次">9.3 後台設定流程（第一次）</h2>
 <div class="tbl"><table>
@@ -9041,7 +9060,7 @@ bash install.sh
 <tr>
 <td>6</td>
 <td>語音</td>
-<td>Whisper <code>small</code>、Piper <code>zh_CN-huayan-medium</code>；macOS 選 Ollama 來源 <code>host</code>、網址 <code>http://host.docker.internal:11434</code>；選配：Hermes 大腦 <code>grok</code> + xAI API Key（失敗退回本地）</td>
+<td>LLM 模型 <code>qwen3:8b</code>；Piper <code>zh_CN-huayan-medium</code>；<strong>macOS</strong>：STT 引擎來源 <code>host</code>（主機 mlx-whisper :10300）、Ollama 來源 <code>host</code>、網址 <code>http://host.docker.internal:11434</code>；<strong>Linux</strong>：兩者都 <code>container</code>（faster-whisper <code>small</code>）；選配：Hermes 大腦 <code>grok</code> + xAI API Key（失敗退回本地）</td>
 </tr>
 <tr>
 <td>7</td>
@@ -9673,11 +9692,13 @@ Bot：你還不是家庭成員。請把這組 ID 交給管理員加入白名單�
 </table></div>
 <h2 id="11.3-節點-a-mac-mini-m4-主">11.3 節點 A（Mac mini M4，主）</h2>
 <pre class="code"><button class="copy" type="button" aria-label="複製">複製</button><code class="language-bash">cd ~/SmartHome/bluemagpie
-bash install.sh                     # macOS：bridge 網路、停容器版 Ollama
-brew install ollama &amp;&amp; brew services start ollama &amp;&amp; ollama pull llama3:8b
+bash install.sh                     # macOS：bridge 網路、停容器版 Ollama 與 Whisper
+brew install ollama &amp;&amp; brew services start ollama &amp;&amp; ollama pull qwen3:8b
+# 主機原生 mlx-whisper（Metal）：照 04 章 §4.2、§4.4 裝 venv 與 launchd（監聽 0.0.0.0:10300）
 </code></pre>
 <p>後台 <code>http://192.168.0.11:9000</code>：
 - 網站與節點：角色 <code>primary</code>、區網 IP <code>192.168.0.11</code>、網路模式 <code>bridge</code>
+- 語音：STT 引擎來源 <code>host</code>、Ollama 來源 <code>host</code>、LLM 模型 <code>qwen3:8b</code>（HA Black 那邊兩者都 <code>container</code>，LB 的 whisper 雙活仍成立：A 是 mlx-whisper、B 是 faster-whisper，都是 Wyoming :10300）
 - 熱備：另一節點 <code>http://192.168.0.12:9000</code>、<strong>VIP <code>192.168.0.100</code></strong>、共用密鑰留空自動產生（記下來）
 - 語音：Ollama 來源 <code>host</code>
 - 其餘頁面照 09 章 → <strong>套用</strong>；OpenClaw 頁 → 一鍵串接（Wyoming 會指向 VIP:10300/10200）</p>
@@ -11456,7 +11477,7 @@ git config core.hooksPath .githooks       # 啟用 pre-push：推送前自動跑
 </tr>
 <tr>
 <td>語音模型</td>
-<td><code>~/openclaw/whisper</code>、<code>voices</code></td>
+<td><code>~/openclaw/whisper</code>（HF 快取，large-v3-turbo）、<code>voices</code></td>
 <td><code>data/whisper</code>、<code>data/piper</code>、<code>data/ollama</code></td>
 </tr>
 <tr>
@@ -11635,6 +11656,11 @@ git config core.hooksPath .githooks       # 啟用 pre-push：推送前自動跑
 <td>2026-11-05</td>
 <td>1.5</td>
 <td>三條原則落實：憲章 v1.1.0（I/III 強化、新增 VI 節能）；13 章 AI 節能管家（<code>s00_energy.yaml</code>、Hermes v0.4 <code>energy.py</code> 守門與報告、35 情境節能規則）；03 §3.8b 用電量測；12 能源區塊；<code>tools/check_secrets.py</code> + pre-push；A.8 資料流清單；青鳥後台「節能管家」頁</td>
+</tr>
+<tr>
+<td>2026-11-05</td>
+<td>1.6</td>
+<td>架構評估後選型升級：STT 改 <code>wyoming-mlx-whisper large-v3-turbo</code>（Metal）、LLM 改 <code>qwen3:8b</code>（關 thinking，<code>llm.py</code> 帶 <code>think:false</code> 並清 <code>&lt;think&gt;</code>）；青鳥後台新增「STT 引擎來源 host/container」、compose whisper 改 profile；04/08/09 章同步</td>
 </tr>
 </tbody>
 </table></div></section>
