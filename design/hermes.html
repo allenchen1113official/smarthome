@@ -408,7 +408,7 @@ tts: <span class="s">"現在拿不到報價，網路或交易所那邊有狀況�
 <!-- ============ 6 PERFORMANCE ============ -->
 <section class="blk">
   <div class="sec-head"><h2>Mac mini M4 上的併發與佇列策略</h2><span class="en">Concurrency &amp; Resource Budget</span></div>
-  <p class="sec-lede">Mac mini M4（10 核 CPU／10 核 GPU／16 GB 統一記憶體）上，Ollama（Qwen3 8B）與 wyoming-mlx-whisper（large-v3-turbo）原生跑在 macOS 並用 Metal GPU 加速；Home Assistant 以 HAOS 虛擬機（UTM 橋接，192.168.0.88）運行，Zigbee 走網路型 SLZB-06 協調器（192.168.0.25）。LLM 改由 GPU 推理後不再吃滿 CPU，Hermes 仍保留「LLM 車道 + 快速通道」設計 — 查狀態、抓報價、告警走 fast lane，永遠不排在 LLM 後面。</p>
+  <p class="sec-lede">Mac mini M4（10 核 CPU／10 核 GPU／16 GB 統一記憶體）上，Ollama（Qwen3 8B）與 wyoming-mlx-whisper（large-v3-turbo）原生跑在 macOS 並用 Metal GPU 加速；Home Assistant 以 HAOS 虛擬機（UTM 橋接，192.168.0.18）運行，Zigbee 走網路型 SLZB-06 協調器（192.168.0.25）。LLM 改由 GPU 推理後不再吃滿 CPU，Hermes 仍保留「LLM 車道 + 快速通道」設計 — 查狀態、抓報價、告警走 fast lane，永遠不排在 LLM 後面。</p>
   <div class="two" style="grid-template-columns:1.15fr 1fr">
     <div class="card">
       <h3>統一記憶體預算</h3>

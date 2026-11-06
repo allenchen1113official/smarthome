@@ -56,12 +56,12 @@ node('cht', 0, 760,  '☁', '中華電信光世代', '固定 IP 122.117.5.107', 
 node('ddns', 0, 1120, '🦆', 'DuckDNS', 'AllenandAnn.duckdns.org', ['A 記錄 → 固定 IP', "Let's Encrypt 憑證（07 章）"]);
 node('ts', 0, 1420,  '🔗', 'Tailscale（選配）', '出站打洞 · 41641/udp', ['主副節點皆裝，手機同時登兩台', '不需開任何入站埠']);
 // 第二層
-node('rt', 1, 720,  '📡', 'TP-Link BE3600', '192.168.0.1', ['PPPoE · DHCP 保留 · 動態池 .101–.199', '主 SSID ／ IoT SSID（2.4G）隔離', '轉發 443、51820/udp → .88'], { h: 112 });
-node('vip', 1, 1100, '◎', 'VIP（keepalived）', '192.168.0.100', ['LB-A .13（Mac mini 上 Alpine VM）', 'LB-B 原生於 HA Black；HAProxy 主從'], { h: 112, tone: 'vip' });
+node('rt', 1, 720,  '📡', 'TP-Link BE3600', '192.168.0.1', ['PPPoE · DHCP 保留 · 動態池 .100–.199', '主 SSID ／ IoT SSID（2.4G）隔離', '轉發 443、51820/udp → .18'], { h: 112 });
+node('vip', 1, 1100, '◎', 'VIP（keepalived）', '192.168.0.88', ['LB-A .13（Mac mini 上 Alpine VM）', 'LB-B 原生於 HA Black；HAProxy 主從'], { h: 112, tone: 'vip' });
 // 第三層
 node('mac', 2, 470,  '🏠', 'Mac mini M4 · allenchaldeMini', '192.168.0.8', ['macOS 原生：MLX-Whisper :10300', 'Ollama Qwen3 8B :11434 · Piper :10200', 'Hermes 管家 :8800（節能守門）'], { h: 118, y: 482 });
-node('ha', 2, 470,  '🧠', 'Home Assistant（HAOS VM · 主節點）', '192.168.0.88', ['UTM 橋接 · :8123 · Mosquitto :1883', 'Zigbee2MQTT → SLZB-06 · Tailscale'], { h: 96, y: 626 });
-node('black', 2, 1195, '🛟', 'HA Black N100（副節點）', '192.168.0.12', ['24/7 熱備 · :8123 · 青鳥後台 :9000', '每小時收設定備份 · 失聯 5 分自動接手', 'LB-B：HAProxy + keepalived'], { h: 118, y: 615 });
+node('ha', 2, 470,  '🧠', 'Home Assistant（HAOS VM · 主節點）', '192.168.0.18', ['UTM 橋接 · :8123 · Mosquitto :1883', 'Zigbee2MQTT → SLZB-06 · Tailscale'], { h: 96, y: 626 });
+node('black', 2, 1195, '🛟', 'HA Black N100（副節點）', '192.168.0.28', ['24/7 熱備 · :8123 · 青鳥後台 :9000', '每小時收設定備份 · 失聯 5 分自動接手', 'LB-B：HAProxy + keepalived'], { h: 118, y: 615 });
 node('slzb', 2, 1530, '⬢', 'SLZB-06 Zigbee 協調器', '192.168.0.25 · tcp 6638', ['PoE · 同時只接受一個 Z2M 連線', '主→副接手時自動切換'], { h: 100, y: 624 });
 // 第四層
 node('hue', 3, 260,  '💡', 'Philips Hue Bridge v2', '192.168.0.20 · Hue API :443', ['18 崁燈 · Tap · Dimmer ×2 · Motion ×2', 'Sync Box .21（HACS huesyncbox）']);
@@ -127,9 +127,9 @@ for (let y = 0; y <= H; y += 40) { g.beginPath(); g.moveTo(0, y + .5); g.lineTo(
 
 // 標題
 text('Allen & Ann 智慧家庭', 40, 44, { size: 22, weight: 600 });
-text('五層網路拓樸 · as-built 2026-11-06 · SOP v1.6.1', 40, 66, { size: 12.5, color: C.ink3 });
+text('五層網路拓樸 · as-built 2026-11-06 · SOP v1.6.3', 40, 66, { size: 12.5, color: C.ink3 });
 text('FIVE-LAYER NETWORK TOPOLOGY', RX, 44, { size: 11, color: C.ink3, align: 'right', ls: 2.5 });
-text('192.168.0.0/24 · 主節點 .88 · 副節點 .12 · VIP .100', RX, 66, { size: 12, color: C.ink3, align: 'right', font: F_MONO });
+text('192.168.0.0/24 · 主節點 .18 · 副節點 .28 · VIP .88', RX, 66, { size: 12, color: C.ink3, align: 'right', font: F_MONO });
 
 // 層帶
 LAYERS.forEach((L, i) => {

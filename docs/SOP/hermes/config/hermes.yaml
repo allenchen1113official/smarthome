@@ -8,8 +8,8 @@ server:
 
 ha:
   urls:                              # 依序：主節點 → 副節點（接手後 token 相同，因 .storage 隨備份還原）
-    - http://192.168.0.88:8123
-    - http://192.168.0.12:8123
+    - http://192.168.0.18:8123
+    - http://192.168.0.28:8123
   token_env: HERMES_HA_TOKEN         # 由環境變數讀取 HA 長效 token
   timeout_s: 1.1
   health_interval_s: 60              # 每 60 秒檢查目前節點是否存活，不活就切換

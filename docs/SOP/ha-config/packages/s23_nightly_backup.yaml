@@ -1,6 +1,6 @@
 # file: packages/s23_nightly_backup.yaml
 # 情境 23 快照同步副節點：每晚 03:00 全備（本機 + standby）；每小時 :05 只備設定到 standby（熱備用，落後 ≤ 1 小時）
-# 前置：設定 → 系統 → 儲存空間 加入「standby」（SMB //192.168.0.12/backup）；secrets.yaml 有 backup_password（兩台相同）
+# 前置：設定 → 系統 → 儲存空間 加入「standby」（SMB //192.168.0.28/backup）；secrets.yaml 有 backup_password（兩台相同）
 input_boolean:
   s23_enabled: { name: "23 快照同步副節點", initial: on, icon: mdi:backup-restore }
 

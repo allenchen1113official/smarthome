@@ -260,7 +260,7 @@ S = [
   "—"),
  (23,"D","s23_nightly_backup.yaml","HA 快照同步副節點","兩人",
   "每晚 03:00 全備（本機 + 副節點 SMB），10 分鐘後推播；每小時 :05 只備設定（含 helpers 狀態）到副節點，讓熱備接手後最多落後 1 小時。只在主節點執行。",
-  ["設定 → 系統 → 備份：位置加入 `standby`（//192.168.0.12/backup，07 章）、保留 7 份、加密","`secrets.yaml` 的 `backup_password` 兩台相同","`binary_sensor.is_primary_node`（s00_node）","HA ≥ 2025.1（`backup.create_automatic`）"],
+  ["設定 → 系統 → 備份：位置加入 `standby`（//192.168.0.28/backup，07 章）、保留 7 份、加密","`secrets.yaml` 的 `backup_password` 兩台相同","`binary_sensor.is_primary_node`（s00_node）","HA ≥ 2025.1（`backup.create_automatic`）"],
   ["Mac mini","HA Black","SLZB-06"],
   "03:00 全備；每小時 :05 設定備份",
   "23 啟用；小時備只在主節點",
@@ -417,7 +417,7 @@ out.append("""# 06 · 35 種情境逐一建置
 
 ### 安裝一個情境的固定流程
 
-1. 把 `sXX_*.yaml` 複製到 HAOS 的 `/config/packages/`（Samba `\\\\192.168.0.88\\config\\packages`）。
+1. 把 `sXX_*.yaml` 複製到 HAOS 的 `/config/packages/`（Samba `\\\\192.168.0.18\\config\\packages`）。
 2. 檔內標 ⚠️ 的地方（`hue_event` id、房間 ID）改成你在 03 章記下的值。
 3. 開發者工具 → YAML → **檢查設定** → 「設定有效」→ **重新載入所有 YAML 設定**（不用整台重啟）。
 4. 設定 → 自動化：確認該情境的自動化出現；開發者工具 → 狀態：`input_boolean.sXX_enabled` 存在。

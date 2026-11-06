@@ -31,10 +31,10 @@ design/
 
 | 項目 | 規格 |
 |---|---|
-| 主中樞 | Mac mini M4 `allenchaldeMini` · 192.168.0.8 · 10 核 CPU / 10 核 GPU · 16 GB 統一記憶體 · 256 GB SSD · HAOS (UTM VM 橋接 · 192.168.0.88) |
+| 主中樞 | Mac mini M4 `allenchaldeMini` · 192.168.0.8 · 10 核 CPU / 10 核 GPU · 16 GB 統一記憶體 · 256 GB SSD · HAOS (UTM VM 橋接 · 192.168.0.18) |
 | Zigbee | SLZB-06 PoE 網路型協調器 · 192.168.0.25（主副節點共用，不需 USB 直通） |
 | 用電量測 | Shelly EM 總表 + Aqara 計量插座（本地，雲端關閉） |
-| 備援中樞 | Home Assistant Black · Intel N100 · 8 GB · 192.168.0.12 · **24/7 熱備**；每小時接收設定備份 + 03:00 全備，主機失聯 > 5 分鐘自動接手（Z2M 改連 SLZB-06）；僅跑 HA + 容器版 faster-whisper，語音降級為 HA 內建 Assist（原主機因長時間滿載過熱當機而降為備援） |
+| 備援中樞 | Home Assistant Black · Intel N100 · 8 GB · 192.168.0.28 · **24/7 熱備**；每小時接收設定備份 + 03:00 全備，主機失聯 > 5 分鐘自動接手（Z2M 改連 SLZB-06）；僅跑 HA + 容器版 faster-whisper，語音降級為 HA 內建 Assist（原主機因長時間滿載過熱當機而降為備援） |
 | 路由 | tp-link BE3600（WiFi 7 · 三頻） |
 | 外網 | 中華電信 100M/40M · 固定 IP · DuckDNS |
 | 照明 | Philips Hue Bridge v2 + 18 崁燈 + 1 Tap + 2 Dimmer |

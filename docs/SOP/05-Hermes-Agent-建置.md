@@ -45,7 +45,7 @@ curl -s localhost:8800/api/tags | jq '.models[0].name'   # hermes:latest
 
 | 檔案 | 要改的地方 |
 |---|---|
-| `config/hermes.yaml` | `ha.urls`（主 `.88` → 副 `.12`，07 章熱備）、`areas.*` 的 entity_id 要與 03 章命名一致、`paths.cards_dir` 指向已掛載的 `/Volumes/config/www/hermes` |
+| `config/hermes.yaml` | `ha.urls`（主 `.18` → 副 `.28`，07 章熱備）、`areas.*` 的 entity_id 要與 03 章命名一致、`paths.cards_dir` 指向已掛載的 `/Volumes/config/www/hermes` |
 | `config/policy.yaml` | 預設即設計值：`confirm_all`、12 秒逾時、23:00–07:00 推播、`never` 含 `broker.place_order` |
 | `config/market.yaml` | `watchlist` 填自選股；`alerts.rules` 停損 8%（`cost * 0.92`） |
 | `config/tools/*.yaml` | 工具 schema，一般不用改。新增工具 = 加一段 YAML + 在 `tools.py` 加一個分支 |

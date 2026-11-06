@@ -206,7 +206,7 @@ BODY = f"""<title>Allen & Ann 智慧家庭建置手冊</title>
 <style>{CSS}</style>
 <header class="top">
   <button class="btn menu" id="menu" type="button" aria-label="目錄">☰ 目錄</button>
-  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.6.2 · 2026-11-06</small></div>
+  <div class="brand">Allen & Ann 智慧家庭建置手冊<small>SOP v1.6.3 · 2026-11-06</small></div>
   <div class="sp"></div>
   <a class="btn" href="#s01">35 情境</a>
   <button class="btn" id="theme" type="button" aria-label="切換深淺色">◐ 主題</button>

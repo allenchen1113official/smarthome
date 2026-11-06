@@ -12,7 +12,7 @@ input_boolean:
 binary_sensor:
   - platform: ping
     name: macmini_ping
-    host: 192.168.0.88       # 主節點 HAOS VM
+    host: 192.168.0.18       # 主節點 HAOS VM
     count: 2
     scan_interval: 30
   - platform: ping

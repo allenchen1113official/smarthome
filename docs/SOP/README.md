@@ -1,6 +1,6 @@
 # Allen & Ann 智慧家庭 — 從無到有建置 SOP
 
-> 版本 1.6.2 · 2026-11-06（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
+> 版本 1.6.3 · 2026-11-06（台北時間）· 對應設計文件 `design/`（拓樸 / 35 場景 / OpenClaw / Hermes v0.3）與 `.specify/memory/constitution.md` v1.0.0
 > 讀者：完全沒接觸過 Home Assistant 的新手。每一章都能獨立完成並自我驗證，照順序做即可。
 
 ## 一頁快速開始

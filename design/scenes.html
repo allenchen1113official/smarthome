@@ -420,7 +420,7 @@ const SCENES = [
     trigger:"binary_sensor.wan", devices:["tp-link","Hue × 4"], tags:["網路","警示"], hour: 14, who:"both" },
   { n:27, cat:"secure", icons:"📱", title:"設備離線與主機失聯偵測", desc:"Hue Bridge 或 Zigbee 設備離線即時推播；Mac mini 失聯 > 5 分鐘 HA Black 自動接手並推播",
     trigger:"unavailable / ping 逾時", devices:["全設備","HA Black (備援)"], tags:["監測","備援","推播"], hour: 16, who:"both",
-    yaml:`# 在備援 HA Black 上執行\ntrigger:\n  - platform: state\n    entity_id: binary_sensor.macmini_ping\n    to: 'off'\n    for: { minutes: 5 }\naction:\n  - service: notify.both\n    data:\n      message: "主中樞失聯 5 分鐘，HA Black 已自動接手（Z2M 已連 SLZB-06，請改用 VIP 192.168.0.100）"\n      data: { priority: time_sensitive }` },
+    yaml:`# 在備援 HA Black 上執行\ntrigger:\n  - platform: state\n    entity_id: binary_sensor.macmini_ping\n    to: 'off'\n    for: { minutes: 5 }\naction:\n  - service: notify.both\n    data:\n      message: "主中樞失聯 5 分鐘，HA Black 已自動接手（Z2M 已連 SLZB-06，請改用 VIP 192.168.0.88）"\n      data: { priority: time_sensitive }` },
   { n:28, cat:"secure", icons:"🆘", title:"緊急 SOS", desc:"長按 Hue Dimmer 特殊按鍵，傳送簡訊",
     trigger:"Dimmer 長按 5s", devices:["Hue Dimmer","SMS Gateway"], tags:["緊急","SOS"], hour: 18, who:"both" },
   { n:29, cat:"secure", icons:"🤖", title:"OpenClaw 全屋情境切換", desc:"語音說「Allen 回家了」觸發客廳/主臥多情境 (AI Scene Control)",

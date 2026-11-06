@@ -42,7 +42,7 @@ pip install wyoming-mlx-whisper wyoming-piper piper-tts     # mlx-whisper 需 Ap
 
 ```bash
 brew install ollama
-# 讓 Ollama 監聽區域網路（HAOS VM 在 .88 要連得到）
+# 讓 Ollama 監聽區域網路（HAOS VM 在 .18 要連得到）
 launchctl setenv OLLAMA_HOST 0.0.0.0
 launchctl setenv OLLAMA_KEEP_ALIVE -1          # 模型常駐，免首句冷啟動
 brew services restart ollama
@@ -155,8 +155,8 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 | 項目 | 怎麼拿 |
 |---|---|
 | webhook id | `secrets.yaml` 的 `openclaw_webhook_id`（青鳥路線：後台 → 語音 頁自動產生，複製即可）。格式 `openclaw_voice_` + 32 位隨機字，例如 `openclaw_voice_k3Jd9...`。 |
-| HA 網址 | 07 章做完前：`http://192.168.0.88:8123`（在家 Wi-Fi 才能用）；做完後：`https://AllenandAnn.duckdns.org`（在外也能用，HomePod 在家兩者皆可）。青鳥 + LB 路線用 VIP `http://192.168.0.100:8123`。 |
-| 先驗證 webhook 活著 | Mac 終端機：`curl -X POST http://192.168.0.88:8123/api/webhook/<id> -H 'Content-Type: application/json' -d '{"text":"客廳幾度","speaker":"allen","output":"living_homepod"}'`；HomePod 應說出溫度。這一步不通就不要往下做捷徑。 |
+| HA 網址 | 07 章做完前：`http://192.168.0.18:8123`（在家 Wi-Fi 才能用）；做完後：`https://AllenandAnn.duckdns.org`（在外也能用，HomePod 在家兩者皆可）。青鳥 + LB 路線用 VIP `http://192.168.0.88:8123`。 |
+| 先驗證 webhook 活著 | Mac 終端機：`curl -X POST http://192.168.0.18:8123/api/webhook/<id> -H 'Content-Type: application/json' -d '{"text":"客廳幾度","speaker":"allen","output":"living_homepod"}'`；HomePod 應說出溫度。這一步不通就不要往下做捷徑。 |
 
 #### A-1 建立第一個捷徑「Allen 回家了」（iPhone，約 5 分鐘）
 
@@ -167,7 +167,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 | 1 | 開 **捷徑** App → 右上 **＋** | 空白捷徑編輯頁，上方標題「新捷徑 1」 | siri-01 |
 | 2 | 點上方標題 → **重新命名** → 輸入 `Allen 回家了` | 標題變成這五個字。**這個名字就是對 Siri 說的話**，不要加標點 | siri-02 |
 | 3 | 下方搜尋動作 → 輸入「URL」→ 選 **取得 URL 內容**（Get Contents of URL） | 動作卡片出現，顯示「取得 [URL] 的內容」 | siri-03 |
-| 4 | 點卡片裡的 `URL` 欄 → 貼上 `http://192.168.0.88:8123/api/webhook/<你的 id>` | URL 完整、結尾是你的 id | siri-04 |
+| 4 | 點卡片裡的 `URL` 欄 → 貼上 `http://192.168.0.18:8123/api/webhook/<你的 id>` | URL 完整、結尾是你的 id | siri-04 |
 | 5 | 點卡片右側 **▸ 顯示更多** | 展開「方法 / 標頭 / 請求本文」 | siri-05 |
 | 6 | **方法** 改成 `POST` | 方法顯示 POST | siri-06 |
 | 7 | **請求本文** 選 `JSON` | 出現「新增欄位」 | siri-07 |
@@ -175,7 +175,7 @@ launchctl load ~/Library/LaunchAgents/com.allenann.piper.plist
 | 9 | 再新增文字欄位：鍵 `speaker`、值 `allen` | 第二列 speaker | — |
 | 10 | 再新增文字欄位：鍵 `output`、值 `living_homepod` | 第三列 output（主臥用 `master_mini`，全部用 `all`；對應 `script.say` 的 target 選項） | siri-09 |
 | 11 | **標頭** 新增：鍵 `Content-Type`、值 `application/json` | 標頭一列（HA 收 JSON 必須） | siri-10 |
-| 12 | 點右下 **▶** 試跑 | 第一次會問「允許 Allen 回家了 連線到 192.168.0.88？」→ **總是允許**；HomePod 應播出回覆 | siri-11 |
+| 12 | 點右下 **▶** 試跑 | 第一次會問「允許 Allen 回家了 連線到 192.168.0.18？」→ **總是允許**；HomePod 應播出回覆 | siri-11 |
 | 13 | 右上 **完成** | 捷徑出現在「所有捷徑」 | — |
 | 14 | 捷徑上長按 → **詳細資訊** → 關掉「在分享工作表中顯示」、開 **「在 Apple Watch 上顯示」** | 手錶也能按 | siri-12 |
 
@@ -212,7 +212,7 @@ Siri 聽不懂名字時：把捷徑名改成口語更常見的講法（例如「
 | 回 `405` / `400` | 方法不是 POST；本文不是 JSON；少 Content-Type | 重做第 6、7、11 步 |
 | 捷徑成功但 HomePod 沒聲 | HA 記錄簿有無 `語音：Siri 捷徑 webhook` 觸發 | `output` 拼錯 → 看 `script.say` 的 target 清單；深夜 sleep_mode 會改推播（§4.8） |
 | HomePod 回「我在 iPhone 上找不到」 | 個人請求沒開 / Apple ID 不同 | 家庭 App → 個人請求 |
-| 在外面 4G 跑失敗 | URL 仍是 192.168.0.88 | 07 章完成後改成 https 網址 |
+| 在外面 4G 跑失敗 | URL 仍是 192.168.0.18 | 07 章完成後改成 https 網址 |
 
 ### B. Companion App / Apple Watch Assist — 自由句
 
